@@ -44,6 +44,7 @@ const COURSES = [
     desc: 'Rapid exam prep with 5 full-length practice tests, time management strategies, and domain-by-domain review sessions.',
     level: 'Intermediate', duration: '30 hrs', students: '340', price: 'Free', rating: '4.8', reviews: '156',
     prereqs: 'Completed CCNA training or equivalent knowledge.',
+    link: 'ccna-domain1.html',
     curriculum: ['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim'] }
 ];
 
@@ -101,7 +102,7 @@ function renderCourses(gridId, data) {
         </div>
         <div class="cc-footer">
           <span class="cc-price ${c.price === 'Free' ? 'free' : ''}">${c.price}</span>
-          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${c.id === 6 ? '▶ Start Course' : S.enrolled.includes(c.id) ? '✓ Enrolled' : 'Enroll Now'}</button>
+          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${c.link ? '▶ Start Course' : S.enrolled.includes(c.id) ? '✓ Enrolled' : 'Enroll Now'}</button>
         </div>
       </div>
     </div>`).join('');
@@ -130,6 +131,9 @@ function openCourseDetail(id) {
   const c = COURSES.find(x => x.id === id);
   if (!c) return;
   const isEnrolled = S.enrolled.includes(id);
+  const enrollBtn = c.link
+    ? `<a href="${c.link}" class="btn btn-g"><i class="fas fa-play"></i> Start Free Course</a>`
+    : `<button class="btn ${isEnrolled ? 'btn-ghost' : 'btn-c'}" onclick="enrollCourse(${c.id});closeCourseModal()">${isEnrolled ? '<i class="fas fa-check"></i> Already Enrolled' : '<i class="fas fa-graduation-cap"></i> Enroll Now'}</button>`;
   document.getElementById('course-detail-inner').innerHTML = `
     <div class="cdm-header">
       <div class="cdm-thumb ${c.th}">${c.icon}</div>
@@ -167,9 +171,7 @@ function openCourseDetail(id) {
         <div class="ef-price ${c.price === 'Free' ? 'free' : ''}">${c.price}</div>
         <div style="font-size:0.65rem;color:var(--tm);margin-top:3px">Full lifetime access</div>
       </div>
-      <button class="btn ${isEnrolled ? 'btn-ghost' : 'btn-c'}" onclick="enrollCourse(${c.id});closeCourseModal()">
-        ${isEnrolled ? '<i class="fas fa-check"></i> Already Enrolled' : '<i class="fas fa-graduation-cap"></i> Enroll Now'}
-      </button>
+      ${enrollBtn}
     </div>`;
   document.getElementById('course-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -181,7 +183,8 @@ function closeCourseModal() {
 }
 
 function enrollCourse(id) {
-  if (id === 6) { window.location.href = 'ccna-domain1.html'; return; }
+  const course = COURSES.find(x => x.id === id);
+  if (course?.link) { window.location.href = course.link; return; }
   if (!S.user) { openModal('login'); toast('Sign in to enroll in a course', 'inf'); return; }
   if (S.enrolled.includes(id)) { toast('Already enrolled in this course', 'inf'); return; }
   S.enrolled.push(id);
