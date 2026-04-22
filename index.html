@@ -1,754 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ahmed Hussein | Cisco Certified Instructor</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<style>
-/* =============================================
-   CISCO INSTRUCTOR — CIRCUIT TECH THEME
-   Fonts: Orbitron (headings) + Exo 2 (body)
-   Palette: Deep navy + Electric cyan + Neon orange
-   ============================================= */
-:root{
-  --c:#00d4ff;        /* electric cyan */
-  --c2:#0099cc;       /* cyan mid */
-  --c3:#005577;       /* cyan deep */
-  --o:#ff6a00;        /* neon orange */
-  --o2:#ff9a40;       /* orange light */
-  --g:#00ff88;        /* green confirm */
-  --bg:#030d1a;       /* deepest navy */
-  --bg1:#060f20;
-  --bg2:#080e1c;
-  --bg3:#0c1628;
-  --bg4:#101e38;
-  --bg5:#142240;
-  --card:#0a1525;
-  --t:#c8ddf0;        /* body text */
-  --tm:#7a9ab5;       /* muted */
-  --tw:#ffffff;
-  --bdr:rgba(0,212,255,0.15);
-  --bdr2:rgba(0,212,255,0.3);
-  --bdr3:rgba(0,212,255,0.5);
-  --r:10px;
-  --r2:16px;
-  --r3:22px;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;font-size:16px;}
-body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t);overflow-x:hidden;cursor:none;}
-
-/* ── CUSTOM CURSOR ── */
-#cursor{width:12px;height:12px;background:var(--c);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,width 0.2s,height 0.2s;mix-blend-mode:screen;}
-#cursor-ring{width:36px;height:36px;border:1.5px solid var(--c);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.18s,width 0.25s,height 0.25s;mix-blend-mode:screen;opacity:0.6;}
-body:hover #cursor{transform:translate(-50%,-50%) scale(1);}
-.cursor-hover{width:50px!important;height:50px!important;background:transparent!important;border:2px solid var(--o)!important;}
-.cursor-ring-hover{width:60px!important;height:60px!important;border-color:var(--o)!important;}
-
-/* ── CIRCUIT CANVAS ── */
-#circuit-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.18;}
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:4px;}
-::-webkit-scrollbar-track{background:var(--bg);}
-::-webkit-scrollbar-thumb{background:var(--c3);border-radius:4px;}
-::-webkit-scrollbar-thumb:hover{background:var(--c2);}
-::selection{background:rgba(0,212,255,0.25);color:var(--tw);}
-
-/* ── PAGE LOADER ── */
-#loader{position:fixed;inset:0;background:var(--bg);z-index:9990;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;transition:opacity 0.6s,visibility 0.6s;}
-#loader.gone{opacity:0;visibility:hidden;}
-.loader-hex{width:80px;height:80px;position:relative;animation:hexSpin 2s linear infinite;}
-.loader-hex svg{width:100%;height:100%;}
-.loader-title{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700;color:var(--tw);letter-spacing:4px;}
-.loader-title span{color:var(--c);}
-.loader-bar-wrap{width:220px;height:2px;background:var(--bg4);border-radius:2px;overflow:hidden;}
-.loader-bar-inner{height:100%;background:linear-gradient(90deg,var(--c),var(--o));border-radius:2px;animation:loadBar 1.6s ease-out forwards;}
-@keyframes loadBar{from{width:0}to{width:100%}}
-@keyframes hexSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-
-/* ── NAV ── */
-#nav{position:fixed;top:0;width:100%;z-index:1000;padding:0 2.5rem;transition:all 0.35s;}
-#nav.stuck{background:rgba(3,13,26,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--bdr);}
-.nav-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:70px;}
-.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
-.logo-hex{width:38px;height:38px;flex-shrink:0;}
-.logo-text{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--tw);letter-spacing:1px;}
-.logo-text span{color:var(--c);}
-.logo-sub{font-size:0.58rem;color:var(--c);letter-spacing:3px;text-transform:uppercase;margin-top:-2px;}
-.nav-links{display:flex;gap:2.5rem;list-style:none;}
-.nav-links a{color:var(--tm);font-size:0.85rem;font-weight:600;text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:color 0.2s;position:relative;padding-bottom:3px;}
-.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:var(--c);transition:width 0.25s;}
-.nav-links a:hover,.nav-links a.act{color:var(--c);}
-.nav-links a:hover::after,.nav-links a.act::after{width:100%;}
-.nav-right{display:flex;gap:0.7rem;align-items:center;}
-.nbtn{font-family:'Exo 2',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 20px;border-radius:6px;cursor:pointer;transition:all 0.2s;border:1px solid var(--bdr2);background:transparent;color:var(--c);}
-.nbtn:hover{background:rgba(0,212,255,0.08);border-color:var(--c);}
-.nbtn.solid{background:var(--c);color:var(--bg);border-color:var(--c);}
-.nbtn.solid:hover{background:var(--o);border-color:var(--o);box-shadow:0 0 20px rgba(255,106,0,0.4);}
-.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
-.ham span{width:22px;height:2px;background:var(--t);border-radius:2px;transition:all 0.3s;display:block;}
-.ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-.ham.open span:nth-child(2){opacity:0;}
-.ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.mob-nav{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(3,13,26,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);padding:1.5rem 2rem;flex-direction:column;gap:0.3rem;z-index:999;}
-.mob-nav.open{display:flex;}
-.mob-nav a{padding:0.7rem 0;color:var(--tm);text-decoration:none;font-size:0.9rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--bdr);transition:color 0.2s;}
-.mob-nav a:hover{color:var(--c);}
-
-/* ── COMMON PAGE WRAPPER ── */
-.page{display:none;position:relative;z-index:1;}
-.page.show{display:block;}
-
-/* =============================================
-   HOME PAGE
-   ============================================= */
-
-/* HERO */
-.hero{min-height:100vh;display:flex;align-items:center;padding:0 2.5rem;position:relative;overflow:hidden;}
-.hero-mesh{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 60% 40%,rgba(0,100,160,0.15) 0%,transparent 70%),radial-gradient(ellipse 40% 50% at 20% 80%,rgba(255,106,0,0.06) 0%,transparent 60%);}
-.hero-scanline{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.012) 2px,rgba(0,212,255,0.012) 4px);pointer-events:none;}
-.hero-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding-top:70px;width:100%;}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:1.6rem;}
-.eyebrow-line{width:30px;height:2px;background:var(--c);border-radius:2px;}
-.eyebrow-text{font-family:'Orbitron',monospace;font-size:0.7rem;font-weight:600;color:var(--c);letter-spacing:4px;text-transform:uppercase;}
-.hero-h1{font-family:'Orbitron',monospace;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:900;line-height:1.1;color:var(--tw);margin-bottom:0.5rem;}
-.hero-h1 .line2{color:var(--c);text-shadow:0 0 30px rgba(0,212,255,0.5);}
-.hero-h1 .line3{color:var(--o);text-shadow:0 0 30px rgba(255,106,0,0.4);}
-.hero-sub{font-size:1rem;color:var(--tm);line-height:1.8;margin-bottom:2.2rem;max-width:500px;}
-.hero-sub strong{color:var(--t);font-weight:600;}
-.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2.5rem;}
-.hbtn{display:inline-flex;align-items:center;gap:9px;padding:14px 30px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.25s;border:none;text-decoration:none;}
-.hbtn-primary{background:linear-gradient(135deg,var(--c),var(--c2));color:var(--bg);box-shadow:0 0 0 rgba(0,212,255,0);}
-.hbtn-primary:hover{box-shadow:0 0 30px rgba(0,212,255,0.5),0 0 60px rgba(0,212,255,0.2);transform:translateY(-2px);}
-.hbtn-outline{background:transparent;color:var(--c);border:1.5px solid var(--c);}
-.hbtn-outline:hover{background:rgba(0,212,255,0.08);transform:translateY(-2px);box-shadow:0 0 20px rgba(0,212,255,0.2);}
-.hbtn-accent{background:linear-gradient(135deg,var(--o),var(--o2));color:var(--tw);}
-.hbtn-accent:hover{box-shadow:0 0 30px rgba(255,106,0,0.5);transform:translateY(-2px);}
-.hero-trust{display:flex;gap:1.5rem;flex-wrap:wrap;}
-.trust-item{display:flex;align-items:center;gap:7px;font-size:0.8rem;color:var(--tm);}
-.trust-item i{color:var(--g);font-size:0.75rem;}
-.hero-stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--bdr);}
-.hstat{position:relative;}
-.hstat-num{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--tw);}
-.hstat-num span{color:var(--c);}
-.hstat-label{font-size:0.72rem;color:var(--tm);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
-.hstat::after{content:'';position:absolute;right:0;top:10%;height:80%;width:1px;background:var(--bdr);}
-.hstat:last-child::after{display:none;}
-
-/* HERO RIGHT — 3D CARD */
-.hero-right{position:relative;}
-.hero-device{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r3);padding:0;overflow:hidden;position:relative;transform-style:preserve-3d;}
-.hero-device::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--c),var(--o),var(--c));background-size:200%;animation:borderFlow 3s linear infinite;}
-@keyframes borderFlow{from{background-position:0%}to{background-position:200%}}
-.device-header{background:var(--bg3);padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr);}
-.dh-title{font-family:'Orbitron',monospace;font-size:0.75rem;font-weight:700;color:var(--c);letter-spacing:2px;}
-.dh-dots{display:flex;gap:5px;}
-.dot{width:10px;height:10px;border-radius:50%;}
-.dot1{background:#ff5f57;}
-.dot2{background:#febc2e;}
-.dot3{background:#28c840;}
-.device-body{padding:1.5rem;}
-.cert-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;margin-bottom:1.2rem;}
-.cert-tile{background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;}
-.cert-tile::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(0,212,255,0.06),transparent);opacity:0;transition:opacity 0.3s;}
-.cert-tile:hover{border-color:var(--c);transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,212,255,0.15);}
-.cert-tile:hover::before{opacity:1;}
-.ct-icon{font-size:1.8rem;margin-bottom:0.5rem;filter:drop-shadow(0 0 8px rgba(0,212,255,0.3));}
-.ct-name{font-family:'Orbitron',monospace;font-size:0.78rem;font-weight:700;color:var(--tw);margin-bottom:2px;}
-.ct-code{font-size:0.65rem;color:var(--c);letter-spacing:1px;}
-.device-instructor{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem;}
-.di-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c3));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:700;font-size:0.9rem;color:var(--bg);flex-shrink:0;border:2px solid rgba(0,212,255,0.4);box-shadow:0 0 15px rgba(0,212,255,0.3);}
-.di-name{font-family:'Orbitron',monospace;font-size:0.82rem;font-weight:700;color:var(--tw);}
-.di-role{font-size:0.7rem;color:var(--c);margin-top:2px;}
-.di-live{margin-left:auto;display:flex;align-items:center;gap:5px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.25);padding:4px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;color:var(--g);letter-spacing:1px;}
-.live-dot{width:6px;height:6px;background:var(--g);border-radius:50%;animation:pls 1.5s infinite;}
-@keyframes pls{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,136,0.5);}50%{opacity:0.7;box-shadow:0 0 0 5px rgba(0,255,136,0);}}
-.floating-badge{position:absolute;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:0.6rem 1rem;display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,0.4);}
-.fb1{top:-1.2rem;right:-1.5rem;animation:flt 4s ease-in-out infinite;}
-.fb2{bottom:-0.8rem;left:-1.8rem;animation:flt 4s ease-in-out infinite 2s;}
-@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-.fb-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;}
-.fbi-c{background:rgba(0,212,255,0.15);color:var(--c);}
-.fbi-o{background:rgba(255,106,0,0.15);color:var(--o);}
-.fb-title{font-size:0.75rem;font-weight:700;color:var(--tw);}
-.fb-sub{font-size:0.65rem;color:var(--tm);}
-
-/* FEATURES ROW */
-.feat-row{background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:2.5rem 2.5rem;}
-.feat-row-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;}
-.feat-item{display:flex;gap:1rem;align-items:flex-start;padding:1rem;border-radius:var(--r);border:1px solid transparent;transition:all 0.25s;cursor:default;}
-.feat-item:hover{background:rgba(0,212,255,0.04);border-color:var(--bdr);}
-.feat-icon-wrap{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,rgba(0,212,255,0.12),rgba(0,212,255,0.04));border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--c);font-size:1.1rem;flex-shrink:0;}
-.feat-title{font-family:'Exo 2',sans-serif;font-size:0.88rem;font-weight:700;color:var(--tw);margin-bottom:4px;}
-.feat-desc{font-size:0.78rem;color:var(--tm);line-height:1.6;}
-
-/* SECTION HEADER */
-.sec-wrap{max-width:1300px;margin:0 auto;}
-.sec-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Orbitron',monospace;font-size:0.65rem;font-weight:600;color:var(--c);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.8rem;}
-.sec-eyebrow i{font-size:0.7rem;}
-.sec-h2{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,2.5vw,2.4rem);font-weight:900;color:var(--tw);line-height:1.15;margin-bottom:1rem;}
-.sec-h2 .accent{color:var(--c);text-shadow:0 0 20px rgba(0,212,255,0.3);}
-.sec-h2 .accent-o{color:var(--o);}
-.sec-desc{color:var(--tm);font-size:0.95rem;line-height:1.75;max-width:560px;}
-.sec-hdr{margin-bottom:3rem;}
-.sec-hdr-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:3rem;}
-.pill-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:6px;font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--bdr2);color:var(--c);background:transparent;cursor:pointer;transition:all 0.2s;}
-.pill-btn:hover{background:rgba(0,212,255,0.08);transform:translateY(-1px);}
-
-/* COURSES */
-.sec-courses{padding:5rem 2.5rem;background:var(--bg1);}
-.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.5rem;}
-.ccard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;transition:all 0.3s;cursor:pointer;display:flex;flex-direction:column;position:relative;}
-.ccard::after{content:'';position:absolute;inset:0;border-radius:var(--r2);border:1px solid transparent;transition:border-color 0.3s;pointer-events:none;}
-.ccard:hover{transform:translateY(-6px);}
-.ccard:hover::after{border-color:var(--c);box-shadow:0 0 0 1px var(--c) inset,0 20px 50px rgba(0,212,255,0.12);}
-.cc-thumb{height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.cc-thumb-icon{font-size:3.2rem;filter:drop-shadow(0 0 12px rgba(0,212,255,0.4));position:relative;z-index:1;}
-.cc-hex-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0.12;}
-.th1{background:linear-gradient(135deg,#010e1c,#03254a);}
-.th2{background:linear-gradient(135deg,#010c1a,#021f40);}
-.th3{background:linear-gradient(135deg,#1a0500,#3d0e00);}
-.th4{background:linear-gradient(135deg,#001a08,#003315);}
-.th5{background:linear-gradient(135deg,#1a0e00,#3d2200);}
-.th6{background:linear-gradient(135deg,#0a001a,#1a0040);}
-.cc-level-tag{position:absolute;bottom:10px;left:10px;z-index:2;padding:3px 10px;border-radius:4px;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-.lvl-beg{background:rgba(0,255,136,0.12);color:var(--g);border:1px solid rgba(0,255,136,0.3);}
-.lvl-int{background:rgba(0,212,255,0.12);color:var(--c);border:1px solid rgba(0,212,255,0.3);}
-.lvl-adv{background:rgba(255,106,0,0.12);color:var(--o);border:1px solid rgba(255,106,0,0.3);}
-.cc-body{padding:1.3rem;flex:1;display:flex;flex-direction:column;}
-.cc-cat{font-size:0.65rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;}
-.cc-title{font-family:'Orbitron',monospace;font-size:0.88rem;font-weight:700;color:var(--tw);line-height:1.4;margin-bottom:0.6rem;}
-.cc-desc{font-size:0.8rem;color:var(--tm);line-height:1.65;margin-bottom:1rem;flex:1;}
-.cc-meta{display:flex;gap:1rem;flex-wrap:wrap;font-size:0.72rem;color:var(--tm);margin-bottom:1rem;}
-.cc-meta span{display:flex;align-items:center;gap:4px;}
-.cc-meta i{color:var(--c);}
-.cc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--bdr);}
-.cc-price{font-family:'Orbitron',monospace;font-size:1.15rem;font-weight:700;color:var(--tw);}
-.cc-price.free{color:var(--g);}
-.cc-enroll{padding:7px 16px;border-radius:6px;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:transparent;color:var(--c);border:1px solid var(--c);cursor:pointer;transition:all 0.2s;}
-.cc-enroll:hover{background:var(--c);color:var(--bg);}
-
-/* STATS SECTION */
-.sec-stats{padding:4rem 2.5rem;background:var(--bg);}
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;}
-.stat-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2rem;text-align:center;transition:all 0.25s;position:relative;overflow:hidden;}
-.stat-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent 85%,rgba(0,212,255,0.06) 90%,transparent 95%);animation:rotConic 6s linear infinite;pointer-events:none;}
-.stat-card:hover{border-color:var(--c);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,212,255,0.1);}
-@keyframes rotConic{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.stat-ico{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,rgba(0,212,255,0.12),rgba(0,212,255,0.04));border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--c);font-size:1.25rem;margin:0 auto 1rem;}
-.stat-num{font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;color:var(--tw);}
-.stat-num span{color:var(--c);}
-.stat-lbl{font-size:0.75rem;color:var(--tm);margin-top:6px;text-transform:uppercase;letter-spacing:1.5px;}
-
-/* TESTIMONIALS */
-.sec-testi{padding:5rem 2.5rem;background:var(--bg1);}
-.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
-.tcard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:1.8rem;transition:all 0.25s;position:relative;overflow:hidden;}
-.tcard:hover{border-color:var(--bdr2);transform:translateY(-4px);}
-.tcard-accent{position:absolute;top:0;left:0;right:0;height:2px;}
-.ta1{background:linear-gradient(90deg,var(--c),transparent);}
-.ta2{background:linear-gradient(90deg,var(--o),transparent);}
-.ta3{background:linear-gradient(90deg,var(--g),transparent);}
-.t-stars{color:#ffd700;font-size:0.85rem;margin-bottom:1rem;letter-spacing:2px;}
-.t-text{font-size:0.85rem;color:var(--tm);line-height:1.75;margin-bottom:1.3rem;font-style:italic;}
-.t-author{display:flex;align-items:center;gap:12px;}
-.t-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700;color:var(--bg);flex-shrink:0;font-family:'Orbitron',monospace;}
-.t-name{font-size:0.85rem;font-weight:700;color:var(--tw);}
-.t-cert{font-size:0.7rem;color:var(--c);margin-top:2px;}
-
-/* ABOUT PREVIEW */
-.sec-about-prev{padding:5rem 2.5rem;background:var(--bg2);}
-.about-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;align-items:center;}
-.about-img-side{position:relative;}
-.about-frame{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;font-size:6rem;overflow:hidden;position:relative;}
-.about-frame img{width:100%;height:100%;object-fit:cover;}
-.about-overlay{position:absolute;bottom:0;left:0;right:0;padding:1.5rem;background:linear-gradient(transparent,rgba(3,13,26,0.95));}
-.cert-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
-.cert-pill{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--c);padding:3px 9px;border-radius:4px;font-size:0.65rem;font-weight:700;letter-spacing:1px;}
-.about-float{position:absolute;right:-1.5rem;top:2rem;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.2rem;animation:flt 4s ease-in-out infinite;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
-.af-num{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--c);}
-.af-lbl{font-size:0.68rem;color:var(--tm);}
-.about-text h2{font-family:'Orbitron',monospace;font-size:clamp(1.5rem,2vw,2.2rem);font-weight:900;color:var(--tw);margin-bottom:0.5rem;}
-.about-text p{color:var(--tm);line-height:1.8;margin-bottom:1rem;}
-.skill-rows{margin:1.5rem 0;}
-.skill-row{margin-bottom:0.8rem;}
-.sr-head{display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:5px;}
-.sr-name{font-weight:600;color:var(--t);}
-.sr-pct{color:var(--c);font-weight:700;}
-.sr-bg{background:var(--bg4);border-radius:4px;height:5px;overflow:hidden;}
-.sr-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--c),rgba(0,212,255,0.3));transition:width 1.5s cubic-bezier(.4,0,.2,1);}
-
-/* NEWSLETTER */
-.sec-nl{padding:4rem 2.5rem;background:var(--bg);}
-.nl-card{background:linear-gradient(135deg,rgba(0,212,255,0.06) 0%,rgba(8,41,76,0.1) 100%);border:1px solid rgba(0,212,255,0.2);border-radius:var(--r2);padding:3rem;display:flex;align-items:center;justify-content:space-between;gap:3rem;flex-wrap:wrap;position:relative;overflow:hidden;}
-.nl-card::before{content:'';position:absolute;top:-1px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o),var(--c));background-size:200%;animation:borderFlow 4s linear infinite;}
-.nl-text h3{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--tw);margin-bottom:0.5rem;}
-.nl-text p{color:var(--tm);font-size:0.88rem;}
-.nl-form{display:flex;gap:0.8rem;flex:1;min-width:260px;}
-.nl-input{flex:1;background:rgba(0,0,0,0.3);border:1px solid var(--bdr);color:var(--t);padding:12px 16px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
-.nl-input:focus{border-color:var(--c);}
-.nl-input::placeholder{color:var(--tm);}
-
-/* =============================================
-   COURSES PAGE
-   ============================================= */
-.pg-header{padding:7.5rem 2.5rem 3rem;background:var(--bg1);position:relative;overflow:hidden;border-bottom:1px solid var(--bdr);}
-.pg-header-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:50px 50px;}
-.pg-header-glow{position:absolute;top:-40%;right:10%;width:50%;height:150%;background:radial-gradient(ellipse,rgba(0,150,200,0.08) 0%,transparent 60%);}
-.pg-header-inner{max-width:1300px;margin:0 auto;position:relative;z-index:1;}
-.breadcrumb{font-size:0.75rem;color:var(--tm);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
-.breadcrumb a{color:var(--c);text-decoration:none;}
-.breadcrumb i{font-size:0.55rem;color:var(--tm);}
-.pg-title{font-family:'Orbitron',monospace;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:900;color:var(--tw);margin-bottom:0.6rem;}
-.pg-subtitle{font-size:0.95rem;color:var(--tm);max-width:550px;line-height:1.7;}
-.filter-toolbar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:1rem 2.5rem;position:sticky;top:70px;z-index:100;backdrop-filter:blur(20px);}
-.filter-toolbar-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;}
-.f-btn{padding:6px 15px;border-radius:6px;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--bdr);color:var(--tm);background:transparent;cursor:pointer;transition:all 0.2s;}
-.f-btn:hover{border-color:var(--c);color:var(--c);}
-.f-btn.on{background:rgba(0,212,255,0.1);border-color:var(--c);color:var(--c);}
-.f-sep{width:1px;height:22px;background:var(--bdr);flex-shrink:0;}
-.f-search{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.3);border:1px solid var(--bdr);border-radius:8px;padding:7px 14px;min-width:220px;transition:border-color 0.2s;}
-.f-search:focus-within{border-color:var(--c);}
-.f-search i{color:var(--tm);font-size:0.8rem;}
-.f-search input{background:none;border:none;color:var(--t);font-family:'Exo 2',sans-serif;font-size:0.85rem;outline:none;width:100%;}
-.f-search input::placeholder{color:var(--tm);}
-.f-count{font-size:0.75rem;color:var(--tm);margin-left:auto;}
-.f-count span{color:var(--c);font-weight:700;}
-
-/* =============================================
-   ABOUT PAGE
-   ============================================= */
-.about-full{padding:5rem 2.5rem;background:var(--bg1);}
-.about-full-grid{display:grid;grid-template-columns:320px 1fr;gap:3.5rem;max-width:1300px;margin:0 auto;}
-.about-sidebar{position:sticky;top:90px;display:flex;flex-direction:column;gap:1rem;}
-.about-photo-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;}
-.apc-img{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;font-size:6rem;background:linear-gradient(180deg,var(--bg3),var(--bg4));position:relative;}
-.apc-img img{width:100%;height:100%;object-fit:cover;}
-.apc-plate{padding:1.2rem;border-top:1px solid var(--bdr);}
-.apc-name{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:var(--tw);margin-bottom:2px;}
-.apc-role{font-size:0.75rem;color:var(--c);font-weight:600;}
-.cert-list-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem;}
-.clc-title{font-family:'Orbitron',monospace;font-size:0.65rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.8rem;}
-.clc-item{display:flex;align-items:center;gap:8px;padding:0.55rem 0;border-bottom:1px solid var(--bdr);}
-.clc-item:last-child{border-bottom:none;}
-.clc-ico{width:28px;height:28px;border-radius:7px;background:rgba(0,212,255,0.1);display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;}
-.clc-name{font-size:0.82rem;font-weight:700;color:var(--tw);}
-.clc-code{font-size:0.65rem;color:var(--tm);}
-.clc-badge{margin-left:auto;font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(0,255,136,0.1);color:var(--g);border:1px solid rgba(0,255,136,0.2);letter-spacing:1px;text-transform:uppercase;}
-.about-main{}
-.abt-section{margin-bottom:2.5rem;}
-.abt-sec-title{font-family:'Orbitron',monospace;font-size:0.9rem;font-weight:700;color:var(--tw);margin-bottom:1rem;display:flex;align-items:center;gap:12px;letter-spacing:1px;}
-.abt-sec-title::after{content:'';flex:1;height:1px;background:var(--bdr);}
-.bio-text{color:var(--tm);line-height:1.85;font-size:0.9rem;margin-bottom:1rem;}
-.achieve-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1.5rem 0;}
-.ach-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem;text-align:center;transition:all 0.2s;}
-.ach-card:hover{border-color:var(--c);transform:translateY(-3px);}
-.ach-num{font-family:'Orbitron',monospace;font-size:1.7rem;font-weight:900;color:var(--c);}
-.ach-lbl{font-size:0.7rem;color:var(--tm);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
-.timeline{padding-left:1.5rem;border-left:1px solid var(--bdr);}
-.tl-item{position:relative;margin-bottom:1.5rem;padding-left:1rem;}
-.tl-item::before{content:'';position:absolute;left:-1.5rem;top:6px;width:9px;height:9px;border-radius:50%;background:var(--c);border:2px solid var(--bg);box-shadow:0 0 8px rgba(0,212,255,0.6);}
-.tl-yr{font-size:0.68rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
-.tl-title{font-size:0.9rem;font-weight:700;color:var(--tw);margin-bottom:3px;}
-.tl-desc{font-size:0.78rem;color:var(--tm);}
-
-/* =============================================
-   CONTACT PAGE
-   ============================================= */
-.contact-layout{display:grid;grid-template-columns:1fr 1.4fr;gap:3.5rem;max-width:1300px;margin:0 auto;padding:5rem 2.5rem;}
-.contact-left{display:flex;flex-direction:column;gap:1rem;}
-.ci-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.1rem;transition:all 0.2s;}
-.ci-card:hover{border-color:var(--bdr2);}
-.ci-row{display:flex;align-items:flex-start;gap:10px;}
-.ci-ico{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,212,255,0.04));border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--c);font-size:0.95rem;flex-shrink:0;}
-.ci-lbl{font-size:0.65rem;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
-.ci-val{font-size:0.88rem;color:var(--t);}
-.social-links{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.5rem;}
-.soc-btn{width:36px;height:36px;border-radius:8px;background:var(--bg3);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--tm);text-decoration:none;transition:all 0.2s;font-size:0.9rem;}
-.soc-btn:hover{border-color:var(--c);color:var(--c);transform:translateY(-2px);box-shadow:0 4px 15px rgba(0,212,255,0.2);}
-.oh-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.1rem;}
-.oh-title{font-size:0.72rem;font-weight:700;color:var(--tw);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem;}
-.oh-row{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--tm);padding:4px 0;}
-.oh-row span:last-child{color:var(--g);}
-.contact-form-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2.2rem;position:relative;overflow:hidden;}
-.contact-form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o));}
-.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.fgrp{margin-bottom:1.1rem;}
-.flbl{display:block;font-size:0.68rem;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
-.finp{width:100%;background:rgba(0,0,0,0.3);border:1px solid var(--bdr);color:var(--t);padding:10px 14px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.88rem;outline:none;transition:all 0.2s;}
-.finp:focus{border-color:var(--c);background:rgba(0,212,255,0.03);box-shadow:0 0 0 2px rgba(0,212,255,0.08);}
-.finp::placeholder{color:var(--tm);}
-textarea.finp{min-height:120px;resize:vertical;}
-select.finp option{background:var(--bg3);}
-.form-msg{display:none;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);color:var(--g);padding:10px 14px;border-radius:8px;font-size:0.82rem;margin-bottom:1rem;}
-.form-msg.show{display:block;}
-.form-err{display:none;background:rgba(255,60,60,0.08);border:1px solid rgba(255,60,60,0.2);color:#ff6060;padding:8px 12px;border-radius:6px;font-size:0.78rem;margin-top:0.4rem;}
-.form-err.show{display:block;}
-
-/* =============================================
-   DASHBOARD
-   ============================================= */
-.dash-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 70px);}
-.dash-sidebar{background:var(--bg2);border-right:1px solid var(--bdr);padding:1.5rem 0.8rem;display:flex;flex-direction:column;position:sticky;top:70px;height:calc(100vh - 70px);overflow-y:auto;}
-.ds-logo-area{padding:0 0.8rem 1rem;border-bottom:1px solid var(--bdr);margin-bottom:1rem;}
-.ds-logo{font-family:'Orbitron',monospace;font-size:0.75rem;font-weight:700;color:var(--tw);letter-spacing:2px;}
-.ds-role{font-size:0.62rem;color:var(--c);margin-top:2px;letter-spacing:2px;text-transform:uppercase;}
-.ds-nav{display:flex;flex-direction:column;gap:0.2rem;flex:1;}
-.ds-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:0.82rem;font-weight:600;color:var(--tm);cursor:pointer;transition:all 0.2s;border:1px solid transparent;}
-.ds-item i{width:16px;text-align:center;font-size:0.85rem;}
-.ds-item:hover{background:rgba(0,212,255,0.05);color:var(--t);}
-.ds-item.act{background:rgba(0,212,255,0.1);color:var(--c);border-color:rgba(0,212,255,0.2);}
-.ds-sep{height:1px;background:var(--bdr);margin:0.6rem 0;}
-.ds-logout{color:var(--tm);}
-.ds-logout:hover{color:var(--o)!important;}
-.dash-main{padding:2.5rem;overflow-y:auto;background:var(--bg1);}
-.dash-panel{display:none;}
-.dash-panel.act{display:block;}
-.dash-toprow{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
-.dash-hello{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--tw);}
-.dash-hello span{color:var(--c);}
-.dash-sub{font-size:0.8rem;color:var(--tm);margin-top:4px;}
-.dash-plan-chip{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:0.6rem 1.2rem;text-align:center;}
-.dpc-lbl{font-size:0.62rem;color:var(--tm);text-transform:uppercase;letter-spacing:1px;}
-.dpc-val{font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;color:var(--c);margin-top:2px;}
-.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
-.dstat{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem;transition:all 0.2s;}
-.dstat:hover{border-color:var(--bdr2);transform:translateY(-2px);}
-.dstat-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;margin-bottom:0.6rem;}
-.ico-c{background:rgba(0,212,255,0.1);color:var(--c);}
-.ico-g{background:rgba(0,255,136,0.1);color:var(--g);}
-.ico-o{background:rgba(255,106,0,0.1);color:var(--o);}
-.ico-p{background:rgba(160,100,255,0.1);color:#a064ff;}
-.dstat-num{font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:900;color:var(--tw);}
-.dstat-lbl{font-size:0.68rem;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
-.dash-sec-title{font-family:'Orbitron',monospace;font-size:0.82rem;font-weight:700;color:var(--tw);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;}
-.enrolled-list{display:flex;flex-direction:column;gap:0.7rem;}
-.enr-item{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;transition:all 0.2s;}
-.enr-item:hover{border-color:var(--bdr2);}
-.enr-thumb{width:42px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
-.enr-name{font-size:0.85rem;font-weight:700;color:var(--tw);}
-.enr-prog-lbl{font-size:0.65rem;color:var(--tm);margin-top:2px;}
-.enr-prog-wrap{flex:1;display:flex;align-items:center;gap:8px;}
-.enr-bar{flex:1;height:4px;background:var(--bg4);border-radius:4px;overflow:hidden;}
-.enr-fill{height:100%;background:linear-gradient(90deg,var(--c),rgba(0,212,255,0.3));border-radius:4px;}
-.enr-pct{font-size:0.75rem;font-weight:700;color:var(--c);white-space:nowrap;font-family:'Orbitron',monospace;}
-.empty-state{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:3rem;text-align:center;}
-.es-ico{font-size:2.8rem;margin-bottom:1rem;}
-.es-title{font-family:'Orbitron',monospace;font-size:0.9rem;font-weight:700;color:var(--tw);margin-bottom:0.4rem;}
-.es-desc{font-size:0.82rem;color:var(--tm);margin-bottom:1.5rem;}
-.upgrade-banner{background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(255,106,0,0.04));border:1px solid rgba(0,212,255,0.18);border-radius:var(--r);padding:1.4rem 1.8rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;}
-.ub-text .ub-t{font-family:'Orbitron',monospace;font-size:0.9rem;font-weight:700;color:var(--tw);}
-.ub-text .ub-d{font-size:0.78rem;color:var(--tm);margin-top:3px;}
-.profile-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2rem;max-width:600px;}
-
-/* =============================================
-   AUTH MODAL
-   ============================================= */
-.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;align-items:center;justify-content:center;padding:1rem;}
-.modal-ov.open{display:flex;animation:fadeIn 0.2s ease;}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.modal-box{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r2);padding:2.5rem;width:100%;max-width:460px;position:relative;max-height:90vh;overflow-y:auto;animation:mIn 0.3s cubic-bezier(.4,0,.2,1);}
-.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o));border-radius:var(--r2) var(--r2) 0 0;}
-@keyframes mIn{from{opacity:0;transform:scale(0.95) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.mclose{position:absolute;top:1rem;right:1rem;background:var(--bg4);border:1px solid var(--bdr);color:var(--tm);width:30px;height:30px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.2s;}
-.mclose:hover{color:var(--tw);border-color:var(--bdr2);}
-.m-title{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--tw);margin-bottom:0.3rem;}
-.m-sub{font-size:0.82rem;color:var(--tm);margin-bottom:1.8rem;}
-.m-tabs{display:flex;background:var(--bg3);border-radius:8px;padding:3px;gap:3px;margin-bottom:1.8rem;}
-.m-tab{flex:1;padding:8px;text-align:center;font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tm);border-radius:6px;cursor:pointer;transition:all 0.2s;border:none;background:none;}
-.m-tab.on{background:var(--c);color:var(--bg);}
-.m-panel{display:none;}
-.m-panel.on{display:block;}
-.tier-row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1.3rem;}
-.tier-opt{border:1px solid var(--bdr);border-radius:var(--r);padding:1rem;cursor:pointer;transition:all 0.2s;background:var(--bg3);position:relative;}
-.tier-opt:hover{border-color:var(--c);}
-.tier-opt.on{border-color:var(--c);background:rgba(0,212,255,0.05);}
-.tier-opt.on::after{content:'✓';position:absolute;top:7px;right:10px;color:var(--c);font-size:0.75rem;font-weight:700;}
-.tier-name{font-family:'Orbitron',monospace;font-size:0.82rem;font-weight:700;color:var(--tw);}
-.tier-price{font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--c);margin:4px 0;}
-.tier-feat{font-size:0.7rem;color:var(--tm);line-height:1.5;}
-.forgot{float:right;font-size:0.75rem;color:var(--c);text-decoration:none;}
-.forgot:hover{color:var(--o);}
-
-/* =============================================
-   GLOBAL BUTTONS
-   ============================================= */
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 26px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border:none;text-decoration:none;}
-.btn-c{background:var(--c);color:var(--bg);}
-.btn-c:hover{box-shadow:0 0 25px rgba(0,212,255,0.5);transform:translateY(-1px);}
-.btn-o{background:var(--o);color:var(--tw);}
-.btn-o:hover{box-shadow:0 0 25px rgba(255,106,0,0.4);transform:translateY(-1px);}
-.btn-ghost{background:transparent;color:var(--c);border:1px solid var(--c);}
-.btn-ghost:hover{background:rgba(0,212,255,0.08);}
-.btn-full{width:100%;justify-content:center;}
-.btn-sm{padding:7px 16px;font-size:0.72rem;}
-
-/* TOAST */
-#toast-box{position:fixed;bottom:2rem;right:2rem;z-index:8000;display:flex;flex-direction:column;gap:0.6rem;pointer-events:none;}
-.toast{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:0.9rem 1.3rem;max-width:360px;pointer-events:auto;box-shadow:0 8px 30px rgba(0,0,0,0.5);animation:tIn 0.3s ease;}
-.toast.rm{animation:tOut 0.3s ease forwards;}
-.toast.suc{border-color:rgba(0,255,136,0.35);}
-.toast.err{border-color:rgba(255,60,60,0.35);}
-.toast.inf{border-color:rgba(0,212,255,0.35);}
-.toast i{flex-shrink:0;}
-.toast.suc i{color:var(--g);}
-.toast.err i{color:#ff6060;}
-.toast.inf i{color:var(--c);}
-.toast span{font-size:0.83rem;color:var(--t);}
-@keyframes tIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-@keyframes tOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(20px)}}
-
-/* COURSE MODAL */
-#course-modal .modal-box{max-width:700px;}
-.cdm-header{display:flex;gap:1.2rem;margin-bottom:1.5rem;align-items:flex-start;}
-.cdm-thumb{width:80px;height:80px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;}
-.cdm-meta{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:1.2rem;}
-.cdm-mi{display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--tm);}
-.cdm-mi i{color:var(--c);}
-.cdm-mi strong{color:var(--t);}
-.curr-wrap{margin-bottom:1.2rem;}
-.curr-title-txt{font-family:'Orbitron',monospace;font-size:0.78rem;font-weight:700;color:var(--tw);letter-spacing:1px;margin-bottom:0.7rem;text-transform:uppercase;}
-.curr-list{display:flex;flex-direction:column;gap:5px;}
-.curr-li{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--tm);padding:5px 8px;border-radius:6px;transition:background 0.15s;}
-.curr-li:hover{background:var(--bg4);color:var(--t);}
-.curr-num{width:20px;height:20px;border-radius:50%;background:rgba(0,212,255,0.12);color:var(--c);font-size:0.62rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Orbitron',monospace;}
-.enroll-foot{display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid var(--bdr);flex-wrap:wrap;gap:1rem;}
-.ef-price{font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:900;color:var(--tw);}
-.ef-price.free{color:var(--g);}
-
-/* FOOTER */
-footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5rem 2rem;}
-.footer-inner{max-width:1300px;margin:0 auto;}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem;}
-.f-brand{font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--tw);margin-bottom:0.6rem;}
-.f-brand span{color:var(--c);}
-.f-desc{font-size:0.78rem;color:var(--tm);line-height:1.7;margin-bottom:1rem;}
-.f-col-title{font-family:'Orbitron',monospace;font-size:0.62rem;font-weight:700;color:var(--tw);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;}
-.f-links{display:flex;flex-direction:column;gap:0.5rem;}
-.f-links a{font-size:0.78rem;color:var(--tm);text-decoration:none;transition:color 0.2s;}
-.f-links a:hover{color:var(--c);}
-.footer-bot{display:flex;align-items:center;justify-content:space-between;padding-top:1.5rem;border-top:1px solid var(--bdr);font-size:0.72rem;color:var(--tm);flex-wrap:wrap;gap:0.8rem;}
-.footer-bot a{color:var(--tm);text-decoration:none;}
-.footer-bot a:hover{color:var(--c);}
-
-/* ANIMATIONS */
-.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease;}
-.reveal.vis{opacity:1;transform:translateY(0);}
-.d1{transition-delay:0.1s;}
-.d2{transition-delay:0.2s;}
-.d3{transition-delay:0.3s;}
-.d4{transition-delay:0.4s;}
-.d5{transition-delay:0.5s;}
-
-/* RESPONSIVE */
-@media(max-width:1100px){
-  .hero-inner{grid-template-columns:1fr;gap:2rem;}
-  .hero-right{display:none;}
-  .feat-row-inner{grid-template-columns:1fr 1fr;}
-  .stats-grid{grid-template-columns:1fr 1fr;}
-  .testi-grid{grid-template-columns:1fr 1fr;}
-  .about-grid{grid-template-columns:1fr;}
-  .about-img-side{max-width:380px;}
-  .about-full-grid{grid-template-columns:1fr;}
-  .about-sidebar{position:static;}
-  .contact-layout{grid-template-columns:1fr;padding:3rem 1.5rem;}
-  .dash-layout{grid-template-columns:1fr;}
-  .dash-sidebar{display:none;}
-  .footer-grid{grid-template-columns:1fr 1fr;}
-  .dash-stats{grid-template-columns:1fr 1fr;}
-}
-@media(max-width:768px){
-  #nav .nav-links,.nav-right{display:none;}
-  .ham{display:flex;}
-  .hero{padding:0 1.5rem;}
-  .feat-row{padding:2rem 1.5rem;}
-  .feat-row-inner{grid-template-columns:1fr;}
-  .testi-grid{grid-template-columns:1fr;}
-  .stats-grid{grid-template-columns:1fr 1fr;}
-  .courses-grid{grid-template-columns:1fr;}
-  .tier-row{grid-template-columns:1fr;}
-  .form-row2{grid-template-columns:1fr;}
-  .achieve-cards{grid-template-columns:1fr 1fr;}
-  .footer-grid{grid-template-columns:1fr;}
-}
-
-/* ══ LIGHT MODE ══════════════════════════════════════ */
-[data-theme="light"]{
-  --bg:#f0f4fa;
-  --bg1:#e8eef8;
-  --bg2:#e0e8f4;
-  --bg3:#d8e2f0;
-  --bg4:#ccd8ec;
-  --bg5:#beccde;
-  --card:#ffffff;
-  --t:#1a2840;
-  --tm:#4a6080;
-  --tw:#0a1828;
-  --bdr:rgba(0,100,180,0.18);
-  --bdr2:rgba(0,100,180,0.38);
-  --bdr3:rgba(0,100,180,0.58);
-  --c:#0077b6;
-  --c2:#005f9e;
-  --c3:#004080;
-  --o:#e06000;
-  --o2:#c05000;
-  --g:#007a40;
-}
-[data-theme="light"] body{background:#f0f4fa;color:#1a2840;}
-[data-theme="light"] #circuit-canvas{opacity:.06;}
-[data-theme="light"] .nav{background:rgba(232,238,248,.96);border-color:rgba(0,100,180,.18);}
-[data-theme="light"] .nav-logo .logo-text{color:#0a1828;}
-[data-theme="light"] .nav-logo .logo-sub{color:#4a6080;}
-[data-theme="light"] .nav-links a{color:#4a6080;}
-[data-theme="light"] .nav-links a:hover,.nav-links a.act{color:var(--c);}
-[data-theme="light"] .nbtn{border-color:var(--c);color:var(--c);}
-[data-theme="light"] .nbtn.solid{background:var(--c);color:#fff;}
-[data-theme="light"] .hero{background:var(--bg1);}
-[data-theme="light"] .hero-mesh{opacity:.04;}
-[data-theme="light"] .hero-h1,.hero-h1 *{color:#0a1828;}
-[data-theme="light"] .course-card,.category-card,.feat-card,.cert-card{background:#fff;border-color:rgba(0,100,180,.15);}
-[data-theme="light"] .course-card:hover{border-color:var(--c);box-shadow:0 12px 40px rgba(0,100,180,.15);}
-[data-theme="light"] .section-eyebrow{color:var(--c);}
-[data-theme="light"] .section-title{color:#0a1828;}
-[data-theme="light"] .cc-title,.cc-desc{color:#1a2840;}
-[data-theme="light"] .cc-price{color:var(--c);}
-[data-theme="light"] .cc-meta span{color:#4a6080;}
-[data-theme="light"] .pg-header{background:linear-gradient(135deg,#dce8f8,#e8f0fc);}
-[data-theme="light"] .pg-title{color:#0a1828;}
-[data-theme="light"] .pg-subtitle{color:#4a6080;}
-[data-theme="light"] .about-photo-card,.cert-list-card,.abt-section{background:#fff;border-color:rgba(0,100,180,.15);}
-[data-theme="light"] .apc-name{color:#0a1828;}
-[data-theme="light"] .bio-text{color:#2a3a50;}
-[data-theme="light"] .modal-box{background:#fff;border-color:rgba(0,100,180,.25);}
-[data-theme="light"] .form-field input,.form-field textarea,.form-field select{background:#f0f4fa;border-color:rgba(0,100,180,.2);color:#1a2840;}
-[data-theme="light"] #site-footer{background:#0a1828;border-top-color:rgba(0,100,180,.2);}
-[data-theme="light"] .hstat-num{color:var(--c);}
-[data-theme="light"] .hero-stats-bar{border-color:rgba(0,100,180,.2);}
-[data-theme="light"] .trust-item{color:#4a6080;}
-[data-theme="light"] .feat-title,.feat-num{color:var(--c);}
-[data-theme="light"] .cert-card .cert-label{color:var(--c);}
-[data-theme="light"] .search-bar input{background:#fff;border-color:rgba(0,100,180,.2);color:#1a2840;}
-[data-theme="light"] .filter-btn{background:#fff;border-color:rgba(0,100,180,.15);color:#4a6080;}
-[data-theme="light"] .filter-btn.active,.filter-btn:hover{background:var(--c);color:#fff;}
-[data-theme="light"] .dash-card{background:#fff;border-color:rgba(0,100,180,.15);}
-[data-theme="light"] #loader{background:#f0f4fa;}
-
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ahmed Hussein — Cisco Certified Instructor. Expert CCNA, CCNP & Network Security training. 1,200+ students certified. Enroll today.">
+  <meta name="keywords" content="Cisco, CCNA, CCNP, Network Security, Networking Course, Bahrain, IT Training, Certification">
+  <meta name="author" content="Ahmed Hussein">
+  <meta property="og:title" content="Ahmed Hussein | Cisco Certified Instructor">
+  <meta property="og:description" content="Transform your IT career with expert Cisco certification training. CCNA, CCNP, Security, and more.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ahmedhussein.org">
+  <link rel="canonical" href="https://ahmedhussein.org">
+  <title>Ahmed Hussein | Cisco Certified Instructor</title>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/pages.css">
 </head>
 <body>
 
-<!-- CUSTOM CURSOR -->
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-
-<!-- CIRCUIT CANVAS -->
-<canvas id="circuit-canvas"></canvas>
-
-<!-- LOADER -->
-<div id="loader">
-  <div class="loader-hex">
-    <svg viewBox="0 0 80 80"><polygon points="40,4 74,22 74,58 40,76 6,58 6,22" fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="200" stroke-dashoffset="200" style="animation:drawHex 1.4s ease forwards"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="1.4s" fill="freeze"/></polygon><polygon points="40,14 66,28 66,52 40,66 14,52 14,28" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="1"/><circle cx="40" cy="40" r="4" fill="#00d4ff" opacity="0.8"/></svg>
-  </div>
-  <div class="loader-title"><span>AHMED</span> HUSSEIN</div>
-  <div class="loader-bar-wrap"><div class="loader-bar-inner"></div></div>
+<!-- ════ PAGE LOADER ════ -->
+<div id="page-loader">
+  <div class="loader-logo"><span>Ahmed</span>Hussein</div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
 </div>
 
-<!-- NAVIGATION -->
-<nav id="nav">
+<!-- ════ CURSOR GLOW ════ -->
+<div class="cursor-glow"></div>
+
+<!-- ════ NAVIGATION ════ -->
+<nav id="navbar">
   <div class="nav-inner">
-    <a href="#" class="nav-logo" onclick="showPage('home');return false;">
-      <svg class="logo-hex" viewBox="0 0 40 40"><polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="#00d4ff" stroke-width="1.5"/><text x="20" y="25" text-anchor="middle" font-family="Orbitron" font-size="9" fill="#00d4ff" font-weight="700">AH</text></svg>
-      <div><div class="logo-text"><span>AHMED</span> HUSSEIN</div><div class="logo-sub">Cisco Certified Instructor</div></div>
+    <a href="#" class="logo" onclick="App.showPage('home'); return false;">
+      <span class="logo-highlight">Ahmed</span>Hussein
+      <span class="logo-chip">Cisco Instructor</span>
     </a>
-    <ul class="nav-links">
-      <li><a href="#" onclick="showPage('home');return false;" data-pg="home" class="act">Home</a></li>
-      <li><a href="#" onclick="showPage('courses');return false;" data-pg="courses">Courses</a></li>
-      <li><a href="#" onclick="showPage('about');return false;" data-pg="about">About</a></li>
-      <li><a href="#" onclick="showPage('contact');return false;" data-pg="contact">Contact</a></li>
-      <li><a href="#" id="nav-dash-lnk" style="display:none" onclick="showPage('dashboard');return false;" data-pg="dashboard">Dashboard</a></li>
-    </ul>
-    <div class="nav-right">
-      <button class="nbtn" id="nav-login-btn" onclick="openModal('login')">Sign In</button>
-      <button class="nbtn solid" id="nav-reg-btn" onclick="openModal('register')">Register</button>
-      <button class="nbtn" id="nav-logout-btn" style="display:none" onclick="doLogout()"><i class="fas fa-power-off"></i> Logout</button>
+    <div class="nav-links">
+      <a class="nav-link active" data-page="home" href="#" onclick="App.showPage('home'); return false;">Home</a>
+      <a class="nav-link" data-page="courses" href="#" onclick="App.showPage('courses'); return false;">Courses</a>
+      <a class="nav-link" data-page="about" href="#" onclick="App.showPage('about'); return false;">About</a>
+      <a class="nav-link" data-page="contact" href="#" onclick="App.showPage('contact'); return false;">Contact</a>
+      <a class="nav-link" data-page="dashboard" id="nav-dashboard-link" href="#" style="display:none" onclick="App.showPage('dashboard'); return false;">Dashboard</a>
     </div>
-    <button class="ham" id="ham" onclick="toggleMob()"><span></span><span></span><span></span></button>
+    <div class="nav-actions">
+      <button class="btn-nav-login" id="nav-signin" onclick="App.openModal('login')">Sign In</button>
+      <button class="btn-nav-cta" id="nav-register" onclick="App.openModal('register')">Register Free</button>
+      <button class="btn-nav-login" id="nav-logout-btn" style="display:none" onclick="App.logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+    <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-
-    <!-- ── ADDED: Theme & Language Controls ── -->
-    <div class="nav-controls-added" style="display:flex;align-items:center;gap:.4rem;margin-inline-start:.5rem;">
-      <button id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle theme" style="
-        width:34px;height:34px;border-radius:50%;
-        border:1px solid var(--bdr);background:var(--card);
-        color:var(--c);font-size:.85rem;cursor:pointer;
-        display:flex;align-items:center;justify-content:center;
-        transition:all .2s;">🌙</button>
-      
-    </div>
-
 </nav>
-<div class="mob-nav" id="mob-nav">
-  <a href="#" onclick="showPage('home');toggleMob();return false;">Home</a>
-  <a href="#" onclick="showPage('courses');toggleMob();return false;">Courses</a>
-  <a href="#" onclick="showPage('about');toggleMob();return false;">About</a>
-  <a href="#" onclick="showPage('contact');toggleMob();return false;">Contact</a>
-  <a href="#" onclick="openModal('login');toggleMob();return false;">Sign In</a>
-  <a href="#" onclick="openModal('register');toggleMob();return false;">Register Free</a>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#" onclick="App.showPage('home');document.getElementById('mobile-menu').classList.remove('open')">Home</a>
+  <a href="#" onclick="App.showPage('courses');document.getElementById('mobile-menu').classList.remove('open')">Courses</a>
+  <a href="#" onclick="App.showPage('about');document.getElementById('mobile-menu').classList.remove('open')">About</a>
+  <a href="#" onclick="App.showPage('contact');document.getElementById('mobile-menu').classList.remove('open')">Contact</a>
+  <a href="#" id="mobile-dashboard-link" style="display:none" onclick="App.showPage('dashboard');document.getElementById('mobile-menu').classList.remove('open')">Dashboard</a>
+  <a href="#" onclick="App.openModal('login');document.getElementById('mobile-menu').classList.remove('open')">Sign In</a>
+  <a href="#" onclick="App.openModal('register');document.getElementById('mobile-menu').classList.remove('open')">Register Free</a>
 </div>
 
-<!-- ═══════════════════ HOME PAGE ═══════════════════ -->
-<div id="page-home" class="page show">
+<!-- ═══════════════════════════════════════════
+     HOME PAGE
+     ═══════════════════════════════════════════ -->
+<div id="page-home" class="page-section">
+
+  <!-- ── HERO ── -->
   <section class="hero">
-    <div class="hero-mesh"></div>
-    <div class="hero-scanline"></div>
+    <div class="hero-bg">
+      <div class="hero-grid-lines"></div>
+      <div class="hero-radial"></div>
+      <div class="hero-radial-2"></div>
+      <div class="hero-particles"></div>
+    </div>
     <div class="hero-inner">
-      <div class="hero-left">
-        <div class="hero-eyebrow reveal"><span class="eyebrow-line"></span><span class="eyebrow-text">Cisco Certified Instructor · Bahrain</span></div>
-        <h1 class="hero-h1 reveal d1">
-          <div>MASTER THE</div>
-          <div class="line2">NETWORK.</div>
-          <div class="line3">OWN YOUR CAREER.</div>
+      <!-- LEFT: Content -->
+      <div class="hero-content">
+        <div class="hero-badge fade-up">
+          <span class="hero-badge-dot"></span>
+          Cisco Certified Instructor · Bahrain
+        </div>
+        <h1 class="hero-title fade-up stagger-1">
+          Transform Your IT Career with<br>
+          <span class="highlight">Cisco Certification</span> Training
         </h1>
-        <p class="hero-sub reveal d2">Expert-led <strong>CCNA, CCNP, and Network Security</strong> courses built for real-world engineering. Hands-on labs, live mentorship, and a proven 96% exam pass rate.</p>
-        <div class="hero-btns reveal d3">
-          <button class="hbtn hbtn-primary" onclick="showPage('courses')"><i class="fas fa-satellite-dish"></i> Explore Courses</button>
-          <button class="hbtn hbtn-outline" onclick="openModal('register')"><i class="fas fa-user-astronaut"></i> Register Free</button>
+        <p class="hero-subtitle fade-up stagger-2">
+          Expert-led CCNA, CCNP, and Network Security courses with hands-on labs, real-world scenarios, and a 96% pass rate. Start your journey to certification today.
+        </p>
+        <div class="hero-actions fade-up stagger-3">
+          <button class="btn btn-primary btn-lg" onclick="App.showPage('courses')">
+            <i class="fas fa-graduation-cap"></i> Browse Courses
+          </button>
+          <button class="btn btn-secondary btn-lg" onclick="App.openModal('register')">
+            <i class="fas fa-user-plus"></i> Register Free
+          </button>
         </div>
-        <div class="hero-trust reveal d4">
-          <span class="trust-item"><i class="fas fa-check-circle"></i> Packet Tracer Labs</span>
-          <span class="trust-item"><i class="fas fa-check-circle"></i> Cisco NetAcad Aligned</span>
-          <span class="trust-item"><i class="fas fa-check-circle"></i> Certificate on Completion</span>
+        <div class="hero-trust fade-up stagger-4">
+          <span class="hero-trust-item"><i class="fas fa-check-circle"></i> No prerequisites for CCNA</span>
+          <span class="hero-divider-v"></span>
+          <span class="hero-trust-item"><i class="fas fa-check-circle"></i> Hands-on Packet Tracer labs</span>
+          <span class="hero-divider-v"></span>
+          <span class="hero-trust-item"><i class="fas fa-check-circle"></i> Certificate of completion</span>
         </div>
-        <div class="hero-stats-bar reveal d5">
-          <div class="hstat"><div class="hstat-num" data-count="1200" data-sfx="+">0+</div><div class="hstat-label">Students Trained</div></div>
-          <div class="hstat"><div class="hstat-num" data-count="96" data-sfx="%">0%</div><div class="hstat-label">Pass Rate</div></div>
-          <div class="hstat"><div class="hstat-num" data-count="10" data-sfx="+">0+</div><div class="hstat-label">Years Experience</div></div>
+        <div class="hero-stats fade-up stagger-5">
+          <div>
+            <div class="hero-stat-num"><span data-count="1200" data-suffix="+">0+</span></div>
+            <div class="hero-stat-label">Students Trained</div>
+          </div>
+          <div>
+            <div class="hero-stat-num"><span data-count="96" data-suffix="%">0%</span></div>
+            <div class="hero-stat-label">Exam Pass Rate</div>
+          </div>
+          <div>
+            <div class="hero-stat-num"><span data-count="10" data-suffix="+">0+</span></div>
+            <div class="hero-stat-label">Years Experience</div>
+          </div>
         </div>
       </div>
-      <div class="hero-right reveal d2">
-        <div class="floating-badge fb1"><div class="fb-icon fbi-c"><i class="fas fa-trophy"></i></div><div><div class="fb-title">96% Pass Rate</div><div class="fb-sub">First attempt</div></div></div>
-        <div class="floating-badge fb2"><div class="fb-icon fbi-o"><i class="fas fa-star"></i></div><div><div class="fb-title">4.9 Rating</div><div class="fb-sub">500+ reviews</div></div></div>
-        <div class="hero-device">
-          <div class="device-header">
-            <div class="dh-title">CERT TRACKS</div>
-            <div class="dh-dots"><div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div></div>
+
+      <!-- RIGHT: Visual Card -->
+      <div class="hero-visual fade-right">
+        <!-- Floating badges -->
+        <div class="float-card" style="top:-1rem;right:-1rem">
+          <div class="float-card-icon"><i class="fas fa-trophy"></i></div>
+          <div><div class="fc-title">96% Pass Rate</div><div class="fc-sub">Exam success guarantee</div></div>
+        </div>
+        <div class="float-card float-card-2" style="bottom:1rem;left:-2rem">
+          <div class="float-card-icon" style="background:rgba(255,107,53,0.15);color:var(--accent)"><i class="fas fa-star"></i></div>
+          <div><div class="fc-title">4.9★ Rating</div><div class="fc-sub">From 500+ students</div></div>
+        </div>
+        <div class="hero-card-main">
+          <div class="hero-card-header">
+            <div class="hch-title">Certification Tracks</div>
+            <div class="hch-live"><div class="live-dot"></div> Now Enrolling</div>
           </div>
-          <div class="device-body">
-            <div class="cert-tiles">
-              <div class="cert-tile" onclick="showPage('courses')"><div class="ct-icon">🌐</div><div class="ct-name">CCNA</div><div class="ct-code">EXAM 200-301</div></div>
-              <div class="cert-tile" onclick="showPage('courses')"><div class="ct-icon">🔷</div><div class="ct-name">CCNP</div><div class="ct-code">ENCOR 350-401</div></div>
-              <div class="cert-tile" onclick="showPage('courses')"><div class="ct-icon">🔐</div><div class="ct-name">SECURITY</div><div class="ct-code">SCOR 350-701</div></div>
-              <div class="cert-tile" onclick="showPage('courses')"><div class="ct-icon">⚙️</div><div class="ct-name">AUTOMATION</div><div class="ct-code">SD-WAN + PYTHON</div></div>
+          <div class="cert-grid-visual">
+            <div class="cert-cell" onclick="App.showPage('courses')">
+              <div class="cert-cell-icon">🌐</div>
+              <div class="cert-cell-name">CCNA</div>
+              <div class="cert-cell-code">Exam 200-301</div>
             </div>
-            <div class="device-instructor">
-              <div class="di-avatar">AH</div>
-              <div><div class="di-name">AHMED HUSSEIN</div><div class="di-role">Cisco Certified Professional</div></div>
-              <div class="di-live"><div class="live-dot"></div> LIVE</div>
+            <div class="cert-cell" onclick="App.showPage('courses')">
+              <div class="cert-cell-icon">🔷</div>
+              <div class="cert-cell-name">CCNP</div>
+              <div class="cert-cell-code">ENCOR 350-401</div>
+            </div>
+            <div class="cert-cell" onclick="App.showPage('courses')">
+              <div class="cert-cell-icon">🔐</div>
+              <div class="cert-cell-name">Security</div>
+              <div class="cert-cell-code">SCOR 350-701</div>
+            </div>
+            <div class="cert-cell" onclick="App.showPage('courses')">
+              <div class="cert-cell-icon">⚙️</div>
+              <div class="cert-cell-name">Automation</div>
+              <div class="cert-cell-code">SD-WAN & Python</div>
+            </div>
+          </div>
+          <div class="hero-instructor-strip">
+            <div class="inst-avatar-hero">AH</div>
+            <div>
+              <div class="inst-info-name">Ahmed Hussein</div>
+              <div class="inst-info-role">Cisco Certified Professional</div>
+            </div>
+            <div class="rating-stars">
+              <span class="star">★</span><span class="star">★</span><span class="star">★</span>
+              <span class="star">★</span><span class="star">★</span>
             </div>
           </div>
         </div>
@@ -756,616 +182,678 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
     </div>
   </section>
 
-  <div class="feat-row">
-    <div class="feat-row-inner">
-      <div class="feat-item reveal"><div class="feat-icon-wrap"><i class="fas fa-laptop-code"></i></div><div><div class="feat-title">50+ Hands-On Labs</div><div class="feat-desc">Real Cisco Packet Tracer exercises covering every exam domain</div></div></div>
-      <div class="feat-item reveal d2"><div class="feat-icon-wrap"><i class="fas fa-certificate"></i></div><div><div class="feat-title">Official Cisco Curriculum</div><div class="feat-desc">NetAcad-aligned content matching the current exam blueprints</div></div></div>
-      <div class="feat-item reveal d3"><div class="feat-icon-wrap"><i class="fas fa-headset"></i></div><div><div class="feat-title">Live Mentorship</div><div class="feat-desc">Direct Q&A access with the instructor throughout your course</div></div></div>
-      <div class="feat-item reveal d4"><div class="feat-icon-wrap"><i class="fas fa-medal"></i></div><div><div class="feat-title">96% Pass Rate</div><div class="feat-desc">Proven track record across CCNA, CCNP, and Security exams</div></div></div>
+  <!-- ── FEATURES STRIP ── -->
+  <div class="features-strip">
+    <div class="features-strip-inner">
+      <div class="feature-item fade-up">
+        <div class="feature-icon"><i class="fas fa-laptop-code"></i></div>
+        <div><div class="feature-title">Hands-On Labs</div><div class="feature-desc">50+ Packet Tracer exercises and real-device simulations</div></div>
+      </div>
+      <div class="feature-item fade-up stagger-2">
+        <div class="feature-icon"><i class="fas fa-certificate"></i></div>
+        <div><div class="feature-title">Official Curriculum</div><div class="feature-desc">Aligned with Cisco NetAcad and official exam blueprints</div></div>
+      </div>
+      <div class="feature-item fade-up stagger-3">
+        <div class="feature-icon"><i class="fas fa-headset"></i></div>
+        <div><div class="feature-title">Direct Mentorship</div><div class="feature-desc">One-on-one support and Q&A sessions with the instructor</div></div>
+      </div>
+      <div class="feature-item fade-up stagger-4">
+        <div class="feature-icon"><i class="fas fa-medal"></i></div>
+        <div><div class="feature-title">Proven Results</div><div class="feature-desc">96% first-attempt pass rate across all certification tracks</div></div>
+      </div>
     </div>
   </div>
 
-  <section class="sec-courses">
-    <div class="sec-wrap">
-      <div class="sec-hdr-row">
-        <div class="reveal"><div class="sec-eyebrow"><i class="fas fa-signal"></i> Featured Courses</div><h2 class="sec-h2">Start Your <span class="accent">Certification</span> Path</h2></div>
-        <button class="pill-btn reveal" onclick="showPage('courses')">All Courses <i class="fas fa-arrow-right"></i></button>
+  <!-- ── FEATURED COURSES ── -->
+  <section class="section" style="background:var(--bg2)">
+    <div class="section-inner">
+      <div class="section-header-flex">
+        <div class="fade-left">
+          <div class="section-tag">Featured Courses</div>
+          <h2 class="section-title">Start Your <span class="highlight">Certification Journey</span></h2>
+        </div>
+        <button class="btn btn-secondary fade-right" onclick="App.showPage('courses')">
+          View All Courses <i class="fas fa-arrow-right"></i>
+        </button>
       </div>
-      <div class="courses-grid" id="home-courses-grid"></div>
+      <div class="grid-auto" id="featured-courses-grid"></div>
     </div>
   </section>
 
-  <section class="sec-stats">
-    <div class="sec-wrap">
+  <!-- ── STATS ── -->
+  <section class="section section-sm stats-section">
+    <div class="section-inner">
       <div class="stats-grid">
-        <div class="stat-card reveal"><div class="stat-ico"><i class="fas fa-users"></i></div><div class="stat-num" data-count="1200" data-sfx="+">0+</div><div class="stat-lbl">Students Trained</div></div>
-        <div class="stat-card reveal d2"><div class="stat-ico"><i class="fas fa-award"></i></div><div class="stat-num" data-count="96" data-sfx="%">0%</div><div class="stat-lbl">Exam Pass Rate</div></div>
-        <div class="stat-card reveal d3"><div class="stat-ico"><i class="fas fa-book-open"></i></div><div class="stat-num" data-count="6" data-sfx="">0</div><div class="stat-lbl">Active Courses</div></div>
-        <div class="stat-card reveal d4"><div class="stat-ico"><i class="fas fa-clock"></i></div><div class="stat-num" data-count="10" data-sfx="+">0+</div><div class="stat-lbl">Years Experience</div></div>
+        <div class="stat-card fade-up">
+          <div class="stat-icon-wrap"><i class="fas fa-users"></i></div>
+          <div class="stat-number"><span data-count="1200">0</span><span class="suffix">+</span></div>
+          <div class="stat-label">Students Trained Worldwide</div>
+        </div>
+        <div class="stat-card fade-up stagger-2">
+          <div class="stat-icon-wrap"><i class="fas fa-certificate"></i></div>
+          <div class="stat-number"><span data-count="96">0</span><span class="suffix">%</span></div>
+          <div class="stat-label">First-Attempt Pass Rate</div>
+        </div>
+        <div class="stat-card fade-up stagger-3">
+          <div class="stat-icon-wrap"><i class="fas fa-book"></i></div>
+          <div class="stat-number"><span data-count="6">0</span></div>
+          <div class="stat-label">Active Certification Courses</div>
+        </div>
+        <div class="stat-card fade-up stagger-4">
+          <div class="stat-icon-wrap"><i class="fas fa-award"></i></div>
+          <div class="stat-number"><span data-count="10">0</span><span class="suffix">+</span></div>
+          <div class="stat-label">Years of Cisco Expertise</div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="sec-testi">
-    <div class="sec-wrap">
-      <div class="sec-hdr reveal"><div class="sec-eyebrow"><i class="fas fa-comments"></i> Student Success</div><h2 class="sec-h2">What Our <span class="accent">Students</span> Say</h2></div>
-      <div class="testi-grid">
-        <div class="tcard reveal"><div class="tcard-accent ta1"></div><div class="t-stars">★★★★★</div><p class="t-text">"Ahmed's CCNA course is genuinely the best I've encountered. The labs mirror real scenarios and his exam strategy got me 920/1000 on my first attempt!"</p><div class="t-author"><div class="t-av" style="background:linear-gradient(135deg,var(--c),var(--c3))">KA</div><div><div class="t-name">Khalid Al-Rashidi</div><div class="t-cert">CCNA Certified · Saudi Arabia</div></div></div></div>
-        <div class="tcard reveal d2"><div class="tcard-accent ta2"></div><div class="t-stars">★★★★★</div><p class="t-text">"The CCNP Enterprise track is exceptional. I went from junior network engineer to senior within 6 months. The ROI on this course is unbelievable."</p><div class="t-author"><div class="t-av" style="background:linear-gradient(135deg,var(--o),#b03a10)">SM</div><div><div class="t-name">Sara Mohammed</div><div class="t-cert">CCNP Enterprise · Bahrain</div></div></div></div>
-        <div class="tcard reveal d3"><div class="tcard-accent ta3"></div><div class="t-stars">★★★★★</div><p class="t-text">"Best investment in my career. The Security course content on ASA and Firepower is world-class. Landed a security engineer role immediately after certification."</p><div class="t-author"><div class="t-av" style="background:linear-gradient(135deg,var(--g),#047a35)">FH</div><div><div class="t-name">Faris Hassan</div><div class="t-cert">CyberOps + SCOR · UAE</div></div></div></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="sec-about-prev">
-    <div class="sec-wrap">
-      <div class="about-grid">
-        <div class="about-img-side reveal">
-          <div class="about-frame"><span style="font-size:7rem">👨‍💻</span>
-            <div class="about-overlay">
-              <div style="font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:900;color:var(--tw)">Ahmed Hussein</div>
-              <div style="font-size:0.72rem;color:var(--c);margin-top:2px">Cisco Certified Professional</div>
-              <div class="cert-pills"><span class="cert-pill">CCNP</span><span class="cert-pill">CCNA</span><span class="cert-pill">CyberOps</span><span class="cert-pill">NetAcad</span></div>
+  <!-- ── ABOUT PREVIEW ── -->
+  <section class="section">
+    <div class="section-inner">
+      <div class="about-preview-grid">
+        <div class="about-img-wrap fade-left">
+          <div class="about-img-frame">
+            <span style="font-size:7rem">👨‍💻</span>
+            <div class="about-img-badge">
+              <div style="font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--white)">Ahmed Hussein</div>
+              <div style="font-size:0.78rem;color:var(--cisco-blue);margin-top:2px">Cisco Certified Professional</div>
+              <div class="about-cert-chips">
+                <span class="cert-chip">CCNP</span>
+                <span class="cert-chip">CCNA</span>
+                <span class="cert-chip">CyberOps</span>
+                <span class="cert-chip">NetAcad</span>
+              </div>
             </div>
           </div>
-          <div class="about-float"><div class="af-num">4.9★</div><div class="af-lbl">Average Rating</div></div>
+          <div class="about-floating-badge">
+            <div class="float-card-icon" style="width:42px;height:42px;border-radius:10px"><i class="fas fa-star"></i></div>
+            <div><div class="afb-num">4.9★</div><div class="afb-label">Average Rating</div></div>
+          </div>
         </div>
-        <div class="reveal d2">
-          <div class="sec-eyebrow"><i class="fas fa-id-badge"></i> Instructor Profile</div>
-          <h2 class="sec-h2" style="margin-bottom:1rem">A Decade of <span class="accent">Cisco</span> Mastery</h2>
-          <p style="color:var(--tm);line-height:1.8;margin-bottom:1rem;font-size:0.92rem">With 10+ years of enterprise networking experience and Cisco instruction, I've guided 1,200+ students across the Middle East through their certification journeys using hands-on, lab-first teaching methods.</p>
-          <p style="color:var(--tm);line-height:1.8;margin-bottom:2rem;font-size:0.92rem">As a Cisco Networking Academy instructor, every course is aligned with official exam blueprints and enriched with practical scenarios from real enterprise environments.</p>
-          <button class="btn btn-c" onclick="showPage('about')"><i class="fas fa-user-circle"></i> View Full Profile</button>
+        <div class="fade-right">
+          <div class="section-tag">About the Instructor</div>
+          <h2 class="section-title">A Decade of <span class="highlight">Cisco Excellence</span></h2>
+          <div class="divider"></div>
+          <p style="color:var(--muted);line-height:1.8;margin-bottom:1.2rem">
+            With over 10 years of hands-on enterprise networking experience and Cisco instruction, I've guided 1,200+ students across the Middle East and beyond through their certification journeys.
+          </p>
+          <p style="color:var(--muted);line-height:1.8;margin-bottom:2rem">
+            As a Cisco Networking Academy instructor, I bridge theory and real-world application through practical labs, mentorship, and a structured curriculum aligned with Cisco's official exam blueprints.
+          </p>
+          <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2rem">
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.5rem;text-align:center">
+              <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--cisco-blue)">1200+</div>
+              <div style="font-size:0.75rem;color:var(--muted)">Students</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.5rem;text-align:center">
+              <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--cisco-blue)">96%</div>
+              <div style="font-size:0.75rem;color:var(--muted)">Pass Rate</div>
+            </div>
+            <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.5rem;text-align:center">
+              <div style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;color:var(--cisco-blue)">10+</div>
+              <div style="font-size:0.75rem;color:var(--muted)">Years Exp.</div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="App.showPage('about')"><i class="fas fa-user"></i> View Full Profile</button>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="sec-nl">
-    <div class="sec-wrap">
-      <div class="nl-card reveal">
-        <div class="nl-text"><div class="sec-eyebrow" style="margin-bottom:0.4rem"><i class="fas fa-envelope-open-text"></i> Free Resources</div><h3>Get Weekly Networking Tips</h3><p>Join 800+ students receiving free labs, cheat sheets, and Cisco exam tips weekly.</p></div>
-        <div class="nl-form"><input class="nl-input" id="nl-email" type="email" placeholder="your@email.com"><button class="btn btn-o" onclick="doSubscribe()"><i class="fas fa-paper-plane"></i> Subscribe</button></div>
+  <!-- ── TESTIMONIALS ── -->
+  <section class="section" style="background:var(--bg2)">
+    <div class="section-inner">
+      <div class="section-header fade-up">
+        <div class="section-tag">Student Success Stories</div>
+        <h2 class="section-title">What Our <span class="highlight">Students Say</span></h2>
+        <p class="section-desc">Real feedback from students who passed their Cisco certifications.</p>
+      </div>
+      <div class="grid-3">
+        <div class="testi-card fade-up">
+          <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testi-text">"Ahmed's CCNA course is genuinely the best I've taken. The labs mirror real exam scenarios and his exam tips are spot on. Passed on my first attempt with 920/1000!"</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,#049fd9,#08294c)">KA</div>
+            <div><div class="testi-name">Khalid Al-Rashidi</div><div class="testi-cert">CCNA Certified · Saudi Arabia</div></div>
+          </div>
+        </div>
+        <div class="testi-card fade-up stagger-2">
+          <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testi-text">"The CCNP Enterprise track completely transformed my career. I went from junior to senior network engineer within 6 months of completing the course. Worth every penny."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,#ff6b35,#b03a10)">SM</div>
+            <div><div class="testi-name">Sara Mohammed</div><div class="testi-cert">CCNP Enterprise · Bahrain</div></div>
+          </div>
+        </div>
+        <div class="testi-card fade-up stagger-3">
+          <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testi-text">"The Security course is incredibly detailed. Ahmed explains complex topics like ASA policies and Firepower clearly. I landed a security engineer role right after passing SCOR."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,#04d964,#047a35)">FH</div>
+            <div><div class="testi-name">Faris Hassan</div><div class="testi-cert">CyberOps + SCOR · UAE</div></div>
+          </div>
+        </div>
+        <div class="testi-card fade-up stagger-1">
+          <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testi-text">"The Packet Tracer labs are gold. I had zero networking experience and after 3 months I felt completely confident setting up enterprise topologies from scratch."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,#7050dc,#3a2870)">NA</div>
+            <div><div class="testi-name">Noor Al-Ahmad</div><div class="testi-cert">CCNA Certified · Kuwait</div></div>
+          </div>
+        </div>
+        <div class="testi-card fade-up stagger-2">
+          <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="testi-text">"Ahmed responds to every question promptly, even outside class hours. The personal mentorship sets this platform apart from any online course I've tried."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,#049fd9,#025f88)">YM</div>
+            <div><div class="testi-name">Yousef Mansour</div><div class="testi-cert">CCNP & SD-WAN · Qatar</div></div>
+          </div>
+        </div>
+        <div class="testi-card fade-up stagger-3">
+          <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+          <p class="testi-text">"The free CCNA Bootcamp alone is worth signing up. Five full practice exams with detailed explanations. I used it as my final prep and scored well above passing."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:linear-gradient(135deg,#e08020,#7a4010)">RK</div>
+            <div><div class="testi-name">Rania Khalil</div><div class="testi-cert">CCNA Certified · Egypt</div></div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
-</div>
 
-<!-- ═══════════════════ COURSES PAGE ═══════════════════ -->
-<div id="page-courses" class="page">
-  <div class="pg-header">
-    <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
-    <div class="pg-header-inner">
-      <div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a><i class="fas fa-chevron-right"></i>Courses</div>
-      <div class="pg-title">CISCO COURSES</div>
-      <div class="pg-subtitle">From CCNA fundamentals to advanced CCNP and Security. Expert-led, lab-first, and exam-focused.</div>
+  <!-- ── NEWSLETTER ── -->
+  <section class="section newsletter-section">
+    <div class="section-inner">
+      <div class="newsletter-card fade-up">
+        <div class="newsletter-text">
+          <div class="section-tag">Free Resources</div>
+          <h2 class="section-title" style="font-size:1.8rem">Get Weekly Networking Tips</h2>
+          <p style="color:var(--muted);font-size:0.9rem;line-height:1.7;margin-top:0.5rem">Join 800+ students receiving free labs, cheat sheets, exam tips, and Cisco news every week.</p>
+        </div>
+        <div class="newsletter-form">
+          <input type="email" id="newsletter-email" placeholder="your@email.com" class="form-control">
+          <button class="btn btn-primary" onclick="App.subscribe()"><i class="fas fa-paper-plane"></i> Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page-home -->
+
+
+<!-- ═══════════════════════════════════════════
+     COURSES PAGE
+     ═══════════════════════════════════════════ -->
+<div id="page-courses" class="page-section" style="display:none">
+
+  <div class="page-header">
+    <div class="page-header-bg"></div>
+    <div class="page-header-glow"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a href="#" onclick="App.showPage('home')">Home</a><i class="fas fa-chevron-right"></i><span>Courses</span></div>
+      <div class="page-header-title">Cisco Certification Courses</div>
+      <div class="page-header-desc">From CCNA fundamentals to advanced CCNP and Security specializations. Expert-led, hands-on, and exam-focused.</div>
     </div>
   </div>
+
   <div class="filter-toolbar">
     <div class="filter-toolbar-inner">
-      <button class="f-btn on" onclick="filterCourses('all',this)">All</button>
-      <button class="f-btn" onclick="filterCourses('CCNA',this)">CCNA</button>
-      <button class="f-btn" onclick="filterCourses('CCNP',this)">CCNP</button>
-      <button class="f-btn" onclick="filterCourses('Security',this)">Security</button>
-      <button class="f-btn" onclick="filterCourses('Labs',this)">Labs</button>
-      <div class="f-sep"></div>
-      <div class="f-search"><i class="fas fa-search"></i><input id="course-search" type="text" placeholder="Search courses..." oninput="searchCourses()"></div>
-      <div class="f-count" id="results-info"><span>6</span> courses</div>
+      <div class="filter-btns">
+        <button class="filter-btn active" onclick="App.filterCourses('all', this)">All Courses</button>
+        <button class="filter-btn" onclick="App.filterCourses('CCNA', this)">CCNA</button>
+        <button class="filter-btn" onclick="App.filterCourses('CCNP', this)">CCNP</button>
+        <button class="filter-btn" onclick="App.filterCourses('Security', this)">Security</button>
+        <button class="filter-btn" onclick="App.filterCourses('Labs', this)">Labs</button>
+      </div>
+      <div class="filter-separator"></div>
+      <div class="search-input-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="course-search-input" placeholder="Search courses..." oninput="App.searchCourses()">
+      </div>
+      <select class="sort-select" onchange="App.renderAllCourses()">
+        <option>Most Popular</option>
+        <option>Newest</option>
+        <option>Price: Low to High</option>
+      </select>
+      <span class="results-count" id="results-count"><span>6</span> courses found</span>
     </div>
   </div>
-  <section style="padding:3rem 2.5rem;background:var(--bg1)">
-    <div style="max-width:1300px;margin:0 auto">
-      <div class="courses-grid" id="all-courses-grid"></div>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="grid-auto" id="all-courses-grid"></div>
     </div>
   </section>
-</div>
 
-<!-- ═══════════════════ ABOUT PAGE ═══════════════════ -->
-<div id="page-about" class="page">
-  <div class="pg-header">
-    <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
-    <div class="pg-header-inner">
-      <div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a><i class="fas fa-chevron-right"></i>About</div>
-      <div class="pg-title">AHMED HUSSEIN</div>
-      <div class="pg-subtitle">Cisco Certified Professional with 10+ years of enterprise networking experience and a passion for IT education.</div>
+  <!-- CTA Banner -->
+  <section class="section-sm" style="background:var(--bg2);padding-top:0">
+    <div class="section-inner">
+      <div style="background:linear-gradient(135deg,rgba(4,159,217,0.08),rgba(8,41,76,0.15));border:1px solid rgba(4,159,217,0.2);border-radius:var(--radius-xl);padding:3rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap">
+        <div>
+          <h3 style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--white);margin-bottom:0.5rem">Need corporate or group training?</h3>
+          <p style="color:var(--muted);font-size:0.9rem">Custom Cisco training programs for teams of 5 or more, delivered on-site or online.</p>
+        </div>
+        <button class="btn btn-primary" onclick="App.showPage('contact')"><i class="fas fa-envelope"></i> Contact for Group Pricing</button>
+      </div>
+    </div>
+  </section>
+</div><!-- /page-courses -->
+
+
+<!-- ═══════════════════════════════════════════
+     ABOUT PAGE
+     ═══════════════════════════════════════════ -->
+<div id="page-about" class="page-section" style="display:none">
+
+  <div class="page-header">
+    <div class="page-header-bg"></div>
+    <div class="page-header-glow"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a href="#" onclick="App.showPage('home')">Home</a><i class="fas fa-chevron-right"></i><span>About</span></div>
+      <div class="page-header-title">Ahmed Hussein</div>
+      <div class="page-header-desc">Cisco Certified Professional with 10+ years of enterprise networking experience and a passion for IT education.</div>
     </div>
   </div>
-  <div class="about-full">
-    <div class="about-full-grid">
-      <div class="about-sidebar">
-        <div class="about-photo-card">
-          <div class="apc-img"><span style="font-size:7rem">👨‍💻</span></div>
-          <div class="apc-plate"><div class="apc-name">AHMED HUSSEIN</div><div class="apc-role">Cisco Certified Instructor</div></div>
-        </div>
-        <div class="cert-list-card">
-          <div class="clc-title">Certifications</div>
-          <div class="clc-item"><div class="clc-ico">🔷</div><div><div class="clc-name">CCNP Enterprise</div><div class="clc-code">350-401 ENCOR</div></div><div class="clc-badge">Active</div></div>
-          <div class="clc-item"><div class="clc-ico">🌐</div><div><div class="clc-name">CCNA 200-301</div><div class="clc-code">Routing & Switching</div></div><div class="clc-badge">Active</div></div>
-          <div class="clc-item"><div class="clc-ico">🔐</div><div><div class="clc-name">CyberOps Associate</div><div class="clc-code">200-201</div></div><div class="clc-badge">Active</div></div>
-          <div class="clc-item"><div class="clc-ico">🎓</div><div><div class="clc-name">NetAcad Instructor</div><div class="clc-code">Cisco Academy</div></div><div class="clc-badge">Active</div></div>
-        </div>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-          <a href="#" class="soc-btn"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#" class="soc-btn"><i class="fab fa-youtube"></i></a>
-          <a href="#" class="soc-btn"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="soc-btn"><i class="fab fa-telegram"></i></a>
-        </div>
-      </div>
-      <div class="about-main">
-        <div class="abt-section">
-          <div class="abt-sec-title">Professional Bio</div>
-          <p class="bio-text">With over a decade of hands-on enterprise networking experience and Cisco instruction, I've dedicated my career to empowering IT professionals across the Middle East and beyond to achieve their certification goals and build high-impact careers in networking.</p>
-          <p class="bio-text">As a Cisco Networking Academy instructor, I specialize in bridging the gap between theoretical knowledge and real-world application. Every course combines comprehensive curriculum with practical lab exercises that mirror actual enterprise network environments.</p>
-          <p class="bio-text">I've personally guided 1,200+ students through CCNA, CCNP, and Security certification paths, maintaining a consistently high first-attempt pass rate through structured, mentorship-driven instruction.</p>
-        </div>
-        <div class="achieve-cards">
-          <div class="ach-card"><div class="ach-num" data-count="1200" data-sfx="+">0+</div><div class="ach-lbl">Students Trained</div></div>
-          <div class="ach-card"><div class="ach-num" data-count="96" data-sfx="%">0%</div><div class="ach-lbl">Pass Rate</div></div>
-          <div class="ach-card"><div class="ach-num" data-count="10" data-sfx="+">0+</div><div class="ach-lbl">Years Exp.</div></div>
-        </div>
-        <div class="abt-section">
-          <div class="abt-sec-title">Technical Expertise</div>
-          <div class="skill-rows">
-            <div class="skill-row"><div class="sr-head"><span class="sr-name">Routing & Switching (CCNP)</span><span class="sr-pct">97%</span></div><div class="sr-bg"><div class="sr-fill" data-w="97%"></div></div></div>
-            <div class="skill-row"><div class="sr-head"><span class="sr-name">Network Security & Firewalls</span><span class="sr-pct">90%</span></div><div class="sr-bg"><div class="sr-fill" data-w="90%"></div></div></div>
-            <div class="skill-row"><div class="sr-head"><span class="sr-name">SD-WAN & Cloud Networking</span><span class="sr-pct">85%</span></div><div class="sr-bg"><div class="sr-fill" data-w="85%"></div></div></div>
-            <div class="skill-row"><div class="sr-head"><span class="sr-name">Network Automation (Python)</span><span class="sr-pct">82%</span></div><div class="sr-bg"><div class="sr-fill" data-w="82%"></div></div></div>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="about-full-grid">
+        <!-- SIDEBAR -->
+        <div class="about-sidebar fade-left">
+          <div class="about-photo-card">
+            <div class="about-photo-inner">
+              <span style="font-size:8rem">👨‍💻</span>
+            </div>
+            <div class="about-name-plate">
+              <div class="about-full-name">Ahmed Hussein</div>
+              <div class="about-full-role">Cisco Certified Instructor</div>
+            </div>
+          </div>
+          <div class="about-certs-card">
+            <div class="about-certs-title">Certifications</div>
+            <div class="cert-list-item">
+              <div class="cli-icon">🔷</div>
+              <div><div class="cli-name">CCNP Enterprise</div><div class="cli-code">350-401 ENCOR</div></div>
+              <div class="cli-badge"><span class="badge badge-blue">Active</span></div>
+            </div>
+            <div class="cert-list-item">
+              <div class="cli-icon">🌐</div>
+              <div><div class="cli-name">CCNA</div><div class="cli-code">200-301</div></div>
+              <div class="cli-badge"><span class="badge badge-blue">Active</span></div>
+            </div>
+            <div class="cert-list-item">
+              <div class="cli-icon">🔐</div>
+              <div><div class="cli-name">CyberOps Associate</div><div class="cli-code">200-201</div></div>
+              <div class="cli-badge"><span class="badge badge-green">Active</span></div>
+            </div>
+            <div class="cert-list-item">
+              <div class="cli-icon">🎓</div>
+              <div><div class="cli-name">NetAcad Instructor</div><div class="cli-code">Cisco Academy</div></div>
+              <div class="cli-badge"><span class="badge badge-blue">Active</span></div>
+            </div>
+          </div>
+          <div class="social-row">
+            <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-btn"><i class="fab fa-telegram"></i></a>
+            <a href="#" class="social-btn"><i class="fab fa-instagram"></i></a>
           </div>
         </div>
-        <div class="abt-section">
-          <div class="abt-sec-title">Career Timeline</div>
-          <div class="timeline">
-            <div class="tl-item"><div class="tl-yr">2024 – Present</div><div class="tl-title">Senior Cisco Instructor & Course Developer</div><div class="tl-desc">Delivering CCNA, CCNP, and Security courses online and on-site across the GCC</div></div>
-            <div class="tl-item"><div class="tl-yr">2020 – 2024</div><div class="tl-title">Network Engineering Consultant</div><div class="tl-desc">Designed enterprise Cisco networks for banking and telecoms clients</div></div>
-            <div class="tl-item"><div class="tl-yr">2016 – 2020</div><div class="tl-title">Cisco NetAcad Instructor</div><div class="tl-desc">Delivered official Cisco curriculum at a regional NetAcad</div></div>
-            <div class="tl-item"><div class="tl-yr">2013 – 2016</div><div class="tl-title">Network Administrator</div><div class="tl-desc">Managed multi-site Cisco campus networks and data center infrastructure</div></div>
+
+        <!-- MAIN CONTENT -->
+        <div class="fade-right">
+          <div class="about-bio-section">
+            <div class="about-bio-title">Professional Bio</div>
+            <p class="about-bio-text">With over a decade of hands-on enterprise networking experience and Cisco instruction, I've dedicated my career to empowering IT professionals across the Middle East and beyond to achieve their certification goals and advance their careers.</p>
+            <p class="about-bio-text">As a Cisco Networking Academy instructor, I specialize in bridging the gap between theoretical knowledge and real-world application. My courses combine comprehensive curriculum with practical lab exercises that mirror actual enterprise network environments.</p>
+            <p class="about-bio-text">I have personally guided over 1,200 students through their CCNA, CCNP, and Security certification paths, achieving a consistently high first-attempt pass rate through a structured, mentorship-driven approach.</p>
+          </div>
+
+          <div class="achievements-row">
+            <div class="achieve-card"><div class="achieve-num" data-count="1200" data-suffix="+">0+</div><div class="achieve-label">Students Trained</div></div>
+            <div class="achieve-card"><div class="achieve-num" data-count="96" data-suffix="%">0%</div><div class="achieve-label">Pass Rate</div></div>
+            <div class="achieve-card"><div class="achieve-num" data-count="10" data-suffix="+">0+</div><div class="achieve-label">Years Experience</div></div>
+          </div>
+
+          <div class="skills-section">
+            <div class="about-bio-title">Technical Expertise</div>
+            <div class="skill-row"><div class="skill-row-header"><span class="skill-row-label">Routing & Switching (CCNP)</span><span class="skill-row-pct">97%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="97%"></div></div></div>
+            <div class="skill-row"><div class="skill-row-header"><span class="skill-row-label">Network Security & Firewalls</span><span class="skill-row-pct">90%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="90%"></div></div></div>
+            <div class="skill-row"><div class="skill-row-header"><span class="skill-row-label">SD-WAN & Cloud Networking</span><span class="skill-row-pct">85%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85%"></div></div></div>
+            <div class="skill-row"><div class="skill-row-header"><span class="skill-row-label">Network Automation (Python)</span><span class="skill-row-pct">82%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="82%"></div></div></div>
+            <div class="skill-row"><div class="skill-row-header"><span class="skill-row-label">Wireless & Cisco WLC</span><span class="skill-row-pct">88%</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88%"></div></div></div>
+          </div>
+
+          <div class="about-bio-section">
+            <div class="about-bio-title">Experience Timeline</div>
+            <div class="timeline">
+              <div class="timeline-item"><div class="tl-year">2024 – Present</div><div class="tl-title">Senior Cisco Instructor & Course Developer</div><div class="tl-desc">Delivering CCNA, CCNP, and Security courses online and on-site across the GCC region</div></div>
+              <div class="timeline-item"><div class="tl-year">2020 – 2024</div><div class="tl-title">Network Engineering Consultant</div><div class="tl-desc">Designed and deployed enterprise Cisco networks for clients in banking and telecommunications</div></div>
+              <div class="timeline-item"><div class="tl-year">2016 – 2020</div><div class="tl-title">Cisco NetAcad Instructor</div><div class="tl-desc">Certified Networking Academy instructor delivering official Cisco curriculum at a regional academy</div></div>
+              <div class="timeline-item"><div class="tl-year">2013 – 2016</div><div class="tl-title">Network Administrator</div><div class="tl-desc">Managed multi-site Cisco campus networks and data center infrastructure</div></div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
+  </section>
+</div><!-- /page-about -->
 
-<!-- ═══════════════════ CONTACT PAGE ═══════════════════ -->
-<div id="page-contact" class="page">
-  <div class="pg-header">
-    <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
-    <div class="pg-header-inner">
-      <div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a><i class="fas fa-chevron-right"></i>Contact</div>
-      <div class="pg-title">GET IN TOUCH</div>
-      <div class="pg-subtitle">Questions about courses or certifications? I respond to all inquiries within 24 hours.</div>
+
+<!-- ═══════════════════════════════════════════
+     CONTACT PAGE
+     ═══════════════════════════════════════════ -->
+<div id="page-contact" class="page-section" style="display:none">
+
+  <div class="page-header">
+    <div class="page-header-bg"></div>
+    <div class="page-header-glow"></div>
+    <div class="page-header-inner">
+      <div class="breadcrumb"><a href="#" onclick="App.showPage('home')">Home</a><i class="fas fa-chevron-right"></i><span>Contact</span></div>
+      <div class="page-header-title">Get In Touch</div>
+      <div class="page-header-desc">Have questions about courses or certifications? I respond to all inquiries within 24 hours.</div>
     </div>
   </div>
-  <div class="contact-layout">
-    <div class="contact-left">
-      <div class="ci-card"><div class="ci-row"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val">ahmed@ahmedhussein.org</div></div></div></div>
-      <div class="ci-card"><div class="ci-row"><div class="ci-ico"><i class="fab fa-whatsapp"></i></div><div><div class="ci-lbl">WhatsApp / Phone</div><div class="ci-val">+973 XXXX XXXX</div></div></div></div>
-      <div class="ci-card"><div class="ci-row"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">Location</div><div class="ci-val">Manama, Kingdom of Bahrain</div></div></div></div>
-      <div class="oh-card">
-        <div class="oh-title"><i class="fas fa-clock" style="color:var(--c);margin-right:6px"></i>Office Hours</div>
-        <div class="oh-row"><span>Saturday – Thursday</span><span>9:00 AM – 9:00 PM</span></div>
-        <div class="oh-row"><span>Friday</span><span style="color:var(--tm)">Closed</span></div>
-        <div class="oh-row"><span>Time Zone</span><span>AST (UTC +3)</span></div>
-      </div>
-      <div class="ci-card">
-        <div class="ci-lbl" style="margin-bottom:0.6rem">Follow & Connect</div>
-        <div class="social-links">
-          <a href="#" class="soc-btn"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#" class="soc-btn"><i class="fab fa-youtube"></i></a>
-          <a href="#" class="soc-btn"><i class="fab fa-telegram"></i></a>
-          <a href="#" class="soc-btn"><i class="fab fa-twitter"></i></a>
-          <a href="#" class="soc-btn"><i class="fab fa-instagram"></i></a>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="contact-layout">
+        <!-- INFO -->
+        <div class="contact-info-stack fade-left">
+          <div class="contact-info-card">
+            <div class="cic-row">
+              <div class="cic-icon"><i class="fas fa-envelope"></i></div>
+              <div><div class="cic-label">Email</div><div class="cic-value">ahmed@ahmedhussein.org</div></div>
+            </div>
+          </div>
+          <div class="contact-info-card">
+            <div class="cic-row">
+              <div class="cic-icon"><i class="fab fa-whatsapp"></i></div>
+              <div><div class="cic-label">WhatsApp / Phone</div><div class="cic-value">+973 XXXX XXXX</div></div>
+            </div>
+          </div>
+          <div class="contact-info-card">
+            <div class="cic-row">
+              <div class="cic-icon"><i class="fas fa-map-marker-alt"></i></div>
+              <div><div class="cic-label">Location</div><div class="cic-value">Manama, Kingdom of Bahrain</div></div>
+            </div>
+          </div>
+          <div class="contact-info-card contact-social">
+            <div class="cic-label" style="padding:0 0 0.5rem">Follow & Connect</div>
+            <div class="social-row">
+              <a href="#" class="social-btn" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="social-btn" title="YouTube"><i class="fab fa-youtube"></i></a>
+              <a href="#" class="social-btn" title="Telegram"><i class="fab fa-telegram"></i></a>
+              <a href="#" class="social-btn" title="Twitter"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-btn" title="Instagram"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+          <div class="contact-info-card">
+            <div class="office-hours">
+              <div class="oh-title"><i class="fas fa-clock" style="color:var(--cisco-blue);margin-right:6px"></i>Office Hours</div>
+              <div class="oh-row"><span>Saturday – Thursday</span><span>9:00 AM – 9:00 PM</span></div>
+              <div class="oh-row"><span>Friday</span><span>Closed</span></div>
+              <div class="oh-row"><span>Time Zone</span><span>AST (UTC+3)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM -->
+        <div class="contact-form-card fade-right">
+          <div class="form-success" id="contact-success">
+            <i class="fas fa-check-circle"></i> Message sent! I'll get back to you within 24 hours.
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="contact-fname" class="form-control" placeholder="Ahmed"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="contact-lname" class="form-control" placeholder="Hassan"></div>
+          </div>
+          <div class="form-group"><label>Email Address</label><input type="email" id="contact-email" class="form-control" placeholder="you@example.com"></div>
+          <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="contact-phone" class="form-control" placeholder="+973..."></div>
+          <div class="form-group">
+            <label>Subject</label>
+            <select id="contact-subject" class="form-control">
+              <option>Course Inquiry — CCNA</option>
+              <option>Course Inquiry — CCNP</option>
+              <option>Course Inquiry — Security</option>
+              <option>Corporate / Group Training</option>
+              <option>General Question</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Message</label><textarea id="contact-msg" class="form-control" placeholder="Tell me about your goals and how I can help..."></textarea></div>
+          <button class="btn btn-primary btn-full" onclick="App.sendContact()">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
         </div>
       </div>
     </div>
-    <div class="contact-form-card">
-      <div class="form-msg" id="contact-ok"><i class="fas fa-check-circle"></i> Message sent! I'll respond within 24 hours.</div>
-      <div class="form-row2">
-        <div class="fgrp"><label class="flbl">First Name</label><input id="cf-fname" class="finp" placeholder="Ahmed"></div>
-        <div class="fgrp"><label class="flbl">Last Name</label><input id="cf-lname" class="finp" placeholder="Hassan"></div>
-      </div>
-      <div class="fgrp"><label class="flbl">Email Address</label><input id="cf-email" class="finp" type="email" placeholder="you@example.com"></div>
-      <div class="fgrp"><label class="flbl">Phone / WhatsApp</label><input id="cf-phone" class="finp" placeholder="+973..."></div>
-      <div class="fgrp"><label class="flbl">Subject</label>
-        <select id="cf-subject" class="finp">
-          <option>Course Inquiry — CCNA</option><option>Course Inquiry — CCNP</option>
-          <option>Course Inquiry — Security</option><option>Corporate / Group Training</option><option>General Question</option>
-        </select>
-      </div>
-      <div class="fgrp"><label class="flbl">Message</label><textarea id="cf-msg" class="finp" placeholder="Tell me about your goals..."></textarea></div>
-      <button class="btn btn-c btn-full" onclick="sendContact()"><i class="fas fa-paper-plane"></i> Send Message</button>
-    </div>
-  </div>
-</div>
+  </section>
+</div><!-- /page-contact -->
 
-<!-- ═══════════════════ DASHBOARD ═══════════════════ -->
-<div id="page-dashboard" class="page">
-  <div class="dash-layout">
+
+<!-- ═══════════════════════════════════════════
+     DASHBOARD PAGE
+     ═══════════════════════════════════════════ -->
+<div id="page-dashboard" class="page-section" style="display:none">
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
     <aside class="dash-sidebar">
-      <div class="ds-logo-area"><div class="ds-logo">DASHBOARD</div><div class="ds-role">Student Portal</div></div>
-      <nav class="ds-nav">
-        <div class="ds-item act" data-pnl="overview" onclick="showDashPanel('overview',this)"><i class="fas fa-th-large"></i> Overview</div>
-        <div class="ds-item" data-pnl="my-courses" onclick="showDashPanel('my-courses',this)"><i class="fas fa-graduation-cap"></i> My Courses</div>
-        <div class="ds-item" data-pnl="profile" onclick="showDashPanel('profile',this)"><i class="fas fa-user-circle"></i> Profile</div>
-        <div class="ds-sep"></div>
-        <div class="ds-item" onclick="showPage('courses')"><i class="fas fa-compass"></i> Browse Courses</div>
-        <div class="ds-item" onclick="showPage('contact')"><i class="fas fa-headset"></i> Support</div>
-        <div class="ds-sep"></div>
-        <div class="ds-item ds-logout" onclick="doLogout()"><i class="fas fa-power-off"></i> Logout</div>
+      <div class="dash-sidebar-logo">Dashboard</div>
+      <div class="dash-sidebar-sub">Student Portal</div>
+      <nav class="dash-nav">
+        <div class="dash-nav-item active" data-panel="overview" onclick="App.showDashPanel('overview')">
+          <i class="fas fa-th-large"></i> Overview
+        </div>
+        <div class="dash-nav-item" data-panel="my-courses" onclick="App.showDashPanel('my-courses')">
+          <i class="fas fa-graduation-cap"></i> My Courses
+        </div>
+        <div class="dash-nav-item" data-panel="profile" onclick="App.showDashPanel('profile')">
+          <i class="fas fa-user"></i> Profile
+        </div>
+        <div class="dash-nav-separator"></div>
+        <div class="dash-nav-item" onclick="App.showPage('courses')">
+          <i class="fas fa-compass"></i> Browse Courses
+        </div>
+        <div class="dash-nav-item" onclick="App.showPage('contact')">
+          <i class="fas fa-headset"></i> Get Support
+        </div>
+        <div class="dash-nav-separator"></div>
+        <div class="dash-nav-item dash-nav-logout" onclick="App.logout()">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </div>
       </nav>
     </aside>
+
+    <!-- Main -->
     <main class="dash-main">
-      <div class="dash-panel act" id="dash-overview">
-        <div class="dash-toprow">
-          <div><div class="dash-hello">WELCOME, <span id="dash-name">STUDENT</span></div><div class="dash-sub">Continue your certification journey</div></div>
-          <div class="dash-plan-chip"><div class="dpc-lbl">Your Plan</div><div class="dpc-val" id="dash-plan">FREE</div></div>
-        </div>
-        <div class="dash-stats">
-          <div class="dstat"><div class="dstat-ico ico-c"><i class="fas fa-book-open"></i></div><div class="dstat-num" id="dash-enrolled-n">0</div><div class="dstat-lbl">Enrolled</div></div>
-          <div class="dstat"><div class="dstat-ico ico-g"><i class="fas fa-check-circle"></i></div><div class="dstat-num">0</div><div class="dstat-lbl">Completed</div></div>
-          <div class="dstat"><div class="dstat-ico ico-o"><i class="fas fa-certificate"></i></div><div class="dstat-num">0</div><div class="dstat-lbl">Certificates</div></div>
-          <div class="dstat"><div class="dstat-ico ico-p"><i class="fas fa-clock"></i></div><div class="dstat-num">0h</div><div class="dstat-lbl">Study Time</div></div>
-        </div>
-        <div class="dash-sec-title">Enrolled Courses</div>
-        <div class="enrolled-list" id="dash-enr-list"></div>
-        <div class="upgrade-banner">
-          <div class="ub-text"><div class="ub-t">UPGRADE TO PREMIUM ⚡</div><div class="ub-d">Full course access, downloadable labs, and certificates.</div></div>
-          <button class="btn btn-o" onclick="openModal('register')"><i class="fas fa-crown"></i> Upgrade Now</button>
-        </div>
-      </div>
-      <div class="dash-panel" id="dash-my-courses">
-        <div class="dash-toprow"><div><div class="dash-hello">MY COURSES</div><div class="dash-sub">All your enrolled courses</div></div></div>
-        <div class="enrolled-list" id="dash-mc-list"></div>
-      </div>
-      <div class="dash-panel" id="dash-profile">
-        <div class="dash-toprow"><div><div class="dash-hello">MY PROFILE</div></div></div>
-        <div class="profile-card">
-          <div class="form-row2">
-            <div class="fgrp"><label class="flbl">First Name</label><input id="pf-fname" class="finp"></div>
-            <div class="fgrp"><label class="flbl">Last Name</label><input id="pf-lname" class="finp"></div>
+
+      <!-- OVERVIEW PANEL -->
+      <div class="dash-panel active" id="dash-overview">
+        <div class="dash-top-bar">
+          <div>
+            <div class="dash-greeting-name">Welcome, <span id="dash-username">Student</span> 👋</div>
+            <div class="dash-greeting-sub">Continue your certification journey</div>
           </div>
-          <div class="fgrp"><label class="flbl">Email (read-only)</label><input id="pf-email" class="finp" readonly style="opacity:0.5;cursor:not-allowed"></div>
-          <div class="fgrp"><label class="flbl">Phone</label><input id="pf-phone" class="finp" placeholder="+973..."></div>
-          <button class="btn btn-c" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+          <div class="dash-plan-badge">
+            <div class="dpb-label">Your Plan</div>
+            <div class="dpb-plan" id="dash-plan-name">Free Plan</div>
+          </div>
+        </div>
+        <div class="dash-stats-row">
+          <div class="dash-stat-card"><div class="dsc-icon blue"><i class="fas fa-book-open"></i></div><div class="dsc-num" id="dash-enrolled-count">0</div><div class="dsc-label">Enrolled Courses</div></div>
+          <div class="dash-stat-card"><div class="dsc-icon green"><i class="fas fa-check-circle"></i></div><div class="dsc-num">0</div><div class="dsc-label">Completed</div></div>
+          <div class="dash-stat-card"><div class="dsc-icon orange"><i class="fas fa-certificate"></i></div><div class="dsc-num">0</div><div class="dsc-label">Certificates</div></div>
+          <div class="dash-stat-card"><div class="dsc-icon purple"><i class="fas fa-clock"></i></div><div class="dsc-num">0h</div><div class="dsc-label">Study Hours</div></div>
+        </div>
+        <div class="dash-section-title">Enrolled Courses</div>
+        <div class="enrolled-list" id="dash-enrolled-list"></div>
+        <div class="upgrade-banner">
+          <div><div class="ub-title">Unlock Premium Access <span style="color:var(--accent)">⭐</span></div><div class="ub-desc">Get full course access, downloadable labs, and completion certificates.</div></div>
+          <button class="btn btn-primary" onclick="App.openModal('register')"><i class="fas fa-crown"></i> Upgrade to Premium</button>
         </div>
       </div>
+
+      <!-- MY COURSES PANEL -->
+      <div class="dash-panel" id="dash-my-courses">
+        <div class="dash-top-bar"><div><div class="dash-greeting-name">My Courses</div><div class="dash-greeting-sub">All your enrolled courses</div></div></div>
+        <div class="enrolled-list" id="dash-my-courses-list"></div>
+      </div>
+
+      <!-- PROFILE PANEL -->
+      <div class="dash-panel" id="dash-profile">
+        <div class="dash-top-bar"><div><div class="dash-greeting-name">My Profile</div><div class="dash-greeting-sub">Update your information</div></div></div>
+        <div class="profile-form-card">
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input type="text" id="profile-fname" class="form-control"></div>
+            <div class="form-group"><label>Last Name</label><input type="text" id="profile-lname" class="form-control"></div>
+          </div>
+          <div class="form-group"><label>Email (cannot be changed)</label><input type="email" id="profile-email" class="form-control" readonly style="opacity:0.5;cursor:not-allowed"></div>
+          <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="profile-phone" class="form-control" placeholder="+973..."></div>
+          <div class="form-group"><label>Country</label><input type="text" id="profile-country" class="form-control" placeholder="Bahrain"></div>
+          <button class="btn btn-primary" onclick="App.saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+        </div>
+      </div>
+
     </main>
   </div>
-</div>
+</div><!-- /page-dashboard -->
 
-<!-- FOOTER -->
-<footer id="site-footer">
-  <div class="footer-inner">
-    <div class="footer-grid">
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════ -->
+<footer style="background:var(--bg2);border-top:1px solid var(--border);padding:4rem 2rem 2rem" id="main-footer">
+  <div style="max-width:1280px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem">
       <div>
-        <div class="f-brand"><span>AHMED</span> HUSSEIN</div>
-        <p class="f-desc">Cisco Certified Instructor offering expert CCNA, CCNP, and Network Security training across the GCC and Middle East.</p>
-        <div class="social-links"><a href="#" class="soc-btn"><i class="fab fa-linkedin-in"></i></a><a href="#" class="soc-btn"><i class="fab fa-youtube"></i></a><a href="#" class="soc-btn"><i class="fab fa-twitter"></i></a><a href="#" class="soc-btn"><i class="fab fa-telegram"></i></a></div>
+        <div style="font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:800;color:var(--white);margin-bottom:0.8rem">
+          <span style="color:var(--cisco-blue)">Ahmed</span>Hussein
+        </div>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.7;margin-bottom:1.2rem">Cisco Certified Instructor offering expert CCNA, CCNP, and Network Security training across the GCC and Middle East.</p>
+        <div class="social-row">
+          <a href="#" class="social-btn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="social-btn"><i class="fab fa-telegram"></i></a>
+        </div>
       </div>
-      <div><div class="f-col-title">Courses</div><div class="f-links"><a href="#" onclick="showPage('courses');return false;">CCNA 200-301</a><a href="#" onclick="showPage('courses');return false;">CCNP Enterprise</a><a href="#" onclick="showPage('courses');return false;">Network Security</a><a href="#" onclick="showPage('courses');return false;">Packet Tracer Labs</a><a href="#" onclick="showPage('courses');return false;">Exam Bootcamp</a></div></div>
-      <div><div class="f-col-title">Navigate</div><div class="f-links"><a href="#" onclick="showPage('home');return false;">Home</a><a href="#" onclick="showPage('about');return false;">About</a><a href="#" onclick="showPage('contact');return false;">Contact</a><a href="#" onclick="openModal('register');return false;">Register</a></div></div>
-      <div><div class="f-col-title">Contact</div><div class="f-links"><span style="color:var(--tm);font-size:0.78rem">ahmed@ahmedhussein.org</span><span style="color:var(--tm);font-size:0.78rem">+973 XXXX XXXX</span><span style="color:var(--tm);font-size:0.78rem">Manama, Bahrain</span><span style="color:var(--tm);font-size:0.78rem">Sat–Thu: 9AM–9PM</span></div></div>
+      <div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--white);letter-spacing:1px;text-transform:uppercase;margin-bottom:1rem">Courses</div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <a href="#" onclick="App.showPage('courses')" style="font-size:0.82rem;color:var(--muted);transition:color 0.2s" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">CCNA 200-301</a>
+          <a href="#" onclick="App.showPage('courses')" style="font-size:0.82rem;color:var(--muted);transition:color 0.2s" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">CCNP Enterprise</a>
+          <a href="#" onclick="App.showPage('courses')" style="font-size:0.82rem;color:var(--muted);transition:color 0.2s" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">Network Security</a>
+          <a href="#" onclick="App.showPage('courses')" style="font-size:0.82rem;color:var(--muted);transition:color 0.2s" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">Packet Tracer Labs</a>
+          <a href="#" onclick="App.showPage('courses')" style="font-size:0.82rem;color:var(--muted);transition:color 0.2s" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">Exam Bootcamp (Free)</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--white);letter-spacing:1px;text-transform:uppercase;margin-bottom:1rem">Navigate</div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <a href="#" onclick="App.showPage('home')" style="font-size:0.82rem;color:var(--muted)" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">Home</a>
+          <a href="#" onclick="App.showPage('about')" style="font-size:0.82rem;color:var(--muted)" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">About</a>
+          <a href="#" onclick="App.showPage('contact')" style="font-size:0.82rem;color:var(--muted)" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">Contact</a>
+          <a href="#" onclick="App.openModal('register')" style="font-size:0.82rem;color:var(--muted)" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">Register</a>
+          <a href="#" onclick="App.openModal('login')" style="font-size:0.82rem;color:var(--muted)" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">Sign In</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--white);letter-spacing:1px;text-transform:uppercase;margin-bottom:1rem">Contact</div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <span style="font-size:0.82rem;color:var(--muted)">ahmed@ahmedhussein.org</span>
+          <span style="font-size:0.82rem;color:var(--muted)">+973 XXXX XXXX</span>
+          <span style="font-size:0.82rem;color:var(--muted)">Manama, Bahrain</span>
+          <span style="font-size:0.82rem;color:var(--muted)">Sat–Thu: 9AM–9PM</span>
+        </div>
+      </div>
     </div>
-    <div class="footer-bot"><span>© 2025 Ahmed Hussein. All rights reserved.</span><div style="display:flex;gap:1rem"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding-top:1.5rem;border-top:1px solid var(--border);font-size:0.78rem;color:var(--muted);flex-wrap:wrap;gap:1rem">
+      <span>© 2025 Ahmed Hussein. All rights reserved.</span>
+      <div style="display:flex;gap:1rem">
+        <a href="#" style="color:var(--muted)" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">Privacy Policy</a>
+        <a href="#" style="color:var(--muted)" onmouseover="this.style.color='var(--cisco-blue)'" onmouseout="this.style.color='var(--muted)'">Terms of Service</a>
+      </div>
+    </div>
   </div>
 </footer>
 
-<!-- AUTH MODAL -->
-<div class="modal-ov" id="auth-modal">
-  <div class="modal-box">
-    <button class="mclose" onclick="closeModal()"><i class="fas fa-times"></i></button>
-    <div class="m-title">ACCESS PORTAL</div>
-    <div class="m-sub">Sign in or create your free account</div>
-    <div class="m-tabs"><button class="m-tab on" data-tab="login" onclick="switchTab('login')">Sign In</button><button class="m-tab" data-tab="register" onclick="switchTab('register')">Register</button></div>
-    <div class="m-panel on" id="mp-login">
-      <div class="form-msg" id="login-ok"><i class="fas fa-check-circle"></i> Logged in!</div>
-      <div class="fgrp"><label class="flbl">Email</label><input id="l-email" class="finp" type="email" placeholder="you@example.com"></div>
-      <div class="fgrp"><label class="flbl">Password <a href="#" class="forgot">Forgot?</a></label><input id="l-pass" class="finp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
-      <div class="form-err" id="login-err"></div>
-      <button class="btn btn-c btn-full" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
-      <p style="text-align:center;font-size:0.78rem;color:var(--tm);margin-top:1rem">No account? <a href="#" onclick="switchTab('register')" style="color:var(--c)">Register free</a></p>
+<!-- ═══════════════════════════════════════════
+     AUTH MODAL
+     ═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="App.closeModal()"><i class="fas fa-times"></i></button>
+    <div class="modal-title">Welcome</div>
+    <div class="modal-subtitle">Access your Cisco certification courses</div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-tab="login" onclick="App.switchAuthTab('login')">Sign In</button>
+      <button class="modal-tab" data-tab="register" onclick="App.switchAuthTab('register')">Create Account</button>
     </div>
-    <div class="m-panel" id="mp-register">
-      <div class="form-msg" id="reg-ok"><i class="fas fa-check-circle"></i> Account created! Sign in now.</div>
-      <p style="font-size:0.68rem;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem">Choose Plan</p>
-      <div class="tier-row">
-        <div class="tier-opt on" data-tier="free" onclick="pickTier('free')"><div class="tier-name">FREE</div><div class="tier-price">$0</div><div class="tier-feat">Course previews & free courses</div></div>
-        <div class="tier-opt" data-tier="premium" onclick="pickTier('premium')"><div class="tier-name">PREMIUM ⚡</div><div class="tier-price">$29/mo</div><div class="tier-feat">Full access + labs + certificates</div></div>
+
+    <!-- LOGIN PANEL -->
+    <div class="auth-panel active" data-panel="login" id="auth-panel-login">
+      <div class="form-success" id="login-success"><i class="fas fa-check-circle"></i> Logged in successfully!</div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-icon-wrap"><i class="fas fa-envelope"></i><input type="email" id="l-email" class="form-control" placeholder="you@example.com"></div>
       </div>
-      <div class="form-row2">
-        <div class="fgrp"><label class="flbl">First Name *</label><input id="r-fname" class="finp" placeholder="Ahmed"></div>
-        <div class="fgrp"><label class="flbl">Last Name</label><input id="r-lname" class="finp" placeholder="Hassan"></div>
+      <div class="form-group">
+        <label>Password <a href="#" style="float:right;font-size:0.78rem;color:var(--cisco-blue)">Forgot password?</a></label>
+        <div class="input-icon-wrap"><i class="fas fa-lock"></i><input type="password" id="l-pass" class="form-control" placeholder="••••••••" onkeydown="if(event.key==='Enter')App.doLogin()"></div>
       </div>
-      <div class="fgrp"><label class="flbl">Email *</label><input id="r-email" class="finp" type="email" placeholder="you@example.com"></div>
-      <div class="fgrp"><label class="flbl">Phone</label><input id="r-phone" class="finp" placeholder="+973..."></div>
-      <div class="fgrp"><label class="flbl">Password * (min 8 chars)</label><input id="r-pass" class="finp" type="password" placeholder="Min 8 characters" onkeydown="if(event.key==='Enter')doRegister()"></div>
-      <div class="form-err" id="reg-err"></div>
-      <button class="btn btn-c btn-full" onclick="doRegister()"><i class="fas fa-user-plus"></i> Create Account</button>
+      <div class="form-error" id="login-error"></div>
+      <button class="btn btn-primary btn-full" onclick="App.doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+      <p style="text-align:center;font-size:0.82rem;color:var(--muted);margin-top:1rem">Don't have an account? <a href="#" onclick="App.switchAuthTab('register')" style="color:var(--cisco-blue)">Register free</a></p>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div class="auth-panel" data-panel="register" id="auth-panel-register">
+      <div class="form-success" id="reg-success"><i class="fas fa-check-circle"></i> Account created! You can now sign in.</div>
+      <p style="font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.8rem">Choose Your Plan</p>
+      <div class="tier-grid">
+        <div class="tier-opt selected" data-tier="free" onclick="App.selectTier('free')">
+          <div class="tier-name">Free</div>
+          <div class="tier-price">$0</div>
+          <div class="tier-features">Course previews<br>Free courses included<br>Progress tracking</div>
+        </div>
+        <div class="tier-opt" data-tier="premium" onclick="App.selectTier('premium')">
+          <div class="tier-name">Premium ⭐</div>
+          <div class="tier-price">$29/mo</div>
+          <div class="tier-features">All courses full access<br>Labs & resources<br>Completion certificates</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name *</label><input type="text" id="r-fname" class="form-control" placeholder="Ahmed"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" id="r-lname" class="form-control" placeholder="Hassan"></div>
+      </div>
+      <div class="form-group"><label>Email Address *</label><div class="input-icon-wrap"><i class="fas fa-envelope"></i><input type="email" id="r-email" class="form-control" placeholder="you@example.com"></div></div>
+      <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="r-phone" class="form-control" placeholder="+973..."></div>
+      <div class="form-group"><label>Password * (min 8 chars)</label><div class="input-icon-wrap"><i class="fas fa-lock"></i><input type="password" id="r-pass" class="form-control" placeholder="Min 8 characters" onkeydown="if(event.key==='Enter')App.doRegister()"></div></div>
+      <div class="form-error" id="reg-error"></div>
+      <button class="btn btn-primary btn-full" onclick="App.doRegister()"><i class="fas fa-user-plus"></i> Create Account</button>
+      <p style="text-align:center;font-size:0.82rem;color:var(--muted);margin-top:1rem">Already have an account? <a href="#" onclick="App.switchAuthTab('login')" style="color:var(--cisco-blue)">Sign in</a></p>
     </div>
   </div>
 </div>
 
-<!-- COURSE DETAIL MODAL -->
-<div class="modal-ov" id="course-modal">
-  <div class="modal-box" style="max-width:700px"><button class="mclose" onclick="closeCourseModal()"><i class="fas fa-times"></i></button><div id="course-detail-inner"></div></div>
+<!-- ═══════════════════════════════════════════
+     COURSE DETAIL MODAL
+     ═══════════════════════════════════════════ -->
+<div class="modal-overlay" id="course-modal">
+  <div class="modal" style="max-width:720px">
+    <button class="modal-close" onclick="App.closeCourseModal()"><i class="fas fa-times"></i></button>
+    <div id="course-detail-content"></div>
+  </div>
 </div>
 
-<div id="toast-box"></div>
+<!-- ═══════════════════════════════════════════
+     TOAST CONTAINER
+     ═══════════════════════════════════════════ -->
+<div id="toast-container"></div>
 
-<script>
-/* ──────────── COURSE DATA ──────────── */
-const COURSES=[
-  {id:1,cat:'CCNA',icon:'🌐',th:'th1',title:'CCNA 200-301: Complete Network Associate',desc:'Master routing, switching, IPv4/IPv6, VLANs, OSPF, and everything you need to pass the CCNA exam first time.',level:'Beginner',duration:'80 hrs',students:'420',price:'$149',rating:'4.9',reviews:'128',prereqs:'No prior networking knowledge required.',curriculum:['Networking Fundamentals & OSI Model','IP Addressing & Subnetting','Routing: OSPF, EIGRP, Static Routes','VLANs, Trunking & Spanning Tree','WAN Technologies & VPNs','Network Services: DHCP, DNS, NAT','Security Fundamentals & ACLs','Automation & Programmability','5 Full-Length Practice Exams']},
-  {id:2,cat:'CCNP',icon:'🔷',th:'th2',title:'CCNP Enterprise: ENCOR 350-401',desc:'Advanced enterprise networking — BGP, MPLS, SD-WAN, wireless, automation, and security. Full ENCOR exam preparation.',level:'Advanced',duration:'120 hrs',students:'180',price:'$249',rating:'4.8',reviews:'64',prereqs:'CCNA certification or equivalent knowledge.',curriculum:['Advanced OSPF, BGP & IS-IS','MPLS L3VPN Architecture','Campus Switching: STP/RSTP/MSTP','Wireless: 802.11 & Cisco WLC','SD-WAN Architecture & Deployment','Python & Ansible Automation','NETCONF/RESTCONF & YANG','Network Assurance & DNA Center','ENCOR Practice Exams']},
-  {id:3,cat:'Security',icon:'🔐',th:'th3',title:'CyberOps & Network Security (SCOR)',desc:'Comprehensive Cisco security training: ASA firewalls, Firepower NGFW, VPNs, IDS/IPS, and incident response.',level:'Intermediate',duration:'90 hrs',students:'210',price:'$199',rating:'4.9',reviews:'89',prereqs:'CCNA or basic networking knowledge.',curriculum:['Security Concepts & Cryptography','Cisco ASA Firewall & NAT','Firepower NGFW & IPS','VPN: IPsec & SSL/TLS','Identity Management: AAA & ISE','Security Monitoring & SIEM','Threat Detection & Response','CyberOps & SCOR Practice Exams']},
-  {id:4,cat:'Labs',icon:'🖧',th:'th4',title:'Packet Tracer Masterclass: 50+ Labs',desc:'50+ practical Cisco Packet Tracer labs. Build complete enterprise networks from scratch with expert guidance.',level:'Beginner',duration:'40 hrs',students:'560',price:'$79',rating:'4.9',reviews:'207',prereqs:'No prerequisites. Packet Tracer is free to download.',curriculum:['Interface & Device Setup','LAN Topology Design','Router CLI from Scratch','VLAN & Inter-VLAN Routing','OSPF Multi-Area Labs','EIGRP & Redistribution','ACL Security Labs','IPv6 Dual-Stack Lab','Final Project: Enterprise Campus']},
-  {id:5,cat:'CCNP',icon:'⚙️',th:'th5',title:'SD-WAN & Network Automation (Python)',desc:'Cisco Viptela SD-WAN, Python scripting, Ansible playbooks, NETCONF/RESTCONF APIs, and DNA Center automation.',level:'Advanced',duration:'60 hrs',students:'95',price:'$199',rating:'4.7',reviews:'38',prereqs:'CCNP ENCOR or solid enterprise networking experience.',curriculum:['SD-WAN: Control & Data Plane','vManage, vBond & vSmart','OMP Routing & Policy','Python for Network Engineers','Netmiko & NAPALM Libraries','Ansible for Cisco IOS','NETCONF & RESTCONF','DNA Center REST API','DevOps Capstone Project']},
-  {id:6,cat:'CCNA',icon:'📝',th:'th6',title:'CCNA Exam Bootcamp: 10-Day Intensive',desc:'Rapid exam prep with 5 full-length practice tests, time management strategies, and domain-by-domain review sessions.',level:'Intermediate',duration:'30 hrs',students:'340',price:'Free',rating:'4.8',reviews:'156',prereqs:'Completed CCNA training or equivalent knowledge.',curriculum:['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim']}
-];
-
-/* ──────────── STATE ──────────── */
-const S={user:null,enrolled:[],tier:'free',filter:'all'};
-
-/* ──────────── INIT ──────────── */
-document.addEventListener('DOMContentLoaded',()=>{
-  initCircuit();initCursor();initScroll();initObserver();initCounters();
-  renderCourses('home-courses-grid',COURSES.slice(0,3));
-  restoreSession();
-  setTimeout(()=>document.getElementById('loader').classList.add('gone'),1700);
-  document.getElementById('auth-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
-  document.getElementById('course-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeCourseModal();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeCourseModal();}});
-});
-
-/* ──────────── CIRCUIT CANVAS ──────────── */
-function initCircuit(){
-  const c=document.getElementById('circuit-canvas');
-  const ctx=c.getContext('2d');
-  let W,H,nodes=[];
-  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;nodes=[];const n=Math.floor((W*H)/22000);for(let i=0;i<n;i++)nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*0.3,vy:(Math.random()-.5)*0.3});}
-  resize();window.addEventListener('resize',resize);
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;
-      ctx.beginPath();ctx.arc(n.x,n.y,1.5,0,Math.PI*2);ctx.fillStyle='#00d4ff';ctx.fill();
-    });
-    for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
-      const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);
-      if(d<130){ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.strokeStyle=`rgba(0,212,255,${(1-d/130)*0.5})`;ctx.lineWidth=0.4;ctx.stroke();}
-    }
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-/* ──────────── CURSOR ──────────── */
-function initCursor(){
-  if(window.innerWidth<1024)return;
-  const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
-  document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';});
-  document.querySelectorAll('button,a,.ccard,.cert-tile,.feat-item').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{cur.classList.add('cursor-hover');ring.classList.add('cursor-ring-hover');});
-    el.addEventListener('mouseleave',()=>{cur.classList.remove('cursor-hover');ring.classList.remove('cursor-ring-hover');});
-  });
-}
-
-/* ──────────── SCROLL ──────────── */
-function initScroll(){
-  const nav=document.getElementById('nav');
-  window.addEventListener('scroll',()=>nav.classList.toggle('stuck',window.scrollY>20),{passive:true});
-}
-
-/* ──────────── INTERSECTION OBSERVER ──────────── */
-function initObserver(){
-  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}}),{threshold:0.12});
-  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-}
-function reObserve(){
-  setTimeout(()=>{
-    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');}),{threshold:0.1});
-    document.querySelectorAll('.reveal:not(.vis)').forEach(el=>obs.observe(el));
-  },120);
-}
-
-/* ──────────── COUNTERS ──────────── */
-function initCounters(){
-  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){animCount(e.target);obs.unobserve(e.target);}}),{threshold:0.5});
-  document.querySelectorAll('[data-count]').forEach(el=>obs.observe(el));
-}
-function animCount(el){
-  const target=+el.dataset.count,sfx=el.dataset.sfx||'',dur=1800,start=performance.now();
-  (function tick(now){
-    const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3);
-    el.textContent=Math.round(target*e)+sfx;
-    if(p<1)requestAnimationFrame(tick);
-  })(start);
-}
-
-/* ──────────── PAGE ROUTING ──────────── */
-function showPage(pg){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
-  const t=document.getElementById('page-'+pg);
-  if(t)t.classList.add('show');
-  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.toggle('act',a.dataset.pg===pg));
-  window.scrollTo({top:0,behavior:'smooth'});
-  const footer=document.getElementById('site-footer');
-  if(footer)footer.style.display=pg==='dashboard'?'none':'';
-  if(pg==='courses')renderCourses('all-courses-grid',COURSES);
-  if(pg==='about')setTimeout(animSkills,300);
-  if(pg==='dashboard'){if(!S.user){openModal('login');showPage('home');return;}updateDash();}
-  reObserve();
-}
-
-/* ──────────── COURSES ──────────── */
-function renderCourses(gridId,data){
-  const g=document.getElementById(gridId);if(!g)return;
-  g.innerHTML=data.map(c=>`
-    <div class="ccard reveal" onclick="openCourseDetail(${c.id})">
-      <div class="cc-thumb ${c.th}"><span class="cc-thumb-icon">${c.icon}</span><div class="cc-level-tag lvl-${c.level==='Beginner'?'beg':c.level==='Advanced'?'adv':'int'}">${c.level}</div></div>
-      <div class="cc-body">
-        <div class="cc-cat">${c.cat}</div>
-        <div class="cc-title">${c.title}</div>
-        <div class="cc-desc">${c.desc}</div>
-        <div class="cc-meta"><span><i class="fas fa-clock"></i>${c.duration}</span><span><i class="fas fa-users"></i>${c.students}+ students</span><span><i class="fas fa-star"></i>${c.rating}</span></div>
-        <div class="cc-footer">
-          <span class="cc-price ${c.price==='Free'?'free':''}">${c.price}</span>
-          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${c.id===6?'▶ Start Course':S.enrolled.includes(c.id)?'✓ Enrolled':'Enroll Now'}</button>
-        </div>
-      </div>
-    </div>`).join('');
-  reObserve();
-}
-function filterCourses(cat,btn){
-  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
-  S.filter=cat;applyFilter();
-}
-function searchCourses(){applyFilter();}
-function applyFilter(){
-  const q=(document.getElementById('course-search')?.value||'').toLowerCase();
-  let d=S.filter==='all'?COURSES:COURSES.filter(c=>c.cat===S.filter);
-  if(q)d=d.filter(c=>c.title.toLowerCase().includes(q)||c.desc.toLowerCase().includes(q));
-  const info=document.getElementById('results-info');
-  if(info)info.innerHTML=`<span>${d.length}</span> courses`;
-  renderCourses('all-courses-grid',d);
-}
-function openCourseDetail(id){
-  const c=COURSES.find(x=>x.id===id);if(!c)return;
-  const isEnrolled=S.enrolled.includes(id);
-  document.getElementById('course-detail-inner').innerHTML=`
-    <div class="cdm-header">
-      <div class="cdm-thumb ${c.th}">${c.icon}</div>
-      <div><div style="font-size:0.62rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px">${c.cat}</div>
-      <div style="font-family:'Orbitron',monospace;font-size:1.05rem;font-weight:900;color:var(--tw);line-height:1.3">${c.title}</div>
-      <div style="color:#ffd700;font-size:0.8rem;margin-top:4px">★★★★★ ${c.rating} (${c.reviews} reviews)</div></div>
-    </div>
-    <div class="cdm-meta">
-      <span class="cdm-mi"><i class="fas fa-signal"></i><strong>${c.level}</strong></span>
-      <span class="cdm-mi"><i class="fas fa-clock"></i><strong>${c.duration}</strong></span>
-      <span class="cdm-mi"><i class="fas fa-users"></i><strong>${c.students}+ enrolled</strong></span>
-      <span class="cdm-mi"><i class="fas fa-tag"></i><strong style="color:var(--tw)">${c.price}</strong></span>
-    </div>
-    <p style="color:var(--tm);font-size:0.85rem;line-height:1.75;margin-bottom:1.2rem">${c.desc}</p>
-    <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:0.9rem;margin-bottom:1.2rem">
-      <span style="font-size:0.65rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase">Prerequisites: </span>
-      <span style="font-size:0.82rem;color:var(--tm)">${c.prereqs}</span>
-    </div>
-    <div class="curr-wrap">
-      <div class="curr-title-txt">Curriculum — ${c.curriculum.length} modules</div>
-      <div class="curr-list">${c.curriculum.map((m,i)=>`<div class="curr-li"><div class="curr-num">${i+1}</div>${m}</div>`).join('')}</div>
-    </div>
-    <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:0.9rem;display:flex;align-items:center;gap:10px;margin-bottom:1.2rem">
-      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c3));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:700;font-size:0.75rem;color:var(--bg)">AH</div>
-      <div><div style="font-size:0.65rem;color:var(--tm)">Instructor</div><div style="font-size:0.88rem;font-weight:700;color:var(--tw)">Ahmed Hussein</div><div style="font-size:0.65rem;color:var(--c)">Cisco Certified Professional</div></div>
-    </div>
-    <div class="enroll-foot">
-      <div><div class="ef-price ${c.price==='Free'?'free':''}">${c.price}</div><div style="font-size:0.65rem;color:var(--tm);margin-top:3px">Full lifetime access</div></div>
-      <button class="btn ${isEnrolled?'btn-ghost':'btn-c'}" onclick="enrollCourse(${c.id});closeCourseModal()">
-        ${isEnrolled?'<i class="fas fa-check"></i> Already Enrolled':'<i class="fas fa-graduation-cap"></i> Enroll Now'}
-      </button>
-    </div>`;
-  document.getElementById('course-modal').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeCourseModal(){document.getElementById('course-modal').classList.remove('open');document.body.style.overflow='';}
-function enrollCourse(id){
-  if(id===6){window.location.href='ccna-domain1.html';return;}
-  if(!S.user){openModal('login');toast('Sign in to enroll in a course','inf');return;}
-  if(S.enrolled.includes(id)){toast('Already enrolled in this course','inf');return;}
-  S.enrolled.push(id);S.user.enrolled=S.enrolled;saveSession();updateDash();
-  toast('Enrolled successfully! Check your dashboard.','suc');
-  renderCourses('home-courses-grid',COURSES.slice(0,3));
-  renderCourses('all-courses-grid',COURSES);
-}
-
-/* ──────────── SKILL BARS ──────────── */
-function animSkills(){document.querySelectorAll('.sr-fill').forEach(b=>b.style.width=b.dataset.w||'0%');}
-
-/* ──────────── AUTH ──────────── */
-function openModal(tab='login'){document.getElementById('auth-modal').classList.add('open');document.body.style.overflow='hidden';switchTab(tab);['login-err','reg-err'].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('show');});['login-ok','reg-ok'].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('show');});}
-function closeModal(){document.getElementById('auth-modal').classList.remove('open');document.body.style.overflow='';}
-function switchTab(tab){document.querySelectorAll('.m-tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===tab));document.querySelectorAll('.m-panel').forEach(p=>p.classList.toggle('on',p.id==='mp-'+tab));}
-function pickTier(t){S.tier=t;document.querySelectorAll('.tier-opt').forEach(o=>o.classList.toggle('on',o.dataset.tier===t));}
-function doLogin(){
-  const email=document.getElementById('l-email').value.trim(),pass=document.getElementById('l-pass').value;
-  const err=document.getElementById('login-err');
-  if(!email||!pass){err.textContent='Please fill in all fields.';err.classList.add('show');return;}
-  const users=JSON.parse(localStorage.getItem('ah_users')||'[]');
-  const u=users.find(x=>x.email===email&&x.pass===btoa(pass));
-  if(!u){err.textContent='Invalid email or password.';err.classList.add('show');return;}
-  err.classList.remove('show');document.getElementById('login-ok').classList.add('show');
-  S.user=u;S.enrolled=u.enrolled||[];saveSession();
-  setTimeout(()=>{closeModal();updateNav(true);updateDash();toast('Welcome back, '+u.fname+'!','suc');},900);
-}
-function doRegister(){
-  const fname=document.getElementById('r-fname').value.trim(),lname=document.getElementById('r-lname').value.trim(),email=document.getElementById('r-email').value.trim(),phone=document.getElementById('r-phone').value.trim(),pass=document.getElementById('r-pass').value;
-  const err=document.getElementById('reg-err');
-  if(!fname||!email||!pass){err.textContent='First name, email and password are required.';err.classList.add('show');return;}
-  if(!email.includes('@')){err.textContent='Please enter a valid email.';err.classList.add('show');return;}
-  if(pass.length<8){err.textContent='Password must be at least 8 characters.';err.classList.add('show');return;}
-  const users=JSON.parse(localStorage.getItem('ah_users')||'[]');
-  if(users.find(x=>x.email===email)){err.textContent='This email is already registered.';err.classList.add('show');return;}
-  err.classList.remove('show');
-  const nu={fname,lname,email,phone,pass:btoa(pass),tier:S.tier,enrolled:[],joined:new Date().toLocaleDateString()};
-  users.push(nu);localStorage.setItem('ah_users',JSON.stringify(users));
-  document.getElementById('reg-ok').classList.add('show');
-  setTimeout(()=>{document.getElementById('reg-ok').classList.remove('show');switchTab('login');},1600);
-}
-function doLogout(){S.user=null;S.enrolled=[];sessionStorage.removeItem('ah_user');updateNav(false);showPage('home');toast('Logged out successfully.','inf');}
-function saveSession(){const u={...S.user,enrolled:S.enrolled};sessionStorage.setItem('ah_user',JSON.stringify(u));const users=JSON.parse(localStorage.getItem('ah_users')||'[]');const i=users.findIndex(x=>x.email===S.user.email);if(i>-1){users[i]=u;localStorage.setItem('ah_users',JSON.stringify(users));}}
-function restoreSession(){const s=sessionStorage.getItem('ah_user');if(s){S.user=JSON.parse(s);S.enrolled=S.user.enrolled||[];updateNav(true);}}
-function updateNav(in_){document.getElementById('nav-login-btn').style.display=in_?'none':'';document.getElementById('nav-reg-btn').style.display=in_?'none':'';document.getElementById('nav-logout-btn').style.display=in_?'':'none';document.getElementById('nav-dash-lnk').style.display=in_?'':'none';}
-
-/* ──────────── DASHBOARD ──────────── */
-function showDashPanel(id,el){document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('act'));document.querySelectorAll('.ds-item').forEach(i=>i.classList.remove('act'));document.getElementById('dash-'+id)?.classList.add('act');if(el)el.classList.add('act');}
-function updateDash(){
-  if(!S.user)return;
-  document.getElementById('dash-name').textContent=S.user.fname?.toUpperCase()||'STUDENT';
-  document.getElementById('dash-plan').textContent=S.user.tier==='premium'?'PREMIUM ⚡':'FREE';
-  document.getElementById('dash-enrolled-n').textContent=S.enrolled.length;
-  const enr=COURSES.filter(c=>S.enrolled.includes(c.id));
-  const html=enr.length?enr.map(c=>`<div class="enr-item"><div class="enr-thumb ${c.th}">${c.icon}</div><div style="flex:1"><div class="enr-name">${c.title}</div><div class="enr-prog-lbl">Progress</div></div><div class="enr-prog-wrap" style="max-width:160px"><div class="enr-bar"><div class="enr-fill" style="width:0%"></div></div><div class="enr-pct">0%</div></div></div>`).join(''):`<div class="empty-state"><div class="es-ico">📡</div><div class="es-title">NO COURSES YET</div><div class="es-desc">Enroll in a course to get started.</div><button class="btn btn-c" onclick="showPage('courses')"><i class="fas fa-search"></i> Browse Courses</button></div>`;
-  ['dash-enr-list','dash-mc-list'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
-  if(document.getElementById('pf-fname'))document.getElementById('pf-fname').value=S.user.fname||'';
-  if(document.getElementById('pf-lname'))document.getElementById('pf-lname').value=S.user.lname||'';
-  if(document.getElementById('pf-email'))document.getElementById('pf-email').value=S.user.email||'';
-  if(document.getElementById('pf-phone'))document.getElementById('pf-phone').value=S.user.phone||'';
-}
-function saveProfile(){
-  if(!S.user)return;
-  S.user.fname=document.getElementById('pf-fname').value||S.user.fname;
-  S.user.lname=document.getElementById('pf-lname').value||S.user.lname;
-  S.user.phone=document.getElementById('pf-phone').value||S.user.phone;
-  saveSession();document.getElementById('dash-name').textContent=S.user.fname.toUpperCase();
-  toast('Profile updated!','suc');
-}
-
-/* ──────────── CONTACT ──────────── */
-function sendContact(){
-  if(!document.getElementById('cf-email').value){toast('Please enter your email address.','err');return;}
-  const ok=document.getElementById('contact-ok');ok.classList.add('show');
-  toast('Message sent! I\'ll respond within 24 hours.','suc');
-  ['cf-fname','cf-lname','cf-email','cf-phone','cf-msg'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  setTimeout(()=>ok.classList.remove('show'),5000);
-}
-function doSubscribe(){
-  const v=document.getElementById('nl-email').value;
-  if(!v.includes('@')){toast('Please enter a valid email.','err');return;}
-  toast('Subscribed! Weekly resources coming your way.','suc');document.getElementById('nl-email').value='';
-}
-
-/* ──────────── TOAST ──────────── */
-function toast(msg,type='inf'){
-  const box=document.getElementById('toast-box');
-  const icons={suc:'fa-check-circle',err:'fa-exclamation-circle',inf:'fa-info-circle'};
-  const t=document.createElement('div');t.className=`toast ${type}`;
-  t.innerHTML=`<i class="fas ${icons[type]||icons.inf}"></i><span>${msg}</span>`;
-  box.appendChild(t);
-  setTimeout(()=>{t.classList.add('rm');setTimeout(()=>t.remove(),300);},4200);
-}
-
-/* ──────────── MOBILE NAV ──────────── */
-function toggleMob(){document.getElementById('mob-nav').classList.toggle('open');document.getElementById('ham').classList.toggle('open');}
-</script>
-
+<!-- ── SCRIPTS ── -->
+<script src="js/app.js"></script>
 </body>
 </html>
