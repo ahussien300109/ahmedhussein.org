@@ -1,40 +1,46 @@
 /* ─────────────────────────────────────────────
-   app.js — Course Data, Auth & Application Logic
+   app.js — Course Data, Routing & Application Logic
    ───────────────────────────────────────────── */
 
 /* ── COURSE DATA ── */
 const COURSES = [
-  { id: 1, cat: 'CCNA', icon: '🌐', th: 'th1', title: 'CCNA 200-301: Complete Network Associate',
+  { id: 1, cat: 'CCNA', icon: '🌐', th: 'th1',
+    title: 'CCNA 200-301: Complete Network Associate',
     desc: 'Master routing, switching, IPv4/IPv6, VLANs, OSPF, and everything you need to pass the CCNA exam first time.',
     level: 'Beginner', duration: '80 hrs', students: '420', price: '$149', rating: '4.9', reviews: '128',
     prereqs: 'No prior networking knowledge required.',
     curriculum: ['Networking Fundamentals & OSI Model','IP Addressing & Subnetting','Routing: OSPF, EIGRP, Static Routes','VLANs, Trunking & Spanning Tree','WAN Technologies & VPNs','Network Services: DHCP, DNS, NAT','Security Fundamentals & ACLs','Automation & Programmability','5 Full-Length Practice Exams'] },
 
-  { id: 2, cat: 'CCNP', icon: '🔷', th: 'th2', title: 'CCNP Enterprise: ENCOR 350-401',
+  { id: 2, cat: 'CCNP', icon: '🔷', th: 'th2',
+    title: 'CCNP Enterprise: ENCOR 350-401',
     desc: 'Advanced enterprise networking — BGP, MPLS, SD-WAN, wireless, automation, and security. Full ENCOR exam preparation.',
     level: 'Advanced', duration: '120 hrs', students: '180', price: '$249', rating: '4.8', reviews: '64',
     prereqs: 'CCNA certification or equivalent knowledge.',
     curriculum: ['Advanced OSPF, BGP & IS-IS','MPLS L3VPN Architecture','Campus Switching: STP/RSTP/MSTP','Wireless: 802.11 & Cisco WLC','SD-WAN Architecture & Deployment','Python & Ansible Automation','NETCONF/RESTCONF & YANG','Network Assurance & DNA Center','ENCOR Practice Exams'] },
 
-  { id: 3, cat: 'Security', icon: '🔐', th: 'th3', title: 'CyberOps & Network Security (SCOR)',
+  { id: 3, cat: 'Security', icon: '🔐', th: 'th3',
+    title: 'CyberOps & Network Security (SCOR)',
     desc: 'Comprehensive Cisco security training: ASA firewalls, Firepower NGFW, VPNs, IDS/IPS, and incident response.',
     level: 'Intermediate', duration: '90 hrs', students: '210', price: '$199', rating: '4.9', reviews: '89',
     prereqs: 'CCNA or basic networking knowledge.',
     curriculum: ['Security Concepts & Cryptography','Cisco ASA Firewall & NAT','Firepower NGFW & IPS','VPN: IPsec & SSL/TLS','Identity Management: AAA & ISE','Security Monitoring & SIEM','Threat Detection & Response','CyberOps & SCOR Practice Exams'] },
 
-  { id: 4, cat: 'Labs', icon: '🖧', th: 'th4', title: 'Packet Tracer Masterclass: 50+ Labs',
+  { id: 4, cat: 'Labs', icon: '🖧', th: 'th4',
+    title: 'Packet Tracer Masterclass: 50+ Labs',
     desc: '50+ practical Cisco Packet Tracer labs. Build complete enterprise networks from scratch with expert guidance.',
     level: 'Beginner', duration: '40 hrs', students: '560', price: '$79', rating: '4.9', reviews: '207',
     prereqs: 'No prerequisites. Packet Tracer is free to download.',
     curriculum: ['Interface & Device Setup','LAN Topology Design','Router CLI from Scratch','VLAN & Inter-VLAN Routing','OSPF Multi-Area Labs','EIGRP & Redistribution','ACL Security Labs','IPv6 Dual-Stack Lab','Final Project: Enterprise Campus'] },
 
-  { id: 5, cat: 'CCNP', icon: '⚙️', th: 'th5', title: 'SD-WAN & Network Automation (Python)',
+  { id: 5, cat: 'CCNP', icon: '⚙️', th: 'th5',
+    title: 'SD-WAN & Network Automation (Python)',
     desc: 'Cisco Viptela SD-WAN, Python scripting, Ansible playbooks, NETCONF/RESTCONF APIs, and DNA Center automation.',
     level: 'Advanced', duration: '60 hrs', students: '95', price: '$199', rating: '4.7', reviews: '38',
     prereqs: 'CCNP ENCOR or solid enterprise networking experience.',
     curriculum: ['SD-WAN: Control & Data Plane','vManage, vBond & vSmart','OMP Routing & Policy','Python for Network Engineers','Netmiko & NAPALM Libraries','Ansible for Cisco IOS','NETCONF & RESTCONF','DNA Center REST API','DevOps Capstone Project'] },
 
-  { id: 6, cat: 'CCNA', icon: '📝', th: 'th6', title: 'CCNA Exam Bootcamp: 10-Day Intensive',
+  { id: 6, cat: 'CCNA', icon: '📝', th: 'th6',
+    title: 'CCNA Exam Bootcamp: 10-Day Intensive',
     desc: 'Rapid exam prep with 5 full-length practice tests, time management strategies, and domain-by-domain review sessions.',
     level: 'Intermediate', duration: '30 hrs', students: '340', price: 'Free', rating: '4.8', reviews: '156',
     prereqs: 'Completed CCNA training or equivalent knowledge.',
@@ -51,18 +57,31 @@ document.addEventListener('DOMContentLoaded', () => {
   initScroll();
   initObserver();
   initCounters();
-  initScrollSpy();
-  renderCourses('all-courses-grid', COURSES);
+  renderCourses('home-courses-grid', COURSES.slice(0, 3));
   restoreSession();
   setTimeout(() => document.getElementById('loader').classList.add('gone'), 1700);
-  if (document.documentElement.getAttribute('data-theme') === 'light') {
-    const ic = document.getElementById('theme-icon');
-    if (ic) ic.className = 'fas fa-moon';
-  }
   document.getElementById('auth-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   document.getElementById('course-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCourseModal(); } });
 });
+
+/* ── PAGE ROUTING ── */
+function showPage(pg) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
+  const target = document.getElementById('page-' + pg);
+  if (target) target.classList.add('show');
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('act', a.dataset.pg === pg));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const footer = document.getElementById('site-footer');
+  if (footer) footer.style.display = pg === 'dashboard' ? 'none' : '';
+  if (pg === 'courses') renderCourses('all-courses-grid', COURSES);
+  if (pg === 'about') setTimeout(animSkills, 300);
+  if (pg === 'dashboard') {
+    if (!S.user) { openModal('login'); showPage('home'); return; }
+    updateDash();
+  }
+  reObserve();
+}
 
 /* ── COURSE RENDERING ── */
 function renderCourses(gridId, data) {
@@ -170,7 +189,8 @@ function enrollCourse(id) {
   saveSession();
   updateDash();
   toast('Enrolled successfully! Check your dashboard.', 'suc');
-  applyFilter();
+  renderCourses('home-courses-grid', COURSES.slice(0, 3));
+  renderCourses('all-courses-grid', COURSES);
 }
 
 /* ── AUTHENTICATION ── */
@@ -211,7 +231,6 @@ function doLogin() {
   saveSession();
   setTimeout(() => {
     closeModal(); updateNav(true); updateDash();
-    document.getElementById('dashboard').style.display = '';
     toast('Welcome back, ' + u.fname + '!', 'suc');
   }, 900);
 }
@@ -238,9 +257,8 @@ function doRegister() {
 function doLogout() {
   S.user = null; S.enrolled = [];
   sessionStorage.removeItem('ah_user');
-  document.getElementById('dashboard').style.display = 'none';
   updateNav(false);
-  scrollToSection('hero');
+  showPage('home');
   toast('Logged out successfully.', 'inf');
 }
 
@@ -256,8 +274,7 @@ function restoreSession() {
   const s = sessionStorage.getItem('ah_user');
   if (s) {
     S.user = JSON.parse(s); S.enrolled = S.user.enrolled || [];
-    updateNav(true); updateDash();
-    document.getElementById('dashboard').style.display = '';
+    updateNav(true);
   }
 }
 
@@ -269,13 +286,6 @@ function updateNav(loggedIn) {
 }
 
 /* ── DASHBOARD ── */
-function showDashboard() {
-  if (!S.user) { openModal('login'); return; }
-  document.getElementById('dashboard').style.display = '';
-  updateDash();
-  scrollToSection('dashboard');
-}
-
 function showDashPanel(id, el) {
   document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('act'));
   document.querySelectorAll('.ds-item').forEach(i => i.classList.remove('act'));
@@ -303,7 +313,7 @@ function updateDash() {
         <div class="es-ico">📡</div>
         <div class="es-title">NO COURSES YET</div>
         <div class="es-desc">Enroll in a course to get started.</div>
-        <button class="btn btn-c" onclick="scrollToSection('courses')"><i class="fas fa-search"></i> Browse Courses</button>
+        <button class="btn btn-c" onclick="showPage('courses')"><i class="fas fa-search"></i> Browse Courses</button>
       </div>`;
   ['dash-enr-list', 'dash-mc-list'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = html; });
   if (document.getElementById('pf-fname')) document.getElementById('pf-fname').value = S.user.fname || '';

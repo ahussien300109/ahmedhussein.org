@@ -140,6 +140,13 @@ function toggleTheme() {
   document.getElementById('theme-icon').className = isLight ? 'fas fa-sun' : 'fas fa-moon';
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.documentElement.getAttribute('data-theme') === 'light') {
+    const ic = document.getElementById('theme-icon');
+    if (ic) ic.className = 'fas fa-moon';
+  }
+});
+
 /* ── TOAST NOTIFICATIONS ── */
 function toast(msg, type = 'inf') {
   const box = document.getElementById('toast-box');
