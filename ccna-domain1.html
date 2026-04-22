@@ -326,7 +326,7 @@ td strong{color:var(--tw);}
       <div class="sb-divider"></div>
       <div class="sb-lesson" id="sb-l1" data-l="l1" onclick="go('l1')">
         <div class="sb-num">1.1</div>
-        <div><div class="sb-lname">Introduction to Networks</div><div class="sb-lsub">Types · Components · Reliability</div></div>
+        <div><div class="sb-lname">Introduction to Networks</div><div class="sb-lsub">Components · Topologies · Trends · Security</div></div>
         <i class="fas fa-check-circle sb-check"></i>
       </div>
       <div class="sb-lesson" id="sb-l2" data-l="l2" onclick="go('l2')">
@@ -371,8 +371,8 @@ td strong{color:var(--tw);}
         <div class="w-cards">
           <div class="w-card" onclick="go('l1')">
             <div class="w-num">Lesson 1.1</div>
-            <div class="w-name">Introduction to Networks</div>
-            <div class="w-sub">LAN · WAN · CAN · MAN · Components · Reliability · 5 Questions</div>
+            <div class="w-name">Networking Today</div>
+            <div class="w-sub">Components · Topologies · Connections · Reliability · Trends · Security · 10 Questions</div>
           </div>
           <div class="w-card" onclick="go('l2')">
             <div class="w-num">Lesson 1.2</div>
@@ -392,178 +392,285 @@ td strong{color:var(--tw);}
     <!-- ====== LESSON 1.1 ====== -->
     <div class="lesson-panel" id="panel-l1">
       <div class="lesson-header">
-        <div class="lh-eyebrow">Domain 1 · Lesson 1.1</div>
-        <h1 class="lh-title">Introduction to <span class="ac">Networks</span></h1>
-        <p class="lh-desc">A network connects devices to share data and resources. Understanding types, components, and reliability characteristics is the foundation of the CCNA exam.</p>
+        <div class="lh-eyebrow">Domain 1 &middot; Lesson 1.1</div>
+        <h1 class="lh-title">Module 1: <span class="ac">Networking Today</span></h1>
+        <p class="lh-desc">Every modern task &mdash; from sending a message to streaming video &mdash; relies on a network. This lesson covers how networks are built, how they stay reliable, and how they continue to evolve in today&rsquo;s connected world.</p>
         <div class="lh-tags">
-          <span class="tag tag-b">Network Types</span>
-          <span class="tag tag-b">Topology</span>
-          <span class="tag tag-g">Components</span>
-          <span class="tag tag-o">Reliability</span>
+          <span class="tag tag-b">Network Components</span>
+          <span class="tag tag-b">Topologies</span>
+          <span class="tag tag-g">Reliability</span>
+          <span class="tag tag-o">Trends &amp; Security</span>
         </div>
       </div>
 
       <div class="section">
-        <div class="sec-title"><i class="fas fa-network-wired"></i> Network Definition</div>
-        <p class="body-text">A <strong>network</strong> is a group of two or more computers or electronic devices that are interconnected for the purpose of exchanging data and sharing resources. Every device on a network is called a <strong>host</strong> or <strong>end device</strong>.</p>
-        <div class="hbox hb-i"><div class="hb-label"><i class="fas fa-info-circle"></i> Key Concept</div><div class="hb-text">The purpose of an IP address is to handle communication between devices that send and receive information across a network. The IP address <strong>uniquely identifies</strong> every device on the network.</div></div>
-      </div>
-
-      <div class="section">
-        <div class="sec-title"><i class="fas fa-globe"></i> Network Types</div>
+        <div class="sec-title"><i class="fas fa-globe"></i> Why Networks Matter</div>
+        <p class="body-text">A <strong>network</strong> connects two or more devices so they can exchange data and share resources. Modern life depends on networks for healthcare, education, business, and entertainment &mdash; making network knowledge an essential skill for any IT professional.</p>
         <div class="info-grid">
-          <div class="info-card">
-            <div class="ic-icon">🏢</div>
-            <div class="ic-title">LAN — Local Area Network</div>
-            <div class="ic-desc">Connects devices within a building or group of nearby buildings. Typically fast (1Gbps+). Managed by a single enterprise.</div>
-            <div class="ic-badge">Enterprise Managed</div>
-          </div>
-          <div class="info-card">
-            <div class="ic-icon">🏫</div>
-            <div class="ic-title">CAN — Campus Area Network</div>
-            <div class="ic-desc">Larger than a LAN, spans multiple nearby buildings. Typical in universities. Users share resources across buildings.</div>
-            <div class="ic-badge">Multi-Building</div>
-          </div>
-          <div class="info-card">
-            <div class="ic-icon">🏙️</div>
-            <div class="ic-title">MAN — Metropolitan Area Network</div>
-            <div class="ic-desc">Larger than LAN but smaller than WAN. Covers a city. Ownership and maintenance handled by an ISP.</div>
-            <div class="ic-badge">ISP Managed</div>
-          </div>
-          <div class="info-card">
-            <div class="ic-icon">🌍</div>
-            <div class="ic-title">WAN — Wide Area Network</div>
-            <div class="ic-desc">Connects networks across long physical distances. The Internet is the largest WAN. Managed by multiple administrators or the public.</div>
-            <div class="ic-badge">Global Scale</div>
-          </div>
+          <div class="info-card"><div class="ic-icon">&#127973;</div><div class="ic-title">Healthcare</div><div class="ic-desc">Doctors share patient records, diagnostic images, and treatment data across hospitals in real time.</div><div class="ic-badge">Critical Uptime</div></div>
+          <div class="info-card"><div class="ic-icon">&#128218;</div><div class="ic-title">Education</div><div class="ic-desc">Students access lectures, labs, and collaboration tools from any location through online learning platforms.</div><div class="ic-badge">E-Learning</div></div>
+          <div class="info-card"><div class="ic-icon">&#127970;</div><div class="ic-title">Business</div><div class="ic-desc">Companies communicate, transact, and collaborate globally over secure private and public networks.</div><div class="ic-badge">Global Commerce</div></div>
+          <div class="info-card"><div class="ic-icon">&#127968;</div><div class="ic-title">Home &amp; Leisure</div><div class="ic-desc">Streaming, gaming, smart home devices, and social communication all depend on continuous network access.</div><div class="ic-badge">IoT &amp; Media</div></div>
         </div>
+        <div class="hbox hb-i"><div class="hb-label"><i class="fas fa-info-circle"></i> Key Concept</div><div class="hb-text">Every device that sends or receives data on a network is called a <strong>host</strong> or <strong>end device</strong>. Each host is assigned an <strong>IP address</strong> that uniquely identifies it &mdash; similar to a postal address for your home.</div></div>
       </div>
 
       <div class="section">
         <div class="sec-title"><i class="fas fa-server"></i> Network Components</div>
+        <p class="body-text">Every network is made from three core building blocks: <strong>end devices</strong>, <strong>intermediary devices</strong>, and <strong>network media</strong>.</p>
         <div class="info-grid">
-          <div class="info-card">
-            <div class="ic-icon">💻</div>
-            <div class="ic-title">End Devices (Hosts)</div>
-            <div class="ic-desc"><strong>Servers</strong> provide services: email, web, file storage.<br><strong>Clients</strong> send requests to servers to retrieve information.</div>
-          </div>
-          <div class="info-card">
-            <div class="ic-icon">🔄</div>
-            <div class="ic-title">Intermediary Devices</div>
-            <div class="ic-desc">Switches, routers, firewalls, wireless APs. Regenerate signals, maintain path info, notify errors.</div>
-          </div>
-          <div class="info-card">
-            <div class="ic-icon">🔌</div>
-            <div class="ic-title">Network Media</div>
-            <div class="ic-desc"><strong>Copper:</strong> Electrical impulses<br><strong>Fiber-optic:</strong> Pulses of light<br><strong>Wireless:</strong> Electromagnetic waves</div>
-          </div>
+          <div class="info-card"><div class="ic-icon">&#128187;</div><div class="ic-title">End Devices (Hosts)</div><div class="ic-desc">PCs, smartphones, servers, printers, IP cameras. Any device that originates or receives network data.</div><div class="ic-badge">Source &amp; Destination</div></div>
+          <div class="info-card"><div class="ic-icon">&#128260;</div><div class="ic-title">Intermediary Devices</div><div class="ic-desc">Switches, routers, firewalls, wireless APs. They move, filter, and direct traffic between end devices.</div><div class="ic-badge">Forward &amp; Filter</div></div>
+          <div class="info-card"><div class="ic-icon">&#128268;</div><div class="ic-title">Network Media</div><div class="ic-desc"><strong>Copper:</strong> UTP &mdash; electrical signals.<br><strong>Fiber-optic:</strong> Pulses of light.<br><strong>Wireless:</strong> Electromagnetic waves.</div><div class="ic-badge">Physical Path</div></div>
         </div>
-        <div class="tbl-wrap">
-          <table>
-            <thead><tr><th>Device</th><th>OSI Layer</th><th>Function</th></tr></thead>
-            <tbody>
-              <tr><td><strong>Switch</strong></td><td><span class="cy">Layer 2</span></td><td>Forwards frames within a LAN using MAC addresses</td></tr>
-              <tr><td><strong>Router</strong></td><td><span class="cy">Layer 3</span></td><td>Routes packets between networks using IP addresses</td></tr>
-              <tr><td><strong>Firewall</strong></td><td><span class="cy">L3–L7</span></td><td>Filters traffic based on security policies</td></tr>
-              <tr><td><strong>Wireless AP</strong></td><td><span class="cy">Layer 2</span></td><td>Connects wireless hosts to a wired network segment</td></tr>
-            </tbody>
-          </table>
-        </div>
+        <div class="sec-title" style="margin-top:1.5rem"><i class="fas fa-users"></i> Client-Server vs Peer-to-Peer</div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Model</th><th>How It Works</th><th>Advantage</th><th>Limitation</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Client-Server</strong></td><td>Dedicated servers provide services; clients send requests</td><td class="gn">Centralized, scalable, secure</td><td>Higher cost; dedicated hardware needed</td></tr>
+            <tr><td><strong>Peer-to-Peer (P2P)</strong></td><td>Any device can be both client and server simultaneously</td><td class="gn">Simple, low-cost, no dedicated server</td><td>Hard to manage and secure at scale</td></tr>
+          </tbody>
+        </table></div>
+        <div class="hbox hb-w"><div class="hb-label"><i class="fas fa-exclamation-triangle"></i> Exam Alert</div><div class="hb-text">In a <strong>P2P network</strong>, any device can act as both client AND server <strong>at the same time</strong>. Don&rsquo;t confuse P2P network architecture with P2P file-sharing applications &mdash; those apps can run on any network type.</div></div>
       </div>
 
       <div class="section">
-        <div class="sec-title"><i class="fas fa-shield-alt"></i> Reliable Network Characteristics</div>
-        <div class="steps">
-          <div class="step"><div class="step-num">1</div><div><div class="step-title">Fault Tolerance</div><div class="step-desc">Limits the impact of a failure by limiting the number of affected devices. <strong>Multiple paths</strong> are required for fault tolerance — if one path fails, traffic automatically reroutes.</div></div></div>
-          <div class="step"><div class="step-num">2</div><div><div class="step-title">Scalability</div><div class="step-desc">A scalable network can expand quickly and easily to support <strong>new users and applications</strong> without impacting performance of existing services.</div></div></div>
-          <div class="step"><div class="step-num">3</div><div><div class="step-title">Quality of Service (QoS)</div><div class="step-desc">The primary mechanism for <strong>reliable delivery</strong> of content. With a QoS policy, the router manages flow of data and voice traffic, prioritizing critical applications.</div></div></div>
-          <div class="step"><div class="step-num">4</div><div><div class="step-title">Network Security</div><div class="step-desc"><strong>Physical security:</strong> protecting network devices from unauthorized access. <strong>Information security:</strong> protecting data transmitted over the network.</div></div></div>
-        </div>
-        <div class="hbox hb-t"><div class="hb-label"><i class="fas fa-lightbulb"></i> Exam Mnemonic — FSQS</div><div class="hb-text">Remember the 4 reliable network characteristics: <strong>F</strong>ault Tolerance · <strong>S</strong>calability · <strong>Q</strong>oS · <strong>S</strong>ecurity. These appear regularly in CCNA scenario questions.</div></div>
+        <div class="sec-title"><i class="fas fa-project-diagram"></i> Network Representations &amp; Topologies</div>
+        <p class="body-text">Engineers use <strong>topology diagrams</strong> to show network structure. <strong>Physical topology</strong> shows real device locations and cabling. <strong>Logical topology</strong> shows how data flows and how devices are addressed.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Topology</th><th>Description</th><th>Typical Use</th></tr></thead>
+          <tbody>
+            <tr><td><strong class="cy">Star</strong></td><td>All devices connect to a central switch. Most common LAN design today.</td><td>Office LANs</td></tr>
+            <tr><td><strong class="cy">Bus</strong></td><td>All devices share a single backbone cable. Legacy design, rarely used today.</td><td>Legacy Ethernet</td></tr>
+            <tr><td><strong class="cy">Ring</strong></td><td>Each device connects to exactly two others, forming a loop.</td><td>Token Ring, SONET</td></tr>
+            <tr><td><strong class="cy">Point-to-Point</strong></td><td>A dedicated direct link between exactly two sites.</td><td>WAN links</td></tr>
+            <tr><td><strong class="cy">Hub-and-Spoke</strong></td><td>Branch sites connect only to a central hub. Cost-effective, but hub is a single point of failure.</td><td>Enterprise WANs</td></tr>
+            <tr><td><strong class="cy">Full Mesh</strong></td><td>Every site connects directly to every other site. Maximum redundancy, highest cost.</td><td>Critical WAN cores</td></tr>
+          </tbody>
+        </table></div>
       </div>
 
-      <!-- QUIZ 1.1 -->
+      <div class="section">
+        <div class="sec-title"><i class="fas fa-network-wired"></i> Common Network Types</div>
+        <div class="info-grid">
+          <div class="info-card"><div class="ic-icon">&#127970;</div><div class="ic-title">LAN</div><div class="ic-desc">Local Area Network. Covers a building or campus. High speed, single admin control, uses Ethernet/Wi-Fi.</div><div class="ic-badge">Single Organization</div></div>
+          <div class="info-card"><div class="ic-icon">&#128225;</div><div class="ic-title">WLAN</div><div class="ic-desc">Wireless LAN. Same coverage as a LAN but devices connect wirelessly via Wi-Fi (802.11).</div><div class="ic-badge">Wi-Fi Based</div></div>
+          <div class="info-card"><div class="ic-icon">&#127961;</div><div class="ic-title">MAN</div><div class="ic-desc">Metropolitan Area Network. Spans a city. Typically owned and managed by an ISP.</div><div class="ic-badge">City-Scale</div></div>
+          <div class="info-card"><div class="ic-icon">&#127758;</div><div class="ic-title">WAN</div><div class="ic-desc">Wide Area Network. Connects geographically distant LANs. The Internet is the world&rsquo;s largest WAN.</div><div class="ic-badge">Multi-Admin / Global</div></div>
+        </div>
+        <div class="hbox hb-t"><div class="hb-label"><i class="fas fa-lightbulb"></i> LAN vs WAN &mdash; Key Difference</div><div class="hb-text">LANs are <strong>owned and controlled by a single organization</strong> &mdash; fast (1&ndash;100 Gbps) and private. WANs are typically <strong>leased from a service provider</strong>, span large distances, and cross multiple administrative boundaries.</div></div>
+      </div>
+
+      <div class="section">
+        <div class="sec-title"><i class="fas fa-wifi"></i> Internet Connection Types</div>
+        <p class="body-text">The right internet connection depends on location, required speed, and budget. Home users and businesses have different options:</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Connection</th><th>Technology</th><th>Best For</th><th>Speed Range</th></tr></thead>
+          <tbody>
+            <tr><td><strong>DSL</strong></td><td>Existing telephone copper lines</td><td class="cy">Home / SOHO</td><td>~1&ndash;100 Mbps</td></tr>
+            <tr><td><strong>Cable</strong></td><td>Coaxial from cable TV provider</td><td class="cy">Home / SOHO</td><td>~10&ndash;500 Mbps</td></tr>
+            <tr><td><strong>Cellular / 5G</strong></td><td>Mobile radio network</td><td class="cy">Mobile / Remote</td><td>~10&ndash;1000 Mbps</td></tr>
+            <tr><td><strong>Satellite</strong></td><td>Orbiting satellites</td><td class="cy">Rural / Remote</td><td>~12&ndash;100 Mbps</td></tr>
+            <tr><td><strong>Dial-up</strong></td><td>Analog telephone line</td><td class="cy">Backup only</td><td>~56 Kbps</td></tr>
+            <tr><td><strong>Dedicated Leased Line</strong></td><td>Private point-to-point circuit</td><td class="gn">Business</td><td>~1&ndash;100 Gbps</td></tr>
+            <tr><td><strong>Metro Ethernet</strong></td><td>Fiber Ethernet across a city</td><td class="gn">Business</td><td>~1&ndash;100 Gbps</td></tr>
+          </tbody>
+        </table></div>
+        <div class="hbox hb-i"><div class="hb-label"><i class="fas fa-info-circle"></i> Business vs Home</div><div class="hb-text">Home users prioritize <strong>cost and availability</strong> &mdash; DSL and cable dominate. Business users need <strong>guaranteed bandwidth and SLA-backed reliability</strong>. Dedicated leased lines and metro Ethernet deliver consistent performance that shared consumer connections cannot match.</div></div>
+      </div>
+
+      <div class="section">
+        <div class="sec-title"><i class="fas fa-shield-alt"></i> Reliable Networks &mdash; The Four Pillars</div>
+        <p class="body-text">A trustworthy network must deliver data consistently and securely. Cisco defines four characteristics every reliable network must have:</p>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div><div class="step-title">Fault Tolerance</div><div class="step-desc">The network continues working even when a device or link fails. <strong>Redundant paths</strong> let traffic reroute automatically. Packet switching supports this &mdash; each packet can travel independently via different routes.</div></div></div>
+          <div class="step"><div class="step-num">2</div><div><div class="step-title">Scalability</div><div class="step-desc">New users and applications can be added quickly <strong>without disrupting</strong> existing services. Scalable networks follow open standards, allowing devices from multiple vendors to interoperate.</div></div></div>
+          <div class="step"><div class="step-num">3</div><div><div class="step-title">Quality of Service (QoS)</div><div class="step-desc">When congested, QoS <strong>prioritizes</strong> time-sensitive traffic (voice, video) over less critical data (email, file downloads). Without QoS, all traffic competes equally &mdash; causing choppy calls and buffering.</div></div></div>
+          <div class="step"><div class="step-num">4</div><div><div class="step-title">Network Security</div><div class="step-desc">Protects both the network <strong>infrastructure</strong> (physical/logical access to devices) and <strong>information</strong> (data confidentiality, integrity, and availability &mdash; the CIA triad).</div></div></div>
+        </div>
+        <div class="hbox hb-t"><div class="hb-label"><i class="fas fa-lightbulb"></i> Exam Mnemonic &mdash; FSQS</div><div class="hb-text"><strong>F</strong>ault Tolerance &middot; <strong>S</strong>calability &middot; <strong>Q</strong>oS &middot; <strong>S</strong>ecurity. These four characteristics appear frequently in CCNA scenario questions. Learn to match which characteristic solves which network problem.</div></div>
+      </div>
+
+      <div class="section">
+        <div class="sec-title"><i class="fas fa-chart-line"></i> Network Trends Shaping Today</div>
+        <p class="body-text">Four major trends continue to reshape how organizations and individuals use networks:</p>
+        <div class="info-grid">
+          <div class="info-card"><div class="ic-icon">&#128241;</div><div class="ic-title">BYOD</div><div class="ic-desc"><strong>Bring Your Own Device.</strong> Employees use personal phones, tablets, and laptops on corporate networks &mdash; increasing flexibility but adding security complexity.</div><div class="ic-badge o">Security Challenge</div></div>
+          <div class="info-card"><div class="ic-icon">&#129309;</div><div class="ic-title">Online Collaboration</div><div class="ic-desc">Video calls, shared workspaces, and real-time messaging enable global teamwork. Network performance directly impacts productivity.</div><div class="ic-badge">Remote Work</div></div>
+          <div class="info-card"><div class="ic-icon">&#127909;</div><div class="ic-title">Video &amp; Streaming</div><div class="ic-desc">Video is the dominant internet traffic type. It demands high bandwidth and low latency &mdash; a key driver of QoS requirements.</div><div class="ic-badge o">High Bandwidth</div></div>
+          <div class="info-card"><div class="ic-icon">&#9925;</div><div class="ic-title">Cloud Computing</div><div class="ic-desc">Process and store data on remote servers via the internet. Eliminates on-site hardware for many services. Four distinct cloud models exist.</div><div class="ic-badge g">4 Cloud Types</div></div>
+        </div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Cloud Type</th><th>Who Uses It</th><th>Managed By</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Public</strong></td><td>General public or multiple organizations</td><td>Third-party provider (AWS, Azure, Google)</td></tr>
+            <tr><td><strong>Private</strong></td><td>A single organization exclusively</td><td>The organization or a third-party provider</td></tr>
+            <tr><td><strong>Hybrid</strong></td><td>Mix of public and private resources</td><td>Shared between organization and provider</td></tr>
+            <tr><td><strong>Community</strong></td><td>Organizations with shared goals or compliance needs</td><td>Shared management among member organizations</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+
+      <div class="section">
+        <div class="sec-title"><i class="fas fa-lock"></i> Network Security</div>
+        <p class="body-text">As networks grow in scale, so do the threats targeting them. Security is a foundational design requirement &mdash; not an afterthought.</p>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Threat</th><th>What It Does</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Virus</strong></td><td>Malicious code attached to files; needs user action (opening a file) to activate and spread</td></tr>
+            <tr><td><strong>Worm</strong></td><td>Self-replicating; automatically spreads across networks exploiting vulnerabilities &mdash; no user action needed</td></tr>
+            <tr><td><strong>Trojan Horse</strong></td><td>Disguised as legitimate software; runs hidden malicious code when the user opens it</td></tr>
+            <tr><td><strong>Spyware / Adware</strong></td><td>Collects personal data or displays unwanted ads without the user&rsquo;s knowledge or consent</td></tr>
+            <tr><td><strong>DoS / DDoS</strong></td><td>Floods a target with traffic, denying access to legitimate users</td></tr>
+            <tr><td><strong>Identity Theft</strong></td><td>Stealing credentials to impersonate a user and gain unauthorized access to resources</td></tr>
+          </tbody>
+        </table></div>
+        <div class="info-grid">
+          <div class="info-card"><div class="ic-icon">&#128274;</div><div class="ic-title">Antivirus &amp; Antimalware</div><div class="ic-desc">Detects and removes malicious software from host devices before it causes harm.</div><div class="ic-badge g">Host Protection</div></div>
+          <div class="info-card"><div class="ic-icon">&#129521;</div><div class="ic-title">Firewall</div><div class="ic-desc">Filters traffic based on security rules, blocking unauthorized access at the network perimeter.</div><div class="ic-badge g">Perimeter Defense</div></div>
+          <div class="info-card"><div class="ic-icon">&#128272;</div><div class="ic-title">Encryption</div><div class="ic-desc">Scrambles data so only authorized parties can read it. Essential for VPNs and data in transit.</div><div class="ic-badge g">Confidentiality</div></div>
+          <div class="info-card"><div class="ic-icon">&#128737;</div><div class="ic-title">IPS / IDS</div><div class="ic-desc">Intrusion Prevention/Detection Systems monitor traffic for attack patterns and block or alert on threats.</div><div class="ic-badge g">Threat Detection</div></div>
+        </div>
+        <div class="hbox hb-i"><div class="hb-label"><i class="fas fa-user-graduate"></i> The IT Professional &amp; CCNA</div><div class="hb-text">The <strong>Cisco Certified Network Associate (CCNA 200-301)</strong> validates your ability to install, configure, and troubleshoot enterprise networks. This bootcamp covers all CCNA exam domains &mdash; starting with the foundational Module 1 concepts you just learned.</div></div>
+      </div>
+
+      <!-- QUIZ 1.1 — 10 Questions -->
       <div class="quiz-sec" id="quiz-l1">
         <div class="quiz-hdr">
           <div class="qh-eye"><i class="fas fa-bolt"></i> Knowledge Check</div>
-          <div class="qh-title">Quiz 1.1 — Introduction to Networks</div>
-          <div class="qh-desc">Test your understanding. Select an answer for each question then click Submit.</div>
+          <div class="qh-title">Quiz 1.1 &mdash; Networking Today</div>
+          <div class="qh-desc">Test your understanding of Module 1. Select one answer per question, then click Submit.</div>
           <div class="qh-meta">
-            <span class="qh-chip"><i class="fas fa-question-circle"></i> 5 Questions</span>
-            <span class="qh-chip"><i class="fas fa-clock"></i> ~4 minutes</span>
+            <span class="qh-chip"><i class="fas fa-question-circle"></i> 10 Questions</span>
+            <span class="qh-chip"><i class="fas fa-clock"></i> ~8 minutes</span>
             <span class="qh-chip"><i class="fas fa-trophy"></i> Pass: 60%</span>
           </div>
         </div>
         <div class="q-list" id="ql-l1">
           <div class="q-card" id="qc-l1-1">
-            <div class="q-num">Question 1 of 5</div>
-            <div class="q-text">Which network type spans several nearby buildings, typically seen in universities, managed by a single organization?</div>
+            <div class="q-num">Question 1 of 10</div>
+            <div class="q-text">Which device in a network hosts shared services &mdash; such as web pages, email, or file storage &mdash; and responds to requests from other devices?</div>
             <div class="q-opts">
-              <div class="q-opt" onclick="pick(this,'l1-1','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">WAN — Wide Area Network</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-1','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">CAN — Campus Area Network</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-1','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">MAN — Metropolitan Area Network</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-1','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">LAN — Local Area Network</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-1','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Switch</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-1','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Server</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-1','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Wireless Access Point</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-1','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Router</span></div>
             </div>
             <div class="q-fb" id="fb-l1-1"></div>
           </div>
           <div class="q-card" id="qc-l1-2">
-            <div class="q-num">Question 2 of 5</div>
-            <div class="q-text">Which intermediary device uses <strong>MAC addresses</strong> to forward frames within a LAN?</div>
+            <div class="q-num">Question 2 of 10</div>
+            <div class="q-text">In a Peer-to-Peer (P2P) network, a single device can simultaneously act as:</div>
             <div class="q-opts">
-              <div class="q-opt" onclick="pick(this,'l1-2','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Router</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-2','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Firewall</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-2','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Switch</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-2','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Wireless Access Point</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-2','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">A router and a switch</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-2','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Both client and server</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-2','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">A firewall and an IPS</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-2','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">A wired and a wireless host</span></div>
             </div>
             <div class="q-fb" id="fb-l1-2"></div>
           </div>
           <div class="q-card" id="qc-l1-3">
-            <div class="q-num">Question 3 of 5</div>
-            <div class="q-text">A network characteristic that limits failure impact through <strong>multiple redundant paths</strong> is called:</div>
+            <div class="q-num">Question 3 of 10</div>
+            <div class="q-text">Which WAN topology provides the highest redundancy by creating a direct link between every pair of sites?</div>
             <div class="q-opts">
-              <div class="q-opt" onclick="pick(this,'l1-3','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Scalability</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-3','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Quality of Service</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-3','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Fault Tolerance</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-3','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Network Security</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-3','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Hub-and-Spoke</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-3','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Point-to-Point</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-3','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Ring</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-3','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Full Mesh</span></div>
             </div>
             <div class="q-fb" id="fb-l1-3"></div>
           </div>
           <div class="q-card" id="qc-l1-4">
-            <div class="q-num">Question 4 of 5</div>
-            <div class="q-text">Which type of network media transmits data using <strong>pulses of light</strong>?</div>
+            <div class="q-num">Question 4 of 10</div>
+            <div class="q-text">Which network type is owned and managed by a single organization and typically covers a building or group of nearby buildings?</div>
             <div class="q-opts">
-              <div class="q-opt" onclick="pick(this,'l1-4','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Copper wire (UTP cable)</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-4','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Fiber-optic cable</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-4','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Wireless (Wi-Fi)</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-4','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Coaxial cable</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-4','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">WAN</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-4','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">MAN</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-4','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">LAN</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-4','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">SAN</span></div>
             </div>
             <div class="q-fb" id="fb-l1-4"></div>
           </div>
           <div class="q-card" id="qc-l1-5">
-            <div class="q-num">Question 5 of 5</div>
-            <div class="q-text">QoS (Quality of Service) is primarily used to:</div>
+            <div class="q-num">Question 5 of 10</div>
+            <div class="q-text">A small office needs an always-on internet connection that runs over existing telephone copper infrastructure. Which type is the best fit?</div>
             <div class="q-opts">
-              <div class="q-opt" onclick="pick(this,'l1-5','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Encrypt all network traffic end-to-end</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-5','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Prioritize critical traffic like voice and video</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-5','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Extend a network to cover larger distances</span></div>
-              <div class="q-opt" onclick="pick(this,'l1-5','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Filter traffic between VLANs</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-5','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Satellite</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-5','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Dial-up modem</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-5','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Cable</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-5','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">DSL</span></div>
             </div>
             <div class="q-fb" id="fb-l1-5"></div>
+          </div>
+          <div class="q-card" id="qc-l1-6">
+            <div class="q-num">Question 6 of 10</div>
+            <div class="q-text">Which reliable network characteristic limits failure impact by keeping alternate data paths available through the network?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'l1-6','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Scalability</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-6','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Quality of Service</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-6','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Fault Tolerance</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-6','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Confidentiality</span></div>
+            </div>
+            <div class="q-fb" id="fb-l1-6"></div>
+          </div>
+          <div class="q-card" id="qc-l1-7">
+            <div class="q-num">Question 7 of 10</div>
+            <div class="q-text">A network engineer must ensure VoIP calls are not disrupted when the network becomes congested. Which feature should be configured?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'l1-7','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Fault Tolerance</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-7','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Scalability</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-7','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Network Security</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-7','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Quality of Service (QoS)</span></div>
+            </div>
+            <div class="q-fb" id="fb-l1-7"></div>
+          </div>
+          <div class="q-card" id="qc-l1-8">
+            <div class="q-num">Question 8 of 10</div>
+            <div class="q-text">Which network trend describes allowing employees to connect their personal smartphones and laptops to corporate network resources?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'l1-8','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Cloud Computing</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-8','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Online Collaboration</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-8','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">BYOD (Bring Your Own Device)</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-8','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Video Communication</span></div>
+            </div>
+            <div class="q-fb" id="fb-l1-8"></div>
+          </div>
+          <div class="q-card" id="qc-l1-9">
+            <div class="q-num">Question 9 of 10</div>
+            <div class="q-text">Which cloud computing model is dedicated to a single organization and can be hosted on-premises or by a third-party provider?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'l1-9','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Public Cloud</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-9','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Community Cloud</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-9','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Hybrid Cloud</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-9','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Private Cloud</span></div>
+            </div>
+            <div class="q-fb" id="fb-l1-9"></div>
+          </div>
+          <div class="q-card" id="qc-l1-10">
+            <div class="q-num">Question 10 of 10</div>
+            <div class="q-text">Which type of malware is self-replicating and spreads automatically across a network by exploiting vulnerabilities &mdash; without any user interaction?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'l1-10','A')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Trojan Horse</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-10','B')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Worm</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-10','C')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Adware</span></div>
+              <div class="q-opt" onclick="pick(this,'l1-10','D')"><div class="q-radio"><div class="q-rdot"></div></div><span class="q-otext">Phishing</span></div>
+            </div>
+            <div class="q-fb" id="fb-l1-10"></div>
           </div>
         </div>
         <div class="submit-area">
           <button class="submit-btn" id="sub-l1" onclick="submitQ('l1')" disabled><i class="fas fa-check-double"></i> SUBMIT ANSWERS</button>
-          <span class="submit-note" id="sn-l1">Answer all 5 questions to submit</span>
+          <span class="submit-note" id="sn-l1">Answer all 10 questions to submit</span>
         </div>
         <div class="q-result" id="res-l1">
           <div class="qr-title">Quiz 1.1 Result</div>
-          <div class="qr-circle" id="circ-l1"><div class="qr-inner"><div class="qr-pct" id="rp-l1">—</div><div class="qr-plabel">SCORE</div></div></div>
+          <div class="qr-circle" id="circ-l1"><div class="qr-inner"><div class="qr-pct" id="rp-l1">&mdash;</div><div class="qr-plabel">SCORE</div></div></div>
           <div class="qr-grade" id="rg-l1"></div>
           <div class="qr-msg" id="rm-l1"></div>
           <div class="qr-bk">
-            <div class="qrb c"><div class="qrb-n" id="rc-l1">—</div><div class="qrb-l">Correct</div></div>
-            <div class="qrb w"><div class="qrb-n" id="rw-l1">—</div><div class="qrb-l">Wrong</div></div>
-            <div class="qrb t"><div class="qrb-n">5</div><div class="qrb-l">Total</div></div>
+            <div class="qrb c"><div class="qrb-n" id="rc-l1">&mdash;</div><div class="qrb-l">Correct</div></div>
+            <div class="qrb w"><div class="qrb-n" id="rw-l1">&mdash;</div><div class="qrb-l">Wrong</div></div>
+            <div class="qrb t"><div class="qrb-n">10</div><div class="qrb-l">Total</div></div>
           </div>
           <div class="qr-acts">
             <button class="btn btn-ghost" onclick="retry('l1')"><i class="fas fa-redo"></i> Retry</button>
@@ -1067,11 +1174,11 @@ Block in 3rd octet = 2<sup>1</sup> = <span class="hl">2</span> · Valid hosts = 
         <div class="fs-bk">
           <div class="fsb"><div class="fsb-n" id="fs-c" style="color:var(--g)">—</div><div class="fsb-l">Correct</div></div>
           <div class="fsb"><div class="fsb-n" id="fs-w" style="color:var(--red)">—</div><div class="fsb-l">Wrong</div></div>
-          <div class="fsb"><div class="fsb-n" id="fs-t" style="color:var(--c)">18</div><div class="fsb-l">Total Qs</div></div>
+          <div class="fsb"><div class="fsb-n" id="fs-t" style="color:var(--c)">23</div><div class="fsb-l">Total Qs</div></div>
         </div>
         <div class="fs-scores">
           <div class="fss-title">Score Breakdown</div>
-          <div class="fss-item"><span class="fss-name">1.1 — Introduction to Networks</span><span class="fss-score" id="fss-l1">Not taken</span></div>
+          <div class="fss-item"><span class="fss-name">1.1 — Networking Today</span><span class="fss-score" id="fss-l1">Not taken</span></div>
           <div class="fss-item"><span class="fss-name">1.2 — Cisco IOS</span><span class="fss-score" id="fss-l2">Not taken</span></div>
           <div class="fss-item"><span class="fss-name">1.3 — IPv4 Addressing &amp; Subnetting</span><span class="fss-score" id="fss-l3">Not taken</span></div>
         </div>
@@ -1092,14 +1199,19 @@ Block in 3rd octet = 2<sup>1</sup> = <span class="hl">2</span> · Valid hosts = 
 // ═══ QUIZ DATA ═══
 const QD = {
   l1: {
-    total: 5,
-    answers: {'l1-1':'B','l1-2':'C','l1-3':'C','l1-4':'B','l1-5':'B'},
+    total: 10,
+    answers: {'l1-1':'B','l1-2':'B','l1-3':'D','l1-4':'C','l1-5':'D','l1-6':'C','l1-7':'D','l1-8':'C','l1-9':'D','l1-10':'B'},
     expl: {
-      'l1-1':'CAN (Campus Area Network) spans several nearby buildings under single management — typical in universities.',
-      'l1-2':'A Switch operates at Layer 2 and uses MAC addresses to forward frames within a LAN. Routers use IP addresses.',
-      'l1-3':'Fault Tolerance limits failure impact using redundant paths. If one path fails, traffic reroutes automatically.',
-      'l1-4':'Fiber-optic cable uses pulses of light to transmit data. Copper uses electrical signals; wireless uses radio waves.',
-      'l1-5':'QoS prioritizes critical traffic types like voice and video to ensure reliable delivery during network congestion.'
+      'l1-1':'A Server hosts shared services (web, email, file storage) that clients request. A switch forwards frames; a router routes packets; an AP provides wireless access.',
+      'l1-2':'In a P2P network there are no dedicated servers. Any device can simultaneously offer and consume resources, acting as both client and server at the same time.',
+      'l1-3':'Full Mesh connects every site directly to every other site, providing the maximum number of redundant paths. A failure on any single link does not disrupt the rest.',
+      'l1-4':'A LAN (Local Area Network) is owned and managed by a single organization and covers a building or campus. WANs span large geographic distances across multiple admin domains.',
+      'l1-5':'DSL (Digital Subscriber Line) uses existing telephone copper lines for always-on broadband. It is ideal for home and small-office use where fiber is unavailable.',
+      'l1-6':'Fault Tolerance uses redundant links so traffic reroutes automatically when a path fails. Packet switching also contributes by allowing packets to travel via independent routes.',
+      'l1-7':'QoS (Quality of Service) classifies and prioritizes time-sensitive traffic like VoIP. Without QoS, all traffic competes equally, causing call disruption during congestion.',
+      'l1-8':'BYOD (Bring Your Own Device) is the trend of employees using personal devices on corporate networks. It increases flexibility but introduces additional security challenges.',
+      'l1-9':'A Private Cloud is used exclusively by one organization. It can be managed on-premises or by a third-party provider, offering more control than a public cloud.',
+      'l1-10':'A Worm is self-replicating malware that spreads automatically across networks via vulnerabilities without user action. It can consume bandwidth and crash systems.'
     }
   },
   l2: {
@@ -1313,7 +1425,7 @@ function updateFinal() {
   document.getElementById('fs-w').textContent = allDone ? totW : '—';
 
   if (allDone) {
-    const pct = Math.round((totC / 18) * 100);
+    const pct = Math.round((totC / 23) * 100);
     document.getElementById('fs-pct').innerHTML = `${pct}<span>%</span>`;
     let grade, msg, bg, bc;
     if      (pct >= 90) { grade='🏆 EXCELLENT'; msg='Outstanding! You are well-prepared for the CCNA exam on Domain 1.'; bg='rgba(0,255,136,.12)'; bc='rgba(0,255,136,.3)'; }
