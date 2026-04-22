@@ -11,6 +11,30 @@
 (function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');if(t==='light')document.documentElement.setAttribute('data-theme','light');})();
 </script>
 <style>
+
+/* ── ADMIN / STUDENT DASHBOARD EXTRA ── */
+.btn-sm{padding:5px 11px!important;font-size:.71rem!important;}
+.ds-badge{display:inline-block;padding:1px 7px;border-radius:4px;font-size:.55rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:rgba(255,106,0,.12);color:var(--o);border:1px solid rgba(255,106,0,.25);margin-left:6px;vertical-align:middle;}
+.adm-tbl{border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-top:.5rem;}
+.adm-tbl-hdr{display:grid;gap:.8rem;padding:.65rem 1rem;background:var(--bg3);font-family:'Orbitron',monospace;font-size:.56rem;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:1px;}
+.adm-tbl-row{display:grid;gap:.8rem;padding:.75rem 1rem;align-items:center;border-top:1px solid var(--bdr);transition:background .15s;}
+.adm-tbl-row:hover{background:rgba(0,212,255,.03);}
+.adm-course-name{display:flex;align-items:center;gap:.55rem;font-size:.81rem;font-weight:600;color:var(--tw);overflow:hidden;}
+.adm-course-name span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.lvl-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.61rem;font-weight:700;background:rgba(0,212,255,.08);color:var(--c);border:1px solid rgba(0,212,255,.2);white-space:nowrap;}
+.premium-tag{background:rgba(255,215,0,.08)!important;color:#ffd700!important;border-color:rgba(255,215,0,.2)!important;}
+.free-tag{color:var(--g);font-weight:700;font-size:.78rem;}
+.price-tag{color:var(--tw);font-weight:700;font-size:.78rem;}
+.enr-item{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:.9rem 1.1rem;display:flex;align-items:center;gap:1rem;transition:all .2s;flex-wrap:wrap;}
+.enr-item:hover{border-color:var(--bdr2);}
+.enr-info{flex:1;min-width:0;}
+.enr-prog-row{display:flex;align-items:center;gap:8px;margin-top:5px;}
+.enr-prog-row .enr-bar{flex:1;height:4px;background:var(--bg4);border-radius:4px;overflow:hidden;}
+.enr-prog-row .enr-fill{height:100%;background:linear-gradient(90deg,var(--c),rgba(0,212,255,.3));border-radius:4px;}
+.enr-prog-row .enr-pct{font-size:.7rem;font-weight:700;color:var(--c);white-space:nowrap;font-family:'Orbitron',monospace;}
+.enr-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0;}
+@media(max-width:600px){.adm-tbl-hdr,.adm-tbl-row{grid-template-columns:1fr!important;}.adm-tbl-hdr span:not(:first-child){display:none;}}
+
 /* =============================================
    CISCO INSTRUCTOR — CIRCUIT TECH THEME
    Fonts: Orbitron (headings) + Exo 2 (body)
@@ -920,20 +944,16 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 <!-- ═══════════════════ DASHBOARD ═══════════════════ -->
 <div id="page-dashboard" class="page">
   <div class="dash-layout">
-    <aside class="dash-sidebar">
-      <div class="ds-logo-area"><div class="ds-logo">DASHBOARD</div><div class="ds-role">Student Portal</div></div>
-      <nav class="ds-nav">
-        <div class="ds-item act" data-pnl="overview" onclick="showDashPanel('overview',this)"><i class="fas fa-th-large"></i> Overview</div>
-        <div class="ds-item" data-pnl="my-courses" onclick="showDashPanel('my-courses',this)"><i class="fas fa-graduation-cap"></i> My Courses</div>
-        <div class="ds-item" data-pnl="profile" onclick="showDashPanel('profile',this)"><i class="fas fa-user-circle"></i> Profile</div>
-        <div class="ds-sep"></div>
-        <div class="ds-item" onclick="showPage('courses')"><i class="fas fa-compass"></i> Browse Courses</div>
-        <div class="ds-item" onclick="showPage('contact')"><i class="fas fa-headset"></i> Support</div>
-        <div class="ds-sep"></div>
-        <div class="ds-item ds-logout" onclick="doLogout()"><i class="fas fa-power-off"></i> Logout</div>
-      </nav>
+    <aside class="dash-sidebar" id="dash-sidebar">
+      <div class="ds-logo-area">
+        <div class="ds-logo" id="ds-logo-txt">DASHBOARD</div>
+        <div class="ds-role" id="ds-role-txt">Student Portal</div>
+      </div>
+      <nav class="ds-nav" id="ds-nav"></nav>
     </aside>
     <main class="dash-main">
+
+      <!-- STUDENT: OVERVIEW -->
       <div class="dash-panel act" id="dash-overview">
         <div class="dash-toprow">
           <div><div class="dash-hello">WELCOME, <span id="dash-name">STUDENT</span></div><div class="dash-sub">Continue your certification journey</div></div>
@@ -945,29 +965,91 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
           <div class="dstat"><div class="dstat-ico ico-o"><i class="fas fa-certificate"></i></div><div class="dstat-num">0</div><div class="dstat-lbl">Certificates</div></div>
           <div class="dstat"><div class="dstat-ico ico-p"><i class="fas fa-clock"></i></div><div class="dstat-num">0h</div><div class="dstat-lbl">Study Time</div></div>
         </div>
-        <div class="dash-sec-title">Enrolled Courses</div>
+        <div class="dash-sec-title">Your Courses</div>
         <div class="enrolled-list" id="dash-enr-list"></div>
-        <div class="upgrade-banner">
-          <div class="ub-text"><div class="ub-t">UPGRADE TO PREMIUM ⚡</div><div class="ub-d">Full course access, downloadable labs, and certificates.</div></div>
+        <div class="upgrade-banner" style="margin-top:1.5rem">
+          <div class="ub-text"><div class="ub-t">UPGRADE TO PREMIUM &#9889;</div><div class="ub-d">Full course access, downloadable labs, and certificates.</div></div>
           <button class="btn btn-o" onclick="openModal('register')"><i class="fas fa-crown"></i> Upgrade Now</button>
         </div>
       </div>
+
+      <!-- STUDENT: MY COURSES -->
       <div class="dash-panel" id="dash-my-courses">
-        <div class="dash-toprow"><div><div class="dash-hello">MY COURSES</div><div class="dash-sub">All your enrolled courses</div></div></div>
+        <div class="dash-toprow">
+          <div><div class="dash-hello">MY COURSES</div><div class="dash-sub">All your enrolled courses</div></div>
+          <button class="btn btn-c" onclick="showPage('courses')"><i class="fas fa-plus"></i> Browse More</button>
+        </div>
         <div class="enrolled-list" id="dash-mc-list"></div>
       </div>
+
+      <!-- STUDENT: PROFILE -->
       <div class="dash-panel" id="dash-profile">
-        <div class="dash-toprow"><div><div class="dash-hello">MY PROFILE</div></div></div>
+        <div class="dash-toprow"><div><div class="dash-hello">MY PROFILE</div><div class="dash-sub">Update your personal information</div></div></div>
         <div class="profile-card">
           <div class="form-row2">
             <div class="fgrp"><label class="flbl">First Name</label><input id="pf-fname" class="finp"></div>
             <div class="fgrp"><label class="flbl">Last Name</label><input id="pf-lname" class="finp"></div>
           </div>
-          <div class="fgrp"><label class="flbl">Email (read-only)</label><input id="pf-email" class="finp" readonly style="opacity:0.5;cursor:not-allowed"></div>
+          <div class="fgrp"><label class="flbl">Email (read-only)</label><input id="pf-email" class="finp" readonly style="opacity:.5;cursor:not-allowed"></div>
           <div class="fgrp"><label class="flbl">Phone</label><input id="pf-phone" class="finp" placeholder="+973..."></div>
           <button class="btn btn-c" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
         </div>
       </div>
+
+      <!-- ADMIN: OVERVIEW (rendered by JS) -->
+      <div class="dash-panel" id="dash-admin-overview"></div>
+
+      <!-- ADMIN: COURSES -->
+      <div class="dash-panel" id="dash-admin-courses">
+        <div class="dash-toprow">
+          <div><div class="dash-hello">COURSE <span>MANAGER</span></div><div class="dash-sub">Add, edit or delete courses</div></div>
+          <button class="btn btn-c" onclick="openEditCourse(null)"><i class="fas fa-plus"></i> Add Course</button>
+        </div>
+        <div id="dash-admin-courses-inner"></div>
+      </div>
+
+      <!-- ADMIN: ADD / EDIT COURSE -->
+      <div class="dash-panel" id="dash-admin-edit">
+        <div class="dash-toprow">
+          <div><div class="dash-hello" id="ace-heading">ADD COURSE</div><div class="dash-sub">Fill in the details and save</div></div>
+          <button class="btn btn-ghost" onclick="activatePanel('admin-courses');renderAdminCourses()"><i class="fas fa-arrow-left"></i> Back</button>
+        </div>
+        <div class="profile-card" style="max-width:780px">
+          <div class="form-row2">
+            <div class="fgrp"><label class="flbl">Course Title *</label><input id="cf-title" class="finp" placeholder="e.g. CCNA Fundamentals"></div>
+            <div class="fgrp"><label class="flbl">Icon (emoji)</label><input id="cf-icon" class="finp" placeholder="&#127760;"></div>
+          </div>
+          <div class="form-row2">
+            <div class="fgrp"><label class="flbl">Category</label>
+              <select id="cf-cat" class="finp"><option>CCNA</option><option>CCNP</option><option>Security</option><option>Labs</option><option>Other</option></select>
+            </div>
+            <div class="fgrp"><label class="flbl">Level</label>
+              <select id="cf-level" class="finp"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+            </div>
+          </div>
+          <div class="form-row2">
+            <div class="fgrp"><label class="flbl">Duration</label><input id="cf-dur" class="finp" placeholder="e.g. 30 hrs"></div>
+            <div class="fgrp"><label class="flbl">Price</label><input id="cf-price" class="finp" placeholder="e.g. $149 or Free"></div>
+          </div>
+          <div class="fgrp"><label class="flbl">Description</label><textarea id="cf-desc" class="finp" style="min-height:80px" placeholder="Short course description..."></textarea></div>
+          <div class="fgrp"><label class="flbl">Prerequisites</label><input id="cf-prereqs" class="finp" placeholder="e.g. No prior knowledge required"></div>
+          <div class="fgrp"><label class="flbl">Direct Page Link <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">(optional &mdash; e.g. ccna-domain1.html)</span></label><input id="cf-link" class="finp" placeholder="leave blank for standard enrollment"></div>
+          <div class="fgrp"><label class="flbl">Curriculum <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">(one module per line)</span></label><textarea id="cf-curr" class="finp" style="min-height:140px" placeholder="Module 1: Introduction&#10;Module 2: ..."></textarea></div>
+          <div style="display:flex;gap:1rem;margin-top:.5rem;flex-wrap:wrap">
+            <button class="btn btn-c" onclick="adminSaveCourse()"><i class="fas fa-save"></i> Save Course</button>
+            <button class="btn btn-ghost" onclick="activatePanel('admin-courses');renderAdminCourses()"><i class="fas fa-times"></i> Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN: STUDENTS (rendered by JS) -->
+      <div class="dash-panel" id="dash-admin-students">
+        <div class="dash-toprow">
+          <div><div class="dash-hello">STUDENTS</div><div class="dash-sub">All registered accounts</div></div>
+        </div>
+        <div id="dash-admin-students-inner"></div>
+      </div>
+
     </main>
   </div>
 </div>

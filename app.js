@@ -2,8 +2,15 @@
    app.js — Course Data, Routing & Application Logic
    ───────────────────────────────────────────── */
 
+/* ── COURSE PERSISTENCE ── */
+function loadCourses() {
+  try { const s = localStorage.getItem('ah_courses'); if (s) return JSON.parse(s); } catch(e) {}
+  return DEFAULT_COURSES.map(c => Object.assign({}, c));
+}
+function saveCourses() { localStorage.setItem('ah_courses', JSON.stringify(COURSES)); }
+
 /* ── COURSE DATA ── */
-const COURSES = [
+const DEFAULT_COURSES = [
   { id: 1, cat: 'CCNA', icon: '🌐', th: 'th1',
     title: 'CCNA 200-301: Complete Network Associate',
     desc: 'Master routing, switching, IPv4/IPv6, VLANs, OSPF, and everything you need to pass the CCNA exam first time.',
@@ -47,9 +54,10 @@ const COURSES = [
     link: 'ccna-domain1.html',
     curriculum: ['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim'] }
 ];
+let COURSES = loadCourses();
 
 /* ── APP STATE ── */
-const S = { user: null, enrolled: [], tier: 'free', filter: 'all' };
+const S = { user: null, enrolled: [], tier: 'free', filter: 'all', isAdmin: false };
 
 /* ── INITIALISATION ── */
 document.addEventListener('DOMContentLoaded', () => {
@@ -230,7 +238,7 @@ function doLogin() {
   if (!u) { err.textContent = 'Invalid email or password.'; err.classList.add('show'); return; }
   err.classList.remove('show');
   document.getElementById('login-ok').classList.add('show');
-  S.user = u; S.enrolled = u.enrolled || [];
+  S.user = u; S.enrolled = u.enrolled || []; S.isAdmin = !!u.isAdmin;
   saveSession();
   setTimeout(() => {
     closeModal(); updateNav(true); updateDash();
@@ -251,7 +259,7 @@ function doRegister() {
   const users = JSON.parse(localStorage.getItem('ah_users') || '[]');
   if (users.find(x => x.email === email)) { err.textContent = 'This email is already registered.'; err.classList.add('show'); return; }
   err.classList.remove('show');
-  const nu = { fname, lname, email, phone, pass: btoa(pass), tier: S.tier, enrolled: [], joined: new Date().toLocaleDateString() };
+  const nu = { fname, lname, email, phone, pass: btoa(pass), tier: S.tier, enrolled: [], joined: new Date().toLocaleDateString(), isAdmin: email === 'admin@ahmedhussein.org' };
   users.push(nu); localStorage.setItem('ah_users', JSON.stringify(users));
   document.getElementById('reg-ok').classList.add('show');
   setTimeout(() => { document.getElementById('reg-ok').classList.remove('show'); switchTab('login'); }, 1600);
@@ -276,7 +284,7 @@ function saveSession() {
 function restoreSession() {
   const s = sessionStorage.getItem('ah_user');
   if (s) {
-    S.user = JSON.parse(s); S.enrolled = S.user.enrolled || [];
+    S.user = JSON.parse(s); S.enrolled = S.user.enrolled || []; S.isAdmin = !!S.user.isAdmin;
     updateNav(true);
   }
 }
@@ -289,40 +297,250 @@ function updateNav(loggedIn) {
 }
 
 /* ── DASHBOARD ── */
-function showDashPanel(id, el) {
+function activatePanel(id) {
   document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('act'));
-  document.querySelectorAll('.ds-item').forEach(i => i.classList.remove('act'));
-  document.getElementById('dash-' + id)?.classList.add('act');
-  if (el) el.classList.add('act');
+  document.querySelectorAll('.ds-item[data-pnl]').forEach(i => i.classList.remove('act'));
+  const panel = document.getElementById('dash-' + id);
+  if (panel) panel.classList.add('act');
+  const nav = document.querySelector('.ds-item[data-pnl="' + id + '"]');
+  if (nav) nav.classList.add('act');
 }
+function showDashPanel(id) { activatePanel(id); }
 
 function updateDash() {
   if (!S.user) return;
-  document.getElementById('dash-name').textContent = S.user.fname?.toUpperCase() || 'STUDENT';
-  document.getElementById('dash-plan').textContent = S.user.tier === 'premium' ? 'PREMIUM ⚡' : 'FREE';
-  document.getElementById('dash-enrolled-n').textContent = S.enrolled.length;
-  const enr = COURSES.filter(c => S.enrolled.includes(c.id));
-  const html = enr.length
-    ? enr.map(c => `
-        <div class="enr-item">
-          <div class="enr-thumb ${c.th}">${c.icon}</div>
-          <div style="flex:1"><div class="enr-name">${c.title}</div><div class="enr-prog-lbl">Progress</div></div>
-          <div class="enr-prog-wrap" style="max-width:160px">
-            <div class="enr-bar"><div class="enr-fill" style="width:0%"></div></div>
-            <div class="enr-pct">0%</div>
-          </div>
-        </div>`).join('')
-    : `<div class="empty-state">
-        <div class="es-ico">📡</div>
-        <div class="es-title">NO COURSES YET</div>
-        <div class="es-desc">Enroll in a course to get started.</div>
-        <button class="btn btn-c" onclick="showPage('courses')"><i class="fas fa-search"></i> Browse Courses</button>
-      </div>`;
-  ['dash-enr-list', 'dash-mc-list'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = html; });
-  if (document.getElementById('pf-fname')) document.getElementById('pf-fname').value = S.user.fname || '';
-  if (document.getElementById('pf-lname')) document.getElementById('pf-lname').value = S.user.lname || '';
-  if (document.getElementById('pf-email')) document.getElementById('pf-email').value = S.user.email || '';
-  if (document.getElementById('pf-phone')) document.getElementById('pf-phone').value = S.user.phone || '';
+  renderDashNav();
+  if (S.isAdmin) { activatePanel('admin-overview'); renderAdminOverview(); }
+  else { activatePanel('overview'); renderStudentDash(); }
+}
+
+function renderDashNav() {
+  const nav = document.getElementById('ds-nav');
+  const logo = document.getElementById('ds-logo-txt');
+  const role = document.getElementById('ds-role-txt');
+  if (!nav) return;
+  if (S.isAdmin) {
+    if (logo) logo.textContent = 'ADMIN';
+    if (role) role.textContent = 'Control Panel';
+    nav.innerHTML = `
+      <div class="ds-item act" data-pnl="admin-overview" onclick="activatePanel('admin-overview');renderAdminOverview()"><i class="fas fa-chart-bar"></i> Dashboard</div>
+      <div class="ds-item" data-pnl="admin-courses" onclick="activatePanel('admin-courses');renderAdminCourses()"><i class="fas fa-book"></i> Courses</div>
+      <div class="ds-item" data-pnl="admin-edit" onclick="openEditCourse(null)"><i class="fas fa-plus-circle"></i> Add Course</div>
+      <div class="ds-item" data-pnl="admin-students" onclick="activatePanel('admin-students');renderAdminStudents()"><i class="fas fa-users"></i> Students</div>
+      <div class="ds-sep"></div>
+      <div class="ds-item" onclick="showPage('courses')"><i class="fas fa-compass"></i> View Site</div>
+      <div class="ds-item ds-logout" onclick="doLogout()"><i class="fas fa-power-off"></i> Logout</div>`;
+  } else {
+    if (logo) logo.textContent = 'DASHBOARD';
+    if (role) role.textContent = 'Student Portal';
+    nav.innerHTML = `
+      <div class="ds-item act" data-pnl="overview" onclick="activatePanel('overview');renderStudentDash()"><i class="fas fa-th-large"></i> Overview</div>
+      <div class="ds-item" data-pnl="my-courses" onclick="activatePanel('my-courses');renderMyCourses()"><i class="fas fa-graduation-cap"></i> My Courses</div>
+      <div class="ds-item" data-pnl="profile" onclick="activatePanel('profile')"><i class="fas fa-user-circle"></i> Profile</div>
+      <div class="ds-sep"></div>
+      <div class="ds-item" onclick="showPage('courses')"><i class="fas fa-compass"></i> Browse Courses</div>
+      <div class="ds-item" onclick="showPage('contact')"><i class="fas fa-headset"></i> Support</div>
+      <div class="ds-sep"></div>
+      <div class="ds-item ds-logout" onclick="doLogout()"><i class="fas fa-power-off"></i> Logout</div>`;
+  }
+}
+
+/* ── STUDENT DASHBOARD ── */
+function renderStudentDash() {
+  if (!S.user) return;
+  const nm = document.getElementById('dash-name');
+  const pl = document.getElementById('dash-plan');
+  const en = document.getElementById('dash-enrolled-n');
+  if (nm) nm.textContent = (S.user.fname || 'STUDENT').toUpperCase();
+  if (pl) pl.textContent = S.user.tier === 'premium' ? 'PREMIUM ⚡' : 'FREE';
+  if (en) en.textContent = S.enrolled.length;
+  const el = document.getElementById('dash-enr-list');
+  if (el) el.innerHTML = buildEnrolledHTML(S.enrolled.slice(0, 4));
+  ['pf-fname','pf-lname','pf-email','pf-phone'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = S.user[id.replace('pf-','').replace('-','').replace('fname','fname').replace('lname','lname').replace('email','email').replace('phone','phone')] || '';
+  });
+  if (document.getElementById('pf-fname')) {
+    document.getElementById('pf-fname').value = S.user.fname || '';
+    document.getElementById('pf-lname').value = S.user.lname || '';
+    document.getElementById('pf-email').value = S.user.email || '';
+    document.getElementById('pf-phone').value = S.user.phone || '';
+  }
+}
+
+function renderMyCourses() {
+  const el = document.getElementById('dash-mc-list');
+  if (el) el.innerHTML = buildEnrolledHTML(S.enrolled);
+}
+
+function buildEnrolledHTML(ids) {
+  if (!ids || !ids.length) return `<div class="empty-state"><div class="es-ico">&#128225;</div><div class="es-title">NO COURSES YET</div><div class="es-desc">Enroll in a course to get started.</div><button class="btn btn-c" onclick="showPage('courses')"><i class="fas fa-search"></i> Browse Courses</button></div>`;
+  return ids.map(id => {
+    const c = COURSES.find(x => x.id === id);
+    if (!c) return '';
+    const continueBtn = c.link
+      ? `<a href="${c.link}" class="btn btn-c btn-sm"><i class="fas fa-play"></i> Continue</a>`
+      : `<button class="btn btn-ghost btn-sm" onclick="openCourseDetail(${c.id})"><i class="fas fa-info-circle"></i> Info</button>`;
+    return `<div class="enr-item">
+      <div class="enr-thumb ${c.th}">${c.icon}</div>
+      <div class="enr-info">
+        <div class="enr-name">${c.title}</div>
+        <div style="font-size:.65rem;color:var(--tm);margin-top:2px">${c.cat} · ${c.level} · ${c.duration}</div>
+        <div class="enr-prog-row">
+          <div class="enr-bar"><div class="enr-fill" style="width:0%"></div></div>
+          <div class="enr-pct">0%</div>
+        </div>
+      </div>
+      <div class="enr-actions">${continueBtn}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ── ADMIN: OVERVIEW ── */
+function renderAdminOverview() {
+  const el = document.getElementById('dash-admin-overview');
+  if (!el) return;
+  const users = JSON.parse(localStorage.getItem('ah_users') || '[]');
+  const totalEnr = users.reduce((a, u) => a + (u.enrolled ? u.enrolled.length : 0), 0);
+  el.innerHTML = `
+    <div class="dash-toprow">
+      <div><div class="dash-hello">ADMIN <span>DASHBOARD</span></div><div class="dash-sub">Site overview and quick actions</div></div>
+    </div>
+    <div class="dash-stats">
+      <div class="dstat"><div class="dstat-ico ico-c"><i class="fas fa-book"></i></div><div class="dstat-num">${COURSES.length}</div><div class="dstat-lbl">Courses</div></div>
+      <div class="dstat"><div class="dstat-ico ico-g"><i class="fas fa-users"></i></div><div class="dstat-num">${users.filter(u=>!u.isAdmin).length}</div><div class="dstat-lbl">Students</div></div>
+      <div class="dstat"><div class="dstat-ico ico-o"><i class="fas fa-graduation-cap"></i></div><div class="dstat-num">${totalEnr}</div><div class="dstat-lbl">Enrollments</div></div>
+      <div class="dstat"><div class="dstat-ico ico-p"><i class="fas fa-star"></i></div><div class="dstat-num">${COURSES.filter(c=>c.price==='Free').length}</div><div class="dstat-lbl">Free</div></div>
+    </div>
+    <div class="dash-sec-title">Quick Actions</div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap">
+      <button class="btn btn-c" onclick="openEditCourse(null)"><i class="fas fa-plus"></i> Add Course</button>
+      <button class="btn btn-ghost" onclick="activatePanel('admin-courses');renderAdminCourses()"><i class="fas fa-book"></i> Manage Courses</button>
+      <button class="btn btn-ghost" onclick="activatePanel('admin-students');renderAdminStudents()"><i class="fas fa-users"></i> View Students</button>
+    </div>`;
+}
+
+/* ── ADMIN: COURSE TABLE ── */
+let editingId = null;
+function renderAdminCourses() {
+  const el = document.getElementById('dash-admin-courses-inner');
+  if (!el) return;
+  if (!COURSES.length) {
+    el.innerHTML = `<div class="empty-state"><div class="es-ico">&#128218;</div><div class="es-title">NO COURSES</div><div class="es-desc">Click "Add Course" above to create your first course.</div></div>`;
+    return;
+  }
+  const cols = '2fr 1fr 1fr 1fr 1.4fr';
+  el.innerHTML = `<div class="adm-tbl">
+    <div class="adm-tbl-hdr" style="grid-template-columns:${cols}">
+      <span>Course</span><span>Category</span><span>Level</span><span>Price</span><span>Actions</span>
+    </div>
+    ${COURSES.map(c => `<div class="adm-tbl-row" style="grid-template-columns:${cols}">
+      <div class="adm-course-name"><span style="font-size:1.3rem">${c.icon}</span><span>${c.title}</span></div>
+      <span><span class="lvl-tag">${c.cat}</span></span>
+      <span style="font-size:.74rem;color:var(--tm)">${c.level}</span>
+      <span class="${c.price==='Free'?'free-tag':'price-tag'}">${c.price}</span>
+      <div style="display:flex;gap:.45rem;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="openEditCourse(${c.id})"><i class="fas fa-edit"></i> Edit</button>
+        <button class="btn btn-sm" style="background:rgba(255,68,85,.1);color:var(--red);border:1px solid rgba(255,68,85,.2)" onclick="adminDeleteCourse(${c.id})"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+/* ── ADMIN: OPEN EDIT FORM ── */
+function openEditCourse(id) {
+  editingId = id;
+  const heading = document.getElementById('ace-heading');
+  if (id === null) {
+    if (heading) heading.textContent = 'ADD COURSE';
+    ['cf-title','cf-icon','cf-dur','cf-price','cf-desc','cf-prereqs','cf-link','cf-curr'].forEach(fid => { const el=document.getElementById(fid); if(el) el.value=''; });
+    const cat = document.getElementById('cf-cat'); if (cat) cat.value='CCNA';
+    const lvl = document.getElementById('cf-level'); if (lvl) lvl.value='Beginner';
+    const pri = document.getElementById('cf-price'); if (pri) pri.value='$149';
+    const ico = document.getElementById('cf-icon'); if (ico) ico.value='🌐';
+  } else {
+    const c = COURSES.find(x => x.id === id);
+    if (!c) return;
+    if (heading) heading.textContent = 'EDIT COURSE';
+    const set = (fid, val) => { const el=document.getElementById(fid); if(el) el.value=val||''; };
+    set('cf-title', c.title); set('cf-icon', c.icon); set('cf-cat', c.cat);
+    set('cf-level', c.level); set('cf-dur', c.duration); set('cf-price', c.price);
+    set('cf-desc', c.desc); set('cf-prereqs', c.prereqs); set('cf-link', c.link||'');
+    set('cf-curr', (c.curriculum||[]).join('
+'));
+  }
+  activatePanel('admin-edit');
+}
+
+/* ── ADMIN: SAVE COURSE ── */
+function adminSaveCourse() {
+  const title = (document.getElementById('cf-title').value||'').trim();
+  if (!title) { toast('Course title is required.', 'err'); return; }
+  const g = id => (document.getElementById(id)||{}).value || '';
+  const cat    = g('cf-cat') || 'CCNA';
+  const level  = g('cf-level') || 'Beginner';
+  const dur    = g('cf-dur').trim() || '0 hrs';
+  const price  = g('cf-price').trim() || 'Free';
+  const icon   = g('cf-icon').trim() || '📚';
+  const desc   = g('cf-desc').trim();
+  const prereqs= g('cf-prereqs').trim();
+  const link   = g('cf-link').trim();
+  const curr   = g('cf-curr').split('\n').map(s=>s.trim()).filter(Boolean);
+  const thMap  = {CCNA:'th1',CCNP:'th2',Security:'th3',Labs:'th4'};
+  const th     = thMap[cat] || 'th5';
+  if (editingId === null) {
+    const newId = COURSES.length ? Math.max(...COURSES.map(c=>c.id))+1 : 1;
+    COURSES.push({id:newId,cat,icon,th,title,desc,level,duration:dur,students:'0',price,rating:'5.0',reviews:'0',prereqs,link:link||undefined,curriculum:curr});
+    toast('Course added!', 'suc');
+  } else {
+    const idx = COURSES.findIndex(x=>x.id===editingId);
+    if (idx>-1) {
+      COURSES[idx] = Object.assign({}, COURSES[idx], {cat,icon,th,title,desc,level,duration:dur,price,prereqs,link:link||undefined,curriculum:curr});
+      toast('Course updated!', 'suc');
+    }
+  }
+  saveCourses();
+  renderCourses('home-courses-grid', COURSES.slice(0,3));
+  renderCourses('all-courses-grid', COURSES);
+  activatePanel('admin-courses');
+  renderAdminCourses();
+}
+
+/* ── ADMIN: DELETE COURSE ── */
+function adminDeleteCourse(id) {
+  const c = COURSES.find(x=>x.id===id);
+  if (!c) return;
+  if (!confirm('Delete "' + c.title + '"? This cannot be undone.')) return;
+  COURSES.splice(COURSES.findIndex(x=>x.id===id), 1);
+  saveCourses();
+  renderCourses('home-courses-grid', COURSES.slice(0,3));
+  renderCourses('all-courses-grid', COURSES);
+  renderAdminCourses();
+  toast('Course deleted.', 'inf');
+}
+
+/* ── ADMIN: STUDENTS ── */
+function renderAdminStudents() {
+  const el = document.getElementById('dash-admin-students-inner');
+  if (!el) return;
+  const users = JSON.parse(localStorage.getItem('ah_users')||'[]').filter(u=>!u.isAdmin);
+  if (!users.length) {
+    el.innerHTML = `<div class="empty-state"><div class="es-ico">&#128100;</div><div class="es-title">NO STUDENTS YET</div><div class="es-desc">Students appear here after registering on the site.</div></div>`;
+    return;
+  }
+  const cols = '1.4fr 2fr 1fr 0.7fr 1fr';
+  el.innerHTML = `<div class="adm-tbl">
+    <div class="adm-tbl-hdr" style="grid-template-columns:${cols}">
+      <span>Name</span><span>Email</span><span>Plan</span><span>Courses</span><span>Joined</span>
+    </div>
+    ${users.map(u=>`<div class="adm-tbl-row" style="grid-template-columns:${cols}">
+      <span style="font-weight:600;color:var(--tw)">${u.fname||''} ${u.lname||''}</span>
+      <span style="font-size:.74rem;color:var(--tm)">${u.email}</span>
+      <span><span class="lvl-tag ${u.tier==='premium'?'premium-tag':''}">${u.tier==='premium'?'Premium':'Free'}</span></span>
+      <span style="font-family:'Orbitron',monospace;font-size:.8rem;color:var(--c)">${(u.enrolled||[]).length}</span>
+      <span style="font-size:.72rem;color:var(--tm)">${u.joined||'&mdash;'}</span>
+    </div>`).join('')}
+  </div>`;
 }
 
 function saveProfile() {
