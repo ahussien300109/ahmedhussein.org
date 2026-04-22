@@ -1,0 +1,1703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahmed Hussein | Cisco Certified Instructor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* =============================================
+   CISCO INSTRUCTOR — CIRCUIT TECH THEME
+   Fonts: Orbitron (headings) + Exo 2 (body)
+   Palette: Deep navy + Electric cyan + Neon orange
+   ============================================= */
+:root{
+  --c:#00d4ff;        /* electric cyan */
+  --c2:#0099cc;       /* cyan mid */
+  --c3:#005577;       /* cyan deep */
+  --o:#ff6a00;        /* neon orange */
+  --o2:#ff9a40;       /* orange light */
+  --g:#00ff88;        /* green confirm */
+  --bg:#030d1a;       /* deepest navy */
+  --bg1:#060f20;
+  --bg2:#080e1c;
+  --bg3:#0c1628;
+  --bg4:#101e38;
+  --bg5:#142240;
+  --card:#0a1525;
+  --t:#c8ddf0;        /* body text */
+  --tm:#7a9ab5;       /* muted */
+  --tw:#ffffff;
+  --bdr:rgba(0,212,255,0.15);
+  --bdr2:rgba(0,212,255,0.3);
+  --bdr3:rgba(0,212,255,0.5);
+  --r:10px;
+  --r2:16px;
+  --r3:22px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t);overflow-x:hidden;cursor:none;}
+
+/* ── CUSTOM CURSOR ── */
+#cursor{width:12px;height:12px;background:var(--c);border-radius:50%;position:fixed;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,width 0.2s,height 0.2s;mix-blend-mode:screen;}
+#cursor-ring{width:36px;height:36px;border:1.5px solid var(--c);border-radius:50%;position:fixed;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.18s,width 0.25s,height 0.25s;mix-blend-mode:screen;opacity:0.6;}
+body:hover #cursor{transform:translate(-50%,-50%) scale(1);}
+.cursor-hover{width:50px!important;height:50px!important;background:transparent!important;border:2px solid var(--o)!important;}
+.cursor-ring-hover{width:60px!important;height:60px!important;border-color:var(--o)!important;}
+
+/* ── CIRCUIT CANVAS ── */
+#circuit-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.18;}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--c3);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--c2);}
+::selection{background:rgba(0,212,255,0.25);color:var(--tw);}
+
+/* ── PAGE LOADER ── */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:9990;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2rem;transition:opacity 0.6s,visibility 0.6s;}
+#loader.gone{opacity:0;visibility:hidden;}
+.loader-hex{width:80px;height:80px;position:relative;animation:hexSpin 2s linear infinite;}
+.loader-hex svg{width:100%;height:100%;}
+.loader-title{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700;color:var(--tw);letter-spacing:4px;}
+.loader-title span{color:var(--c);}
+.loader-bar-wrap{width:220px;height:2px;background:var(--bg4);border-radius:2px;overflow:hidden;}
+.loader-bar-inner{height:100%;background:linear-gradient(90deg,var(--c),var(--o));border-radius:2px;animation:loadBar 1.6s ease-out forwards;}
+@keyframes loadBar{from{width:0}to{width:100%}}
+@keyframes hexSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+/* ── NAV ── */
+#nav{position:fixed;top:0;width:100%;z-index:1000;padding:0 2.5rem;transition:all 0.35s;}
+#nav.stuck{background:rgba(3,13,26,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--bdr);}
+.nav-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:70px;}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-hex{width:38px;height:38px;flex-shrink:0;}
+.logo-text{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--tw);letter-spacing:1px;}
+.logo-text span{color:var(--c);}
+.logo-sub{font-size:0.58rem;color:var(--c);letter-spacing:3px;text-transform:uppercase;margin-top:-2px;}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{color:var(--tm);font-size:0.85rem;font-weight:600;text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:color 0.2s;position:relative;padding-bottom:3px;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:var(--c);transition:width 0.25s;}
+.nav-links a:hover,.nav-links a.act{color:var(--c);}
+.nav-links a:hover::after,.nav-links a.act::after{width:100%;}
+.nav-right{display:flex;gap:0.7rem;align-items:center;}
+.nbtn{font-family:'Exo 2',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 20px;border-radius:6px;cursor:pointer;transition:all 0.2s;border:1px solid var(--bdr2);background:transparent;color:var(--c);}
+.nbtn:hover{background:rgba(0,212,255,0.08);border-color:var(--c);}
+.nbtn.solid{background:var(--c);color:var(--bg);border-color:var(--c);}
+.nbtn.solid:hover{background:var(--o);border-color:var(--o);box-shadow:0 0 20px rgba(255,106,0,0.4);}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
+.ham span{width:22px;height:2px;background:var(--t);border-radius:2px;transition:all 0.3s;display:block;}
+.ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.ham.open span:nth-child(2){opacity:0;}
+.ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mob-nav{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(3,13,26,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);padding:1.5rem 2rem;flex-direction:column;gap:0.3rem;z-index:999;}
+.mob-nav.open{display:flex;}
+.mob-nav a{padding:0.7rem 0;color:var(--tm);text-decoration:none;font-size:0.9rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--bdr);transition:color 0.2s;}
+.mob-nav a:hover{color:var(--c);}
+
+/* ── COMMON PAGE WRAPPER ── */
+.page{display:none;position:relative;z-index:1;}
+.page.show{display:block;}
+
+/* =============================================
+   HOME PAGE
+   ============================================= */
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:0 2.5rem;position:relative;overflow:hidden;}
+.hero-mesh{position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 60% 40%,rgba(0,100,160,0.15) 0%,transparent 70%),radial-gradient(ellipse 40% 50% at 20% 80%,rgba(255,106,0,0.06) 0%,transparent 60%);}
+.hero-scanline{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.012) 2px,rgba(0,212,255,0.012) 4px);pointer-events:none;}
+.hero-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;padding-top:70px;width:100%;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:10px;margin-bottom:1.6rem;}
+.eyebrow-line{width:30px;height:2px;background:var(--c);border-radius:2px;}
+.eyebrow-text{font-family:'Orbitron',monospace;font-size:0.7rem;font-weight:600;color:var(--c);letter-spacing:4px;text-transform:uppercase;}
+.hero-h1{font-family:'Orbitron',monospace;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:900;line-height:1.1;color:var(--tw);margin-bottom:0.5rem;}
+.hero-h1 .line2{color:var(--c);text-shadow:0 0 30px rgba(0,212,255,0.5);}
+.hero-h1 .line3{color:var(--o);text-shadow:0 0 30px rgba(255,106,0,0.4);}
+.hero-sub{font-size:1rem;color:var(--tm);line-height:1.8;margin-bottom:2.2rem;max-width:500px;}
+.hero-sub strong{color:var(--t);font-weight:600;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.hbtn{display:inline-flex;align-items:center;gap:9px;padding:14px 30px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.25s;border:none;text-decoration:none;}
+.hbtn-primary{background:linear-gradient(135deg,var(--c),var(--c2));color:var(--bg);box-shadow:0 0 0 rgba(0,212,255,0);}
+.hbtn-primary:hover{box-shadow:0 0 30px rgba(0,212,255,0.5),0 0 60px rgba(0,212,255,0.2);transform:translateY(-2px);}
+.hbtn-outline{background:transparent;color:var(--c);border:1.5px solid var(--c);}
+.hbtn-outline:hover{background:rgba(0,212,255,0.08);transform:translateY(-2px);box-shadow:0 0 20px rgba(0,212,255,0.2);}
+.hbtn-accent{background:linear-gradient(135deg,var(--o),var(--o2));color:var(--tw);}
+.hbtn-accent:hover{box-shadow:0 0 30px rgba(255,106,0,0.5);transform:translateY(-2px);}
+.hero-trust{display:flex;gap:1.5rem;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:7px;font-size:0.8rem;color:var(--tm);}
+.trust-item i{color:var(--g);font-size:0.75rem;}
+.hero-stats-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--bdr);}
+.hstat{position:relative;}
+.hstat-num{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--tw);}
+.hstat-num span{color:var(--c);}
+.hstat-label{font-size:0.72rem;color:var(--tm);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
+.hstat::after{content:'';position:absolute;right:0;top:10%;height:80%;width:1px;background:var(--bdr);}
+.hstat:last-child::after{display:none;}
+
+/* HERO RIGHT — 3D CARD */
+.hero-right{position:relative;}
+.hero-device{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r3);padding:0;overflow:hidden;position:relative;transform-style:preserve-3d;}
+.hero-device::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--c),var(--o),var(--c));background-size:200%;animation:borderFlow 3s linear infinite;}
+@keyframes borderFlow{from{background-position:0%}to{background-position:200%}}
+.device-header{background:var(--bg3);padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr);}
+.dh-title{font-family:'Orbitron',monospace;font-size:0.75rem;font-weight:700;color:var(--c);letter-spacing:2px;}
+.dh-dots{display:flex;gap:5px;}
+.dot{width:10px;height:10px;border-radius:50%;}
+.dot1{background:#ff5f57;}
+.dot2{background:#febc2e;}
+.dot3{background:#28c840;}
+.device-body{padding:1.5rem;}
+.cert-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;margin-bottom:1.2rem;}
+.cert-tile{background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem;display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;transition:all 0.25s;position:relative;overflow:hidden;}
+.cert-tile::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(0,212,255,0.06),transparent);opacity:0;transition:opacity 0.3s;}
+.cert-tile:hover{border-color:var(--c);transform:translateY(-3px);box-shadow:0 8px 25px rgba(0,212,255,0.15);}
+.cert-tile:hover::before{opacity:1;}
+.ct-icon{font-size:1.8rem;margin-bottom:0.5rem;filter:drop-shadow(0 0 8px rgba(0,212,255,0.3));}
+.ct-name{font-family:'Orbitron',monospace;font-size:0.78rem;font-weight:700;color:var(--tw);margin-bottom:2px;}
+.ct-code{font-size:0.65rem;color:var(--c);letter-spacing:1px;}
+.device-instructor{display:flex;align-items:center;gap:12px;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem;}
+.di-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c3));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:700;font-size:0.9rem;color:var(--bg);flex-shrink:0;border:2px solid rgba(0,212,255,0.4);box-shadow:0 0 15px rgba(0,212,255,0.3);}
+.di-name{font-family:'Orbitron',monospace;font-size:0.82rem;font-weight:700;color:var(--tw);}
+.di-role{font-size:0.7rem;color:var(--c);margin-top:2px;}
+.di-live{margin-left:auto;display:flex;align-items:center;gap:5px;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.25);padding:4px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;color:var(--g);letter-spacing:1px;}
+.live-dot{width:6px;height:6px;background:var(--g);border-radius:50%;animation:pls 1.5s infinite;}
+@keyframes pls{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,255,136,0.5);}50%{opacity:0.7;box-shadow:0 0 0 5px rgba(0,255,136,0);}}
+.floating-badge{position:absolute;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:0.6rem 1rem;display:flex;align-items:center;gap:8px;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.fb1{top:-1.2rem;right:-1.5rem;animation:flt 4s ease-in-out infinite;}
+.fb2{bottom:-0.8rem;left:-1.8rem;animation:flt 4s ease-in-out infinite 2s;}
+@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.fb-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.9rem;}
+.fbi-c{background:rgba(0,212,255,0.15);color:var(--c);}
+.fbi-o{background:rgba(255,106,0,0.15);color:var(--o);}
+.fb-title{font-size:0.75rem;font-weight:700;color:var(--tw);}
+.fb-sub{font-size:0.65rem;color:var(--tm);}
+
+/* FEATURES ROW */
+.feat-row{background:var(--bg2);border-top:1px solid var(--bdr);border-bottom:1px solid var(--bdr);padding:2.5rem 2.5rem;}
+.feat-row-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;}
+.feat-item{display:flex;gap:1rem;align-items:flex-start;padding:1rem;border-radius:var(--r);border:1px solid transparent;transition:all 0.25s;cursor:default;}
+.feat-item:hover{background:rgba(0,212,255,0.04);border-color:var(--bdr);}
+.feat-icon-wrap{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,rgba(0,212,255,0.12),rgba(0,212,255,0.04));border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--c);font-size:1.1rem;flex-shrink:0;}
+.feat-title{font-family:'Exo 2',sans-serif;font-size:0.88rem;font-weight:700;color:var(--tw);margin-bottom:4px;}
+.feat-desc{font-size:0.78rem;color:var(--tm);line-height:1.6;}
+
+/* SECTION HEADER */
+.sec-wrap{max-width:1300px;margin:0 auto;}
+.sec-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Orbitron',monospace;font-size:0.65rem;font-weight:600;color:var(--c);letter-spacing:3px;text-transform:uppercase;margin-bottom:0.8rem;}
+.sec-eyebrow i{font-size:0.7rem;}
+.sec-h2{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,2.5vw,2.4rem);font-weight:900;color:var(--tw);line-height:1.15;margin-bottom:1rem;}
+.sec-h2 .accent{color:var(--c);text-shadow:0 0 20px rgba(0,212,255,0.3);}
+.sec-h2 .accent-o{color:var(--o);}
+.sec-desc{color:var(--tm);font-size:0.95rem;line-height:1.75;max-width:560px;}
+.sec-hdr{margin-bottom:3rem;}
+.sec-hdr-row{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:3rem;}
+.pill-btn{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:6px;font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--bdr2);color:var(--c);background:transparent;cursor:pointer;transition:all 0.2s;}
+.pill-btn:hover{background:rgba(0,212,255,0.08);transform:translateY(-1px);}
+
+/* COURSES */
+.sec-courses{padding:5rem 2.5rem;background:var(--bg1);}
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:1.5rem;}
+.ccard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;transition:all 0.3s;cursor:pointer;display:flex;flex-direction:column;position:relative;}
+.ccard::after{content:'';position:absolute;inset:0;border-radius:var(--r2);border:1px solid transparent;transition:border-color 0.3s;pointer-events:none;}
+.ccard:hover{transform:translateY(-6px);}
+.ccard:hover::after{border-color:var(--c);box-shadow:0 0 0 1px var(--c) inset,0 20px 50px rgba(0,212,255,0.12);}
+.cc-thumb{height:160px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.cc-thumb-icon{font-size:3.2rem;filter:drop-shadow(0 0 12px rgba(0,212,255,0.4));position:relative;z-index:1;}
+.cc-hex-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0.12;}
+.th1{background:linear-gradient(135deg,#010e1c,#03254a);}
+.th2{background:linear-gradient(135deg,#010c1a,#021f40);}
+.th3{background:linear-gradient(135deg,#1a0500,#3d0e00);}
+.th4{background:linear-gradient(135deg,#001a08,#003315);}
+.th5{background:linear-gradient(135deg,#1a0e00,#3d2200);}
+.th6{background:linear-gradient(135deg,#0a001a,#1a0040);}
+.cc-level-tag{position:absolute;bottom:10px;left:10px;z-index:2;padding:3px 10px;border-radius:4px;font-size:0.65rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.lvl-beg{background:rgba(0,255,136,0.12);color:var(--g);border:1px solid rgba(0,255,136,0.3);}
+.lvl-int{background:rgba(0,212,255,0.12);color:var(--c);border:1px solid rgba(0,212,255,0.3);}
+.lvl-adv{background:rgba(255,106,0,0.12);color:var(--o);border:1px solid rgba(255,106,0,0.3);}
+.cc-body{padding:1.3rem;flex:1;display:flex;flex-direction:column;}
+.cc-cat{font-size:0.65rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.5rem;}
+.cc-title{font-family:'Orbitron',monospace;font-size:0.88rem;font-weight:700;color:var(--tw);line-height:1.4;margin-bottom:0.6rem;}
+.cc-desc{font-size:0.8rem;color:var(--tm);line-height:1.65;margin-bottom:1rem;flex:1;}
+.cc-meta{display:flex;gap:1rem;flex-wrap:wrap;font-size:0.72rem;color:var(--tm);margin-bottom:1rem;}
+.cc-meta span{display:flex;align-items:center;gap:4px;}
+.cc-meta i{color:var(--c);}
+.cc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:1rem;border-top:1px solid var(--bdr);}
+.cc-price{font-family:'Orbitron',monospace;font-size:1.15rem;font-weight:700;color:var(--tw);}
+.cc-price.free{color:var(--g);}
+.cc-enroll{padding:7px 16px;border-radius:6px;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;background:transparent;color:var(--c);border:1px solid var(--c);cursor:pointer;transition:all 0.2s;}
+.cc-enroll:hover{background:var(--c);color:var(--bg);}
+
+/* STATS SECTION */
+.sec-stats{padding:4rem 2.5rem;background:var(--bg);}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;}
+.stat-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2rem;text-align:center;transition:all 0.25s;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent 85%,rgba(0,212,255,0.06) 90%,transparent 95%);animation:rotConic 6s linear infinite;pointer-events:none;}
+.stat-card:hover{border-color:var(--c);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,212,255,0.1);}
+@keyframes rotConic{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.stat-ico{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,rgba(0,212,255,0.12),rgba(0,212,255,0.04));border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--c);font-size:1.25rem;margin:0 auto 1rem;}
+.stat-num{font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;color:var(--tw);}
+.stat-num span{color:var(--c);}
+.stat-lbl{font-size:0.75rem;color:var(--tm);margin-top:6px;text-transform:uppercase;letter-spacing:1.5px;}
+
+/* TESTIMONIALS */
+.sec-testi{padding:5rem 2.5rem;background:var(--bg1);}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.tcard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:1.8rem;transition:all 0.25s;position:relative;overflow:hidden;}
+.tcard:hover{border-color:var(--bdr2);transform:translateY(-4px);}
+.tcard-accent{position:absolute;top:0;left:0;right:0;height:2px;}
+.ta1{background:linear-gradient(90deg,var(--c),transparent);}
+.ta2{background:linear-gradient(90deg,var(--o),transparent);}
+.ta3{background:linear-gradient(90deg,var(--g),transparent);}
+.t-stars{color:#ffd700;font-size:0.85rem;margin-bottom:1rem;letter-spacing:2px;}
+.t-text{font-size:0.85rem;color:var(--tm);line-height:1.75;margin-bottom:1.3rem;font-style:italic;}
+.t-author{display:flex;align-items:center;gap:12px;}
+.t-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700;color:var(--bg);flex-shrink:0;font-family:'Orbitron',monospace;}
+.t-name{font-size:0.85rem;font-weight:700;color:var(--tw);}
+.t-cert{font-size:0.7rem;color:var(--c);margin-top:2px;}
+
+/* ABOUT PREVIEW */
+.sec-about-prev{padding:5rem 2.5rem;background:var(--bg2);}
+.about-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;align-items:center;}
+.about-img-side{position:relative;}
+.about-frame{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);aspect-ratio:4/5;display:flex;align-items:center;justify-content:center;font-size:6rem;overflow:hidden;position:relative;}
+.about-frame img{width:100%;height:100%;object-fit:cover;}
+.about-overlay{position:absolute;bottom:0;left:0;right:0;padding:1.5rem;background:linear-gradient(transparent,rgba(3,13,26,0.95));}
+.cert-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.cert-pill{background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.2);color:var(--c);padding:3px 9px;border-radius:4px;font-size:0.65rem;font-weight:700;letter-spacing:1px;}
+.about-float{position:absolute;right:-1.5rem;top:2rem;background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.2rem;animation:flt 4s ease-in-out infinite;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.af-num{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--c);}
+.af-lbl{font-size:0.68rem;color:var(--tm);}
+.about-text h2{font-family:'Orbitron',monospace;font-size:clamp(1.5rem,2vw,2.2rem);font-weight:900;color:var(--tw);margin-bottom:0.5rem;}
+.about-text p{color:var(--tm);line-height:1.8;margin-bottom:1rem;}
+.skill-rows{margin:1.5rem 0;}
+.skill-row{margin-bottom:0.8rem;}
+.sr-head{display:flex;justify-content:space-between;font-size:0.78rem;margin-bottom:5px;}
+.sr-name{font-weight:600;color:var(--t);}
+.sr-pct{color:var(--c);font-weight:700;}
+.sr-bg{background:var(--bg4);border-radius:4px;height:5px;overflow:hidden;}
+.sr-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--c),rgba(0,212,255,0.3));transition:width 1.5s cubic-bezier(.4,0,.2,1);}
+
+/* NEWSLETTER */
+.sec-nl{padding:4rem 2.5rem;background:var(--bg);}
+.nl-card{background:linear-gradient(135deg,rgba(0,212,255,0.06) 0%,rgba(8,41,76,0.1) 100%);border:1px solid rgba(0,212,255,0.2);border-radius:var(--r2);padding:3rem;display:flex;align-items:center;justify-content:space-between;gap:3rem;flex-wrap:wrap;position:relative;overflow:hidden;}
+.nl-card::before{content:'';position:absolute;top:-1px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o),var(--c));background-size:200%;animation:borderFlow 4s linear infinite;}
+.nl-text h3{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--tw);margin-bottom:0.5rem;}
+.nl-text p{color:var(--tm);font-size:0.88rem;}
+.nl-form{display:flex;gap:0.8rem;flex:1;min-width:260px;}
+.nl-input{flex:1;background:rgba(0,0,0,0.3);border:1px solid var(--bdr);color:var(--t);padding:12px 16px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s;}
+.nl-input:focus{border-color:var(--c);}
+.nl-input::placeholder{color:var(--tm);}
+
+/* =============================================
+   COURSES PAGE
+   ============================================= */
+.pg-header{padding:7.5rem 2.5rem 3rem;background:var(--bg1);position:relative;overflow:hidden;border-bottom:1px solid var(--bdr);}
+.pg-header-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);background-size:50px 50px;}
+.pg-header-glow{position:absolute;top:-40%;right:10%;width:50%;height:150%;background:radial-gradient(ellipse,rgba(0,150,200,0.08) 0%,transparent 60%);}
+.pg-header-inner{max-width:1300px;margin:0 auto;position:relative;z-index:1;}
+.breadcrumb{font-size:0.75rem;color:var(--tm);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.breadcrumb a{color:var(--c);text-decoration:none;}
+.breadcrumb i{font-size:0.55rem;color:var(--tm);}
+.pg-title{font-family:'Orbitron',monospace;font-size:clamp(1.8rem,3vw,2.8rem);font-weight:900;color:var(--tw);margin-bottom:0.6rem;}
+.pg-subtitle{font-size:0.95rem;color:var(--tm);max-width:550px;line-height:1.7;}
+.filter-toolbar{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:1rem 2.5rem;position:sticky;top:70px;z-index:100;backdrop-filter:blur(20px);}
+.filter-toolbar-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap;}
+.f-btn{padding:6px 15px;border-radius:6px;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--bdr);color:var(--tm);background:transparent;cursor:pointer;transition:all 0.2s;}
+.f-btn:hover{border-color:var(--c);color:var(--c);}
+.f-btn.on{background:rgba(0,212,255,0.1);border-color:var(--c);color:var(--c);}
+.f-sep{width:1px;height:22px;background:var(--bdr);flex-shrink:0;}
+.f-search{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,0.3);border:1px solid var(--bdr);border-radius:8px;padding:7px 14px;min-width:220px;transition:border-color 0.2s;}
+.f-search:focus-within{border-color:var(--c);}
+.f-search i{color:var(--tm);font-size:0.8rem;}
+.f-search input{background:none;border:none;color:var(--t);font-family:'Exo 2',sans-serif;font-size:0.85rem;outline:none;width:100%;}
+.f-search input::placeholder{color:var(--tm);}
+.f-count{font-size:0.75rem;color:var(--tm);margin-left:auto;}
+.f-count span{color:var(--c);font-weight:700;}
+
+/* =============================================
+   ABOUT PAGE
+   ============================================= */
+.about-full{padding:5rem 2.5rem;background:var(--bg1);}
+.about-full-grid{display:grid;grid-template-columns:320px 1fr;gap:3.5rem;max-width:1300px;margin:0 auto;}
+.about-sidebar{position:sticky;top:90px;display:flex;flex-direction:column;gap:1rem;}
+.about-photo-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;}
+.apc-img{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;font-size:6rem;background:linear-gradient(180deg,var(--bg3),var(--bg4));position:relative;}
+.apc-img img{width:100%;height:100%;object-fit:cover;}
+.apc-plate{padding:1.2rem;border-top:1px solid var(--bdr);}
+.apc-name{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:var(--tw);margin-bottom:2px;}
+.apc-role{font-size:0.75rem;color:var(--c);font-weight:600;}
+.cert-list-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem;}
+.clc-title{font-family:'Orbitron',monospace;font-size:0.65rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:0.8rem;}
+.clc-item{display:flex;align-items:center;gap:8px;padding:0.55rem 0;border-bottom:1px solid var(--bdr);}
+.clc-item:last-child{border-bottom:none;}
+.clc-ico{width:28px;height:28px;border-radius:7px;background:rgba(0,212,255,0.1);display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;}
+.clc-name{font-size:0.82rem;font-weight:700;color:var(--tw);}
+.clc-code{font-size:0.65rem;color:var(--tm);}
+.clc-badge{margin-left:auto;font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:3px;background:rgba(0,255,136,0.1);color:var(--g);border:1px solid rgba(0,255,136,0.2);letter-spacing:1px;text-transform:uppercase;}
+.about-main{}
+.abt-section{margin-bottom:2.5rem;}
+.abt-sec-title{font-family:'Orbitron',monospace;font-size:0.9rem;font-weight:700;color:var(--tw);margin-bottom:1rem;display:flex;align-items:center;gap:12px;letter-spacing:1px;}
+.abt-sec-title::after{content:'';flex:1;height:1px;background:var(--bdr);}
+.bio-text{color:var(--tm);line-height:1.85;font-size:0.9rem;margin-bottom:1rem;}
+.achieve-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:1.5rem 0;}
+.ach-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem;text-align:center;transition:all 0.2s;}
+.ach-card:hover{border-color:var(--c);transform:translateY(-3px);}
+.ach-num{font-family:'Orbitron',monospace;font-size:1.7rem;font-weight:900;color:var(--c);}
+.ach-lbl{font-size:0.7rem;color:var(--tm);margin-top:4px;text-transform:uppercase;letter-spacing:1px;}
+.timeline{padding-left:1.5rem;border-left:1px solid var(--bdr);}
+.tl-item{position:relative;margin-bottom:1.5rem;padding-left:1rem;}
+.tl-item::before{content:'';position:absolute;left:-1.5rem;top:6px;width:9px;height:9px;border-radius:50%;background:var(--c);border:2px solid var(--bg);box-shadow:0 0 8px rgba(0,212,255,0.6);}
+.tl-yr{font-size:0.68rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.tl-title{font-size:0.9rem;font-weight:700;color:var(--tw);margin-bottom:3px;}
+.tl-desc{font-size:0.78rem;color:var(--tm);}
+
+/* =============================================
+   CONTACT PAGE
+   ============================================= */
+.contact-layout{display:grid;grid-template-columns:1fr 1.4fr;gap:3.5rem;max-width:1300px;margin:0 auto;padding:5rem 2.5rem;}
+.contact-left{display:flex;flex-direction:column;gap:1rem;}
+.ci-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.1rem;transition:all 0.2s;}
+.ci-card:hover{border-color:var(--bdr2);}
+.ci-row{display:flex;align-items:flex-start;gap:10px;}
+.ci-ico{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,rgba(0,212,255,0.1),rgba(0,212,255,0.04));border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--c);font-size:0.95rem;flex-shrink:0;}
+.ci-lbl{font-size:0.65rem;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.ci-val{font-size:0.88rem;color:var(--t);}
+.social-links{display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.5rem;}
+.soc-btn{width:36px;height:36px;border-radius:8px;background:var(--bg3);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--tm);text-decoration:none;transition:all 0.2s;font-size:0.9rem;}
+.soc-btn:hover{border-color:var(--c);color:var(--c);transform:translateY(-2px);box-shadow:0 4px 15px rgba(0,212,255,0.2);}
+.oh-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.1rem;}
+.oh-title{font-size:0.72rem;font-weight:700;color:var(--tw);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem;}
+.oh-row{display:flex;justify-content:space-between;font-size:0.78rem;color:var(--tm);padding:4px 0;}
+.oh-row span:last-child{color:var(--g);}
+.contact-form-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2.2rem;position:relative;overflow:hidden;}
+.contact-form-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o));}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.fgrp{margin-bottom:1.1rem;}
+.flbl{display:block;font-size:0.68rem;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.finp{width:100%;background:rgba(0,0,0,0.3);border:1px solid var(--bdr);color:var(--t);padding:10px 14px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.88rem;outline:none;transition:all 0.2s;}
+.finp:focus{border-color:var(--c);background:rgba(0,212,255,0.03);box-shadow:0 0 0 2px rgba(0,212,255,0.08);}
+.finp::placeholder{color:var(--tm);}
+textarea.finp{min-height:120px;resize:vertical;}
+select.finp option{background:var(--bg3);}
+.form-msg{display:none;background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.25);color:var(--g);padding:10px 14px;border-radius:8px;font-size:0.82rem;margin-bottom:1rem;}
+.form-msg.show{display:block;}
+.form-err{display:none;background:rgba(255,60,60,0.08);border:1px solid rgba(255,60,60,0.2);color:#ff6060;padding:8px 12px;border-radius:6px;font-size:0.78rem;margin-top:0.4rem;}
+.form-err.show{display:block;}
+
+/* =============================================
+   DASHBOARD
+   ============================================= */
+.dash-layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 70px);}
+.dash-sidebar{background:var(--bg2);border-right:1px solid var(--bdr);padding:1.5rem 0.8rem;display:flex;flex-direction:column;position:sticky;top:70px;height:calc(100vh - 70px);overflow-y:auto;}
+.ds-logo-area{padding:0 0.8rem 1rem;border-bottom:1px solid var(--bdr);margin-bottom:1rem;}
+.ds-logo{font-family:'Orbitron',monospace;font-size:0.75rem;font-weight:700;color:var(--tw);letter-spacing:2px;}
+.ds-role{font-size:0.62rem;color:var(--c);margin-top:2px;letter-spacing:2px;text-transform:uppercase;}
+.ds-nav{display:flex;flex-direction:column;gap:0.2rem;flex:1;}
+.ds-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:0.82rem;font-weight:600;color:var(--tm);cursor:pointer;transition:all 0.2s;border:1px solid transparent;}
+.ds-item i{width:16px;text-align:center;font-size:0.85rem;}
+.ds-item:hover{background:rgba(0,212,255,0.05);color:var(--t);}
+.ds-item.act{background:rgba(0,212,255,0.1);color:var(--c);border-color:rgba(0,212,255,0.2);}
+.ds-sep{height:1px;background:var(--bdr);margin:0.6rem 0;}
+.ds-logout{color:var(--tm);}
+.ds-logout:hover{color:var(--o)!important;}
+.dash-main{padding:2.5rem;overflow-y:auto;background:var(--bg1);}
+.dash-panel{display:none;}
+.dash-panel.act{display:block;}
+.dash-toprow{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.dash-hello{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--tw);}
+.dash-hello span{color:var(--c);}
+.dash-sub{font-size:0.8rem;color:var(--tm);margin-top:4px;}
+.dash-plan-chip{background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:10px;padding:0.6rem 1.2rem;text-align:center;}
+.dpc-lbl{font-size:0.62rem;color:var(--tm);text-transform:uppercase;letter-spacing:1px;}
+.dpc-val{font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:700;color:var(--c);margin-top:2px;}
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
+.dstat{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem;transition:all 0.2s;}
+.dstat:hover{border-color:var(--bdr2);transform:translateY(-2px);}
+.dstat-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:0.95rem;margin-bottom:0.6rem;}
+.ico-c{background:rgba(0,212,255,0.1);color:var(--c);}
+.ico-g{background:rgba(0,255,136,0.1);color:var(--g);}
+.ico-o{background:rgba(255,106,0,0.1);color:var(--o);}
+.ico-p{background:rgba(160,100,255,0.1);color:#a064ff;}
+.dstat-num{font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:900;color:var(--tw);}
+.dstat-lbl{font-size:0.68rem;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.dash-sec-title{font-family:'Orbitron',monospace;font-size:0.82rem;font-weight:700;color:var(--tw);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;}
+.enrolled-list{display:flex;flex-direction:column;gap:0.7rem;}
+.enr-item{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;transition:all 0.2s;}
+.enr-item:hover{border-color:var(--bdr2);}
+.enr-thumb{width:42px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+.enr-name{font-size:0.85rem;font-weight:700;color:var(--tw);}
+.enr-prog-lbl{font-size:0.65rem;color:var(--tm);margin-top:2px;}
+.enr-prog-wrap{flex:1;display:flex;align-items:center;gap:8px;}
+.enr-bar{flex:1;height:4px;background:var(--bg4);border-radius:4px;overflow:hidden;}
+.enr-fill{height:100%;background:linear-gradient(90deg,var(--c),rgba(0,212,255,0.3));border-radius:4px;}
+.enr-pct{font-size:0.75rem;font-weight:700;color:var(--c);white-space:nowrap;font-family:'Orbitron',monospace;}
+.empty-state{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:3rem;text-align:center;}
+.es-ico{font-size:2.8rem;margin-bottom:1rem;}
+.es-title{font-family:'Orbitron',monospace;font-size:0.9rem;font-weight:700;color:var(--tw);margin-bottom:0.4rem;}
+.es-desc{font-size:0.82rem;color:var(--tm);margin-bottom:1.5rem;}
+.upgrade-banner{background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(255,106,0,0.04));border:1px solid rgba(0,212,255,0.18);border-radius:var(--r);padding:1.4rem 1.8rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1.5rem;}
+.ub-text .ub-t{font-family:'Orbitron',monospace;font-size:0.9rem;font-weight:700;color:var(--tw);}
+.ub-text .ub-d{font-size:0.78rem;color:var(--tm);margin-top:3px;}
+.profile-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2rem;max-width:600px;}
+
+/* =============================================
+   AUTH MODAL
+   ============================================= */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:2000;align-items:center;justify-content:center;padding:1rem;}
+.modal-ov.open{display:flex;animation:fadeIn 0.2s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r2);padding:2.5rem;width:100%;max-width:460px;position:relative;max-height:90vh;overflow-y:auto;animation:mIn 0.3s cubic-bezier(.4,0,.2,1);}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o));border-radius:var(--r2) var(--r2) 0 0;}
+@keyframes mIn{from{opacity:0;transform:scale(0.95) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.mclose{position:absolute;top:1rem;right:1rem;background:var(--bg4);border:1px solid var(--bdr);color:var(--tm);width:30px;height:30px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.2s;}
+.mclose:hover{color:var(--tw);border-color:var(--bdr2);}
+.m-title{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--tw);margin-bottom:0.3rem;}
+.m-sub{font-size:0.82rem;color:var(--tm);margin-bottom:1.8rem;}
+.m-tabs{display:flex;background:var(--bg3);border-radius:8px;padding:3px;gap:3px;margin-bottom:1.8rem;}
+.m-tab{flex:1;padding:8px;text-align:center;font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--tm);border-radius:6px;cursor:pointer;transition:all 0.2s;border:none;background:none;}
+.m-tab.on{background:var(--c);color:var(--bg);}
+.m-panel{display:none;}
+.m-panel.on{display:block;}
+.tier-row{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1.3rem;}
+.tier-opt{border:1px solid var(--bdr);border-radius:var(--r);padding:1rem;cursor:pointer;transition:all 0.2s;background:var(--bg3);position:relative;}
+.tier-opt:hover{border-color:var(--c);}
+.tier-opt.on{border-color:var(--c);background:rgba(0,212,255,0.05);}
+.tier-opt.on::after{content:'✓';position:absolute;top:7px;right:10px;color:var(--c);font-size:0.75rem;font-weight:700;}
+.tier-name{font-family:'Orbitron',monospace;font-size:0.82rem;font-weight:700;color:var(--tw);}
+.tier-price{font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--c);margin:4px 0;}
+.tier-feat{font-size:0.7rem;color:var(--tm);line-height:1.5;}
+.forgot{float:right;font-size:0.75rem;color:var(--c);text-decoration:none;}
+.forgot:hover{color:var(--o);}
+
+/* =============================================
+   GLOBAL BUTTONS
+   ============================================= */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 26px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border:none;text-decoration:none;}
+.btn-c{background:var(--c);color:var(--bg);}
+.btn-c:hover{box-shadow:0 0 25px rgba(0,212,255,0.5);transform:translateY(-1px);}
+.btn-o{background:var(--o);color:var(--tw);}
+.btn-o:hover{box-shadow:0 0 25px rgba(255,106,0,0.4);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--c);border:1px solid var(--c);}
+.btn-ghost:hover{background:rgba(0,212,255,0.08);}
+.btn-full{width:100%;justify-content:center;}
+.btn-sm{padding:7px 16px;font-size:0.72rem;}
+
+/* TOAST */
+#toast-box{position:fixed;bottom:2rem;right:2rem;z-index:8000;display:flex;flex-direction:column;gap:0.6rem;pointer-events:none;}
+.toast{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:0.9rem 1.3rem;max-width:360px;pointer-events:auto;box-shadow:0 8px 30px rgba(0,0,0,0.5);animation:tIn 0.3s ease;}
+.toast.rm{animation:tOut 0.3s ease forwards;}
+.toast.suc{border-color:rgba(0,255,136,0.35);}
+.toast.err{border-color:rgba(255,60,60,0.35);}
+.toast.inf{border-color:rgba(0,212,255,0.35);}
+.toast i{flex-shrink:0;}
+.toast.suc i{color:var(--g);}
+.toast.err i{color:#ff6060;}
+.toast.inf i{color:var(--c);}
+.toast span{font-size:0.83rem;color:var(--t);}
+@keyframes tIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(20px)}}
+
+/* COURSE MODAL */
+#course-modal .modal-box{max-width:700px;}
+.cdm-header{display:flex;gap:1.2rem;margin-bottom:1.5rem;align-items:flex-start;}
+.cdm-thumb{width:80px;height:80px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:2.5rem;flex-shrink:0;}
+.cdm-meta{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.cdm-mi{display:flex;align-items:center;gap:5px;font-size:0.78rem;color:var(--tm);}
+.cdm-mi i{color:var(--c);}
+.cdm-mi strong{color:var(--t);}
+.curr-wrap{margin-bottom:1.2rem;}
+.curr-title-txt{font-family:'Orbitron',monospace;font-size:0.78rem;font-weight:700;color:var(--tw);letter-spacing:1px;margin-bottom:0.7rem;text-transform:uppercase;}
+.curr-list{display:flex;flex-direction:column;gap:5px;}
+.curr-li{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--tm);padding:5px 8px;border-radius:6px;transition:background 0.15s;}
+.curr-li:hover{background:var(--bg4);color:var(--t);}
+.curr-num{width:20px;height:20px;border-radius:50%;background:rgba(0,212,255,0.12);color:var(--c);font-size:0.62rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Orbitron',monospace;}
+.enroll-foot{display:flex;align-items:center;justify-content:space-between;padding-top:1.2rem;border-top:1px solid var(--bdr);flex-wrap:wrap;gap:1rem;}
+.ef-price{font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:900;color:var(--tw);}
+.ef-price.free{color:var(--g);}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5rem 2rem;}
+.footer-inner{max-width:1300px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem;}
+.f-brand{font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--tw);margin-bottom:0.6rem;}
+.f-brand span{color:var(--c);}
+.f-desc{font-size:0.78rem;color:var(--tm);line-height:1.7;margin-bottom:1rem;}
+.f-col-title{font-family:'Orbitron',monospace;font-size:0.62rem;font-weight:700;color:var(--tw);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem;}
+.f-links{display:flex;flex-direction:column;gap:0.5rem;}
+.f-links a{font-size:0.78rem;color:var(--tm);text-decoration:none;transition:color 0.2s;}
+.f-links a:hover{color:var(--c);}
+.footer-bot{display:flex;align-items:center;justify-content:space-between;padding-top:1.5rem;border-top:1px solid var(--bdr);font-size:0.72rem;color:var(--tm);flex-wrap:wrap;gap:0.8rem;}
+.footer-bot a{color:var(--tm);text-decoration:none;}
+.footer-bot a:hover{color:var(--c);}
+
+/* ANIMATIONS */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.d1{transition-delay:0.1s;}
+.d2{transition-delay:0.2s;}
+.d3{transition-delay:0.3s;}
+.d4{transition-delay:0.4s;}
+.d5{transition-delay:0.5s;}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .hero-inner{grid-template-columns:1fr;gap:2rem;}
+  .hero-right{display:none;}
+  .feat-row-inner{grid-template-columns:1fr 1fr;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .testi-grid{grid-template-columns:1fr 1fr;}
+  .about-grid{grid-template-columns:1fr;}
+  .about-img-side{max-width:380px;}
+  .about-full-grid{grid-template-columns:1fr;}
+  .about-sidebar{position:static;}
+  .contact-layout{grid-template-columns:1fr;padding:3rem 1.5rem;}
+  .dash-layout{grid-template-columns:1fr;}
+  .dash-sidebar{display:none;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .dash-stats{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  #nav .nav-links,.nav-right{display:none;}
+  .ham{display:flex;}
+  .hero{padding:0 1.5rem;}
+  .feat-row{padding:2rem 1.5rem;}
+  .feat-row-inner{grid-template-columns:1fr;}
+  .testi-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .courses-grid{grid-template-columns:1fr;}
+  .tier-row{grid-template-columns:1fr;}
+  .form-row2{grid-template-columns:1fr;}
+  .achieve-cards{grid-template-columns:1fr 1fr;}
+  .footer-grid{grid-template-columns:1fr;}
+}
+
+/* ══ LIGHT MODE ══════════════════════════════════════ */
+[data-theme="light"]{
+  --bg:#f0f4fa;
+  --bg1:#e8eef8;
+  --bg2:#e0e8f4;
+  --bg3:#d8e2f0;
+  --bg4:#ccd8ec;
+  --bg5:#beccde;
+  --card:#ffffff;
+  --t:#1a2840;
+  --tm:#4a6080;
+  --tw:#0a1828;
+  --bdr:rgba(0,100,180,0.18);
+  --bdr2:rgba(0,100,180,0.38);
+  --bdr3:rgba(0,100,180,0.58);
+  --c:#0077b6;
+  --c2:#005f9e;
+  --c3:#004080;
+  --o:#e06000;
+  --o2:#c05000;
+  --g:#007a40;
+}
+[data-theme="light"] body{background:#f0f4fa;color:#1a2840;}
+[data-theme="light"] #circuit-canvas{opacity:.06;}
+[data-theme="light"] .nav{background:rgba(232,238,248,.96);border-color:rgba(0,100,180,.18);}
+[data-theme="light"] .nav-logo .logo-text{color:#0a1828;}
+[data-theme="light"] .nav-logo .logo-sub{color:#4a6080;}
+[data-theme="light"] .nav-links a{color:#4a6080;}
+[data-theme="light"] .nav-links a:hover,.nav-links a.act{color:var(--c);}
+[data-theme="light"] .nbtn{border-color:var(--c);color:var(--c);}
+[data-theme="light"] .nbtn.solid{background:var(--c);color:#fff;}
+[data-theme="light"] .hero{background:var(--bg1);}
+[data-theme="light"] .hero-mesh{opacity:.04;}
+[data-theme="light"] .hero-h1,.hero-h1 *{color:#0a1828;}
+[data-theme="light"] .course-card,.category-card,.feat-card,.cert-card{background:#fff;border-color:rgba(0,100,180,.15);}
+[data-theme="light"] .course-card:hover{border-color:var(--c);box-shadow:0 12px 40px rgba(0,100,180,.15);}
+[data-theme="light"] .section-eyebrow{color:var(--c);}
+[data-theme="light"] .section-title{color:#0a1828;}
+[data-theme="light"] .cc-title,.cc-desc{color:#1a2840;}
+[data-theme="light"] .cc-price{color:var(--c);}
+[data-theme="light"] .cc-meta span{color:#4a6080;}
+[data-theme="light"] .pg-header{background:linear-gradient(135deg,#dce8f8,#e8f0fc);}
+[data-theme="light"] .pg-title{color:#0a1828;}
+[data-theme="light"] .pg-subtitle{color:#4a6080;}
+[data-theme="light"] .about-photo-card,.cert-list-card,.abt-section{background:#fff;border-color:rgba(0,100,180,.15);}
+[data-theme="light"] .apc-name{color:#0a1828;}
+[data-theme="light"] .bio-text{color:#2a3a50;}
+[data-theme="light"] .modal-box{background:#fff;border-color:rgba(0,100,180,.25);}
+[data-theme="light"] .form-field input,.form-field textarea,.form-field select{background:#f0f4fa;border-color:rgba(0,100,180,.2);color:#1a2840;}
+[data-theme="light"] #site-footer{background:#0a1828;border-top-color:rgba(0,100,180,.2);}
+[data-theme="light"] .hstat-num{color:var(--c);}
+[data-theme="light"] .hero-stats-bar{border-color:rgba(0,100,180,.2);}
+[data-theme="light"] .trust-item{color:#4a6080;}
+[data-theme="light"] .feat-title,.feat-num{color:var(--c);}
+[data-theme="light"] .cert-card .cert-label{color:var(--c);}
+[data-theme="light"] .search-bar input{background:#fff;border-color:rgba(0,100,180,.2);color:#1a2840;}
+[data-theme="light"] .filter-btn{background:#fff;border-color:rgba(0,100,180,.15);color:#4a6080;}
+[data-theme="light"] .filter-btn.active,.filter-btn:hover{background:var(--c);color:#fff;}
+[data-theme="light"] .dash-card{background:#fff;border-color:rgba(0,100,180,.15);}
+[data-theme="light"] #loader{background:#f0f4fa;}
+
+/* ── RTL DIRECTION FIXES ── */
+[dir="rtl"] .nav-inner{flex-direction:row-reverse;}
+[dir="rtl"] .nav-links{margin-right:auto;margin-left:0;}
+[dir="rtl"] .nav-right{flex-direction:row-reverse;}
+[dir="rtl"] .hero-inner{flex-direction:row-reverse;}
+[dir="rtl"] .hero-left{text-align:right;}
+[dir="rtl"] .hero-btns,.hero-trust,.hero-stats-bar{justify-content:flex-start;}
+[dir="rtl"] .hero-eyebrow{flex-direction:row-reverse;}
+[dir="rtl"] .footer-grid{direction:rtl;}
+[dir="rtl"] .about-full-grid{direction:rtl;}
+[dir="rtl"] .mob-nav{left:auto;right:0;border-left:none;border-right:1px solid var(--bdr);}
+[dir="rtl"] .breadcrumb{flex-direction:row-reverse;}
+[dir="rtl"] .clc-item{flex-direction:row-reverse;text-align:right;}
+[dir="rtl"] .abt-sec-title::after{right:0;left:auto;}
+
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- CIRCUIT CANVAS -->
+<canvas id="circuit-canvas"></canvas>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-hex">
+    <svg viewBox="0 0 80 80"><polygon points="40,4 74,22 74,58 40,76 6,58 6,22" fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="200" stroke-dashoffset="200" style="animation:drawHex 1.4s ease forwards"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="1.4s" fill="freeze"/></polygon><polygon points="40,14 66,28 66,52 40,66 14,52 14,28" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="1"/><circle cx="40" cy="40" r="4" fill="#00d4ff" opacity="0.8"/></svg>
+  </div>
+  <div class="loader-title"><span>AHMED</span> HUSSEIN</div>
+  <div class="loader-bar-wrap"><div class="loader-bar-inner"></div></div>
+</div>
+
+<!-- NAVIGATION -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" onclick="showPage('home');return false;">
+      <svg class="logo-hex" viewBox="0 0 40 40"><polygon points="20,2 36,11 36,29 20,38 4,29 4,11" fill="none" stroke="#00d4ff" stroke-width="1.5"/><text x="20" y="25" text-anchor="middle" font-family="Orbitron" font-size="9" fill="#00d4ff" font-weight="700">AH</text></svg>
+      <div><div class="logo-text"><span>AHMED</span> HUSSEIN</div><div class="logo-sub">Cisco Certified Instructor</div></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#" onclick="showPage('home');return false;" data-pg="home" class="act">Home</a></li>
+      <li><a href="#" onclick="showPage('courses');return false;" data-pg="courses">Courses</a></li>
+      <li><a href="#" onclick="showPage('about');return false;" data-pg="about">About</a></li>
+      <li><a href="#" onclick="showPage('contact');return false;" data-pg="contact">Contact</a></li>
+      <li><a href="#" id="nav-dash-lnk" style="display:none" onclick="showPage('dashboard');return false;" data-pg="dashboard">Dashboard</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nbtn" id="nav-login-btn" onclick="openModal('login')">Sign In</button>
+      <button class="nbtn solid" id="nav-reg-btn" onclick="openModal('register')">Register</button>
+      <button class="nbtn" id="nav-logout-btn" style="display:none" onclick="doLogout()"><i class="fas fa-power-off"></i> Logout</button>
+    </div>
+    <button class="ham" id="ham" onclick="toggleMob()"><span></span><span></span><span></span></button>
+  </div>
+
+    <!-- ── ADDED: Theme & Language Controls ── -->
+    <div class="nav-controls-added" style="display:flex;align-items:center;gap:.4rem;margin-inline-start:.5rem;">
+      <button id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle theme" style="
+        width:34px;height:34px;border-radius:50%;
+        border:1px solid var(--bdr);background:var(--card);
+        color:var(--c);font-size:.85rem;cursor:pointer;
+        display:flex;align-items:center;justify-content:center;
+        transition:all .2s;">🌙</button>
+      <button id="lang-toggle-btn" onclick="toggleLang()" title="تبديل اللغة" style="
+        padding:0 10px;height:34px;border-radius:20px;
+        border:1px solid var(--bdr);background:var(--card);
+        color:var(--c);font-size:.68rem;font-weight:700;
+        cursor:pointer;transition:all .2s;letter-spacing:.3px;
+        font-family:'Tajawal','Orbitron',sans-serif;">عربي</button>
+    </div>
+
+</nav>
+<div class="mob-nav" id="mob-nav">
+  <a href="#" onclick="showPage('home');toggleMob();return false;">Home</a>
+  <a href="#" onclick="showPage('courses');toggleMob();return false;">Courses</a>
+  <a href="#" onclick="showPage('about');toggleMob();return false;">About</a>
+  <a href="#" onclick="showPage('contact');toggleMob();return false;">Contact</a>
+  <a href="#" onclick="openModal('login');toggleMob();return false;">Sign In</a>
+  <a href="#" onclick="openModal('register');toggleMob();return false;">Register Free</a>
+</div>
+
+<!-- ═══════════════════ HOME PAGE ═══════════════════ -->
+<div id="page-home" class="page show">
+  <section class="hero">
+    <div class="hero-mesh"></div>
+    <div class="hero-scanline"></div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-eyebrow reveal"><span class="eyebrow-line"></span><span class="eyebrow-text">Cisco Certified Instructor · Bahrain</span></div>
+        <h1 class="hero-h1 reveal d1">
+          <div>MASTER THE</div>
+          <div class="line2">NETWORK.</div>
+          <div class="line3">OWN YOUR CAREER.</div>
+        </h1>
+        <p class="hero-sub reveal d2">Expert-led <strong>CCNA, CCNP, and Network Security</strong> courses built for real-world engineering. Hands-on labs, live mentorship, and a proven 96% exam pass rate.</p>
+        <div class="hero-btns reveal d3">
+          <button class="hbtn hbtn-primary" onclick="showPage('courses')"><i class="fas fa-satellite-dish"></i> Explore Courses</button>
+          <button class="hbtn hbtn-outline" onclick="openModal('register')"><i class="fas fa-user-astronaut"></i> Register Free</button>
+        </div>
+        <div class="hero-trust reveal d4">
+          <span class="trust-item"><i class="fas fa-check-circle"></i> Packet Tracer Labs</span>
+          <span class="trust-item"><i class="fas fa-check-circle"></i> Cisco NetAcad Aligned</span>
+          <span class="trust-item"><i class="fas fa-check-circle"></i> Certificate on Completion</span>
+        </div>
+        <div class="hero-stats-bar reveal d5">
+          <div class="hstat"><div class="hstat-num" data-count="1200" data-sfx="+">0+</div><div class="hstat-label">Students Trained</div></div>
+          <div class="hstat"><div class="hstat-num" data-count="96" data-sfx="%">0%</div><div class="hstat-label">Pass Rate</div></div>
+          <div class="hstat"><div class="hstat-num" data-count="10" data-sfx="+">0+</div><div class="hstat-label">Years Experience</div></div>
+        </div>
+      </div>
+      <div class="hero-right reveal d2">
+        <div class="floating-badge fb1"><div class="fb-icon fbi-c"><i class="fas fa-trophy"></i></div><div><div class="fb-title">96% Pass Rate</div><div class="fb-sub">First attempt</div></div></div>
+        <div class="floating-badge fb2"><div class="fb-icon fbi-o"><i class="fas fa-star"></i></div><div><div class="fb-title">4.9 Rating</div><div class="fb-sub">500+ reviews</div></div></div>
+        <div class="hero-device">
+          <div class="device-header">
+            <div class="dh-title">CERT TRACKS</div>
+            <div class="dh-dots"><div class="dot dot1"></div><div class="dot dot2"></div><div class="dot dot3"></div></div>
+          </div>
+          <div class="device-body">
+            <div class="cert-tiles">
+              <div class="cert-tile" onclick="showPage('courses')"><div class="ct-icon">🌐</div><div class="ct-name">CCNA</div><div class="ct-code">EXAM 200-301</div></div>
+              <div class="cert-tile" onclick="showPage('courses')"><div class="ct-icon">🔷</div><div class="ct-name">CCNP</div><div class="ct-code">ENCOR 350-401</div></div>
+              <div class="cert-tile" onclick="showPage('courses')"><div class="ct-icon">🔐</div><div class="ct-name">SECURITY</div><div class="ct-code">SCOR 350-701</div></div>
+              <div class="cert-tile" onclick="showPage('courses')"><div class="ct-icon">⚙️</div><div class="ct-name">AUTOMATION</div><div class="ct-code">SD-WAN + PYTHON</div></div>
+            </div>
+            <div class="device-instructor">
+              <div class="di-avatar">AH</div>
+              <div><div class="di-name">AHMED HUSSEIN</div><div class="di-role">Cisco Certified Professional</div></div>
+              <div class="di-live"><div class="live-dot"></div> LIVE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="feat-row">
+    <div class="feat-row-inner">
+      <div class="feat-item reveal"><div class="feat-icon-wrap"><i class="fas fa-laptop-code"></i></div><div><div class="feat-title">50+ Hands-On Labs</div><div class="feat-desc">Real Cisco Packet Tracer exercises covering every exam domain</div></div></div>
+      <div class="feat-item reveal d2"><div class="feat-icon-wrap"><i class="fas fa-certificate"></i></div><div><div class="feat-title">Official Cisco Curriculum</div><div class="feat-desc">NetAcad-aligned content matching the current exam blueprints</div></div></div>
+      <div class="feat-item reveal d3"><div class="feat-icon-wrap"><i class="fas fa-headset"></i></div><div><div class="feat-title">Live Mentorship</div><div class="feat-desc">Direct Q&A access with the instructor throughout your course</div></div></div>
+      <div class="feat-item reveal d4"><div class="feat-icon-wrap"><i class="fas fa-medal"></i></div><div><div class="feat-title">96% Pass Rate</div><div class="feat-desc">Proven track record across CCNA, CCNP, and Security exams</div></div></div>
+    </div>
+  </div>
+
+  <section class="sec-courses">
+    <div class="sec-wrap">
+      <div class="sec-hdr-row">
+        <div class="reveal"><div class="sec-eyebrow"><i class="fas fa-signal"></i> Featured Courses</div><h2 class="sec-h2">Start Your <span class="accent">Certification</span> Path</h2></div>
+        <button class="pill-btn reveal" onclick="showPage('courses')">All Courses <i class="fas fa-arrow-right"></i></button>
+      </div>
+      <div class="courses-grid" id="home-courses-grid"></div>
+    </div>
+  </section>
+
+  <section class="sec-stats">
+    <div class="sec-wrap">
+      <div class="stats-grid">
+        <div class="stat-card reveal"><div class="stat-ico"><i class="fas fa-users"></i></div><div class="stat-num" data-count="1200" data-sfx="+">0+</div><div class="stat-lbl">Students Trained</div></div>
+        <div class="stat-card reveal d2"><div class="stat-ico"><i class="fas fa-award"></i></div><div class="stat-num" data-count="96" data-sfx="%">0%</div><div class="stat-lbl">Exam Pass Rate</div></div>
+        <div class="stat-card reveal d3"><div class="stat-ico"><i class="fas fa-book-open"></i></div><div class="stat-num" data-count="6" data-sfx="">0</div><div class="stat-lbl">Active Courses</div></div>
+        <div class="stat-card reveal d4"><div class="stat-ico"><i class="fas fa-clock"></i></div><div class="stat-num" data-count="10" data-sfx="+">0+</div><div class="stat-lbl">Years Experience</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-testi">
+    <div class="sec-wrap">
+      <div class="sec-hdr reveal"><div class="sec-eyebrow"><i class="fas fa-comments"></i> Student Success</div><h2 class="sec-h2">What Our <span class="accent">Students</span> Say</h2></div>
+      <div class="testi-grid">
+        <div class="tcard reveal"><div class="tcard-accent ta1"></div><div class="t-stars">★★★★★</div><p class="t-text">"Ahmed's CCNA course is genuinely the best I've encountered. The labs mirror real scenarios and his exam strategy got me 920/1000 on my first attempt!"</p><div class="t-author"><div class="t-av" style="background:linear-gradient(135deg,var(--c),var(--c3))">KA</div><div><div class="t-name">Khalid Al-Rashidi</div><div class="t-cert">CCNA Certified · Saudi Arabia</div></div></div></div>
+        <div class="tcard reveal d2"><div class="tcard-accent ta2"></div><div class="t-stars">★★★★★</div><p class="t-text">"The CCNP Enterprise track is exceptional. I went from junior network engineer to senior within 6 months. The ROI on this course is unbelievable."</p><div class="t-author"><div class="t-av" style="background:linear-gradient(135deg,var(--o),#b03a10)">SM</div><div><div class="t-name">Sara Mohammed</div><div class="t-cert">CCNP Enterprise · Bahrain</div></div></div></div>
+        <div class="tcard reveal d3"><div class="tcard-accent ta3"></div><div class="t-stars">★★★★★</div><p class="t-text">"Best investment in my career. The Security course content on ASA and Firepower is world-class. Landed a security engineer role immediately after certification."</p><div class="t-author"><div class="t-av" style="background:linear-gradient(135deg,var(--g),#047a35)">FH</div><div><div class="t-name">Faris Hassan</div><div class="t-cert">CyberOps + SCOR · UAE</div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-about-prev">
+    <div class="sec-wrap">
+      <div class="about-grid">
+        <div class="about-img-side reveal">
+          <div class="about-frame"><span style="font-size:7rem">👨‍💻</span>
+            <div class="about-overlay">
+              <div style="font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:900;color:var(--tw)">Ahmed Hussein</div>
+              <div style="font-size:0.72rem;color:var(--c);margin-top:2px">Cisco Certified Professional</div>
+              <div class="cert-pills"><span class="cert-pill">CCNP</span><span class="cert-pill">CCNA</span><span class="cert-pill">CyberOps</span><span class="cert-pill">NetAcad</span></div>
+            </div>
+          </div>
+          <div class="about-float"><div class="af-num">4.9★</div><div class="af-lbl">Average Rating</div></div>
+        </div>
+        <div class="reveal d2">
+          <div class="sec-eyebrow"><i class="fas fa-id-badge"></i> Instructor Profile</div>
+          <h2 class="sec-h2" style="margin-bottom:1rem">A Decade of <span class="accent">Cisco</span> Mastery</h2>
+          <p style="color:var(--tm);line-height:1.8;margin-bottom:1rem;font-size:0.92rem">With 10+ years of enterprise networking experience and Cisco instruction, I've guided 1,200+ students across the Middle East through their certification journeys using hands-on, lab-first teaching methods.</p>
+          <p style="color:var(--tm);line-height:1.8;margin-bottom:2rem;font-size:0.92rem">As a Cisco Networking Academy instructor, every course is aligned with official exam blueprints and enriched with practical scenarios from real enterprise environments.</p>
+          <button class="btn btn-c" onclick="showPage('about')"><i class="fas fa-user-circle"></i> View Full Profile</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec-nl">
+    <div class="sec-wrap">
+      <div class="nl-card reveal">
+        <div class="nl-text"><div class="sec-eyebrow" style="margin-bottom:0.4rem"><i class="fas fa-envelope-open-text"></i> Free Resources</div><h3>Get Weekly Networking Tips</h3><p>Join 800+ students receiving free labs, cheat sheets, and Cisco exam tips weekly.</p></div>
+        <div class="nl-form"><input class="nl-input" id="nl-email" type="email" placeholder="your@email.com"><button class="btn btn-o" onclick="doSubscribe()"><i class="fas fa-paper-plane"></i> Subscribe</button></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════ COURSES PAGE ═══════════════════ -->
+<div id="page-courses" class="page">
+  <div class="pg-header">
+    <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
+    <div class="pg-header-inner">
+      <div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a><i class="fas fa-chevron-right"></i>Courses</div>
+      <div class="pg-title">CISCO COURSES</div>
+      <div class="pg-subtitle">From CCNA fundamentals to advanced CCNP and Security. Expert-led, lab-first, and exam-focused.</div>
+    </div>
+  </div>
+  <div class="filter-toolbar">
+    <div class="filter-toolbar-inner">
+      <button class="f-btn on" onclick="filterCourses('all',this)">All</button>
+      <button class="f-btn" onclick="filterCourses('CCNA',this)">CCNA</button>
+      <button class="f-btn" onclick="filterCourses('CCNP',this)">CCNP</button>
+      <button class="f-btn" onclick="filterCourses('Security',this)">Security</button>
+      <button class="f-btn" onclick="filterCourses('Labs',this)">Labs</button>
+      <div class="f-sep"></div>
+      <div class="f-search"><i class="fas fa-search"></i><input id="course-search" type="text" placeholder="Search courses..." oninput="searchCourses()"></div>
+      <div class="f-count" id="results-info"><span>6</span> courses</div>
+    </div>
+  </div>
+  <section style="padding:3rem 2.5rem;background:var(--bg1)">
+    <div style="max-width:1300px;margin:0 auto">
+      <div class="courses-grid" id="all-courses-grid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ═══════════════════ ABOUT PAGE ═══════════════════ -->
+<div id="page-about" class="page">
+  <div class="pg-header">
+    <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
+    <div class="pg-header-inner">
+      <div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a><i class="fas fa-chevron-right"></i>About</div>
+      <div class="pg-title">AHMED HUSSEIN</div>
+      <div class="pg-subtitle">Cisco Certified Professional with 10+ years of enterprise networking experience and a passion for IT education.</div>
+    </div>
+  </div>
+  <div class="about-full">
+    <div class="about-full-grid">
+      <div class="about-sidebar">
+        <div class="about-photo-card">
+          <div class="apc-img"><span style="font-size:7rem">👨‍💻</span></div>
+          <div class="apc-plate"><div class="apc-name">AHMED HUSSEIN</div><div class="apc-role">Cisco Certified Instructor</div></div>
+        </div>
+        <div class="cert-list-card">
+          <div class="clc-title">Certifications</div>
+          <div class="clc-item"><div class="clc-ico">🔷</div><div><div class="clc-name">CCNP Enterprise</div><div class="clc-code">350-401 ENCOR</div></div><div class="clc-badge">Active</div></div>
+          <div class="clc-item"><div class="clc-ico">🌐</div><div><div class="clc-name">CCNA 200-301</div><div class="clc-code">Routing & Switching</div></div><div class="clc-badge">Active</div></div>
+          <div class="clc-item"><div class="clc-ico">🔐</div><div><div class="clc-name">CyberOps Associate</div><div class="clc-code">200-201</div></div><div class="clc-badge">Active</div></div>
+          <div class="clc-item"><div class="clc-ico">🎓</div><div><div class="clc-name">NetAcad Instructor</div><div class="clc-code">Cisco Academy</div></div><div class="clc-badge">Active</div></div>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+          <a href="#" class="soc-btn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-telegram"></i></a>
+        </div>
+      </div>
+      <div class="about-main">
+        <div class="abt-section">
+          <div class="abt-sec-title">Professional Bio</div>
+          <p class="bio-text">With over a decade of hands-on enterprise networking experience and Cisco instruction, I've dedicated my career to empowering IT professionals across the Middle East and beyond to achieve their certification goals and build high-impact careers in networking.</p>
+          <p class="bio-text">As a Cisco Networking Academy instructor, I specialize in bridging the gap between theoretical knowledge and real-world application. Every course combines comprehensive curriculum with practical lab exercises that mirror actual enterprise network environments.</p>
+          <p class="bio-text">I've personally guided 1,200+ students through CCNA, CCNP, and Security certification paths, maintaining a consistently high first-attempt pass rate through structured, mentorship-driven instruction.</p>
+        </div>
+        <div class="achieve-cards">
+          <div class="ach-card"><div class="ach-num" data-count="1200" data-sfx="+">0+</div><div class="ach-lbl">Students Trained</div></div>
+          <div class="ach-card"><div class="ach-num" data-count="96" data-sfx="%">0%</div><div class="ach-lbl">Pass Rate</div></div>
+          <div class="ach-card"><div class="ach-num" data-count="10" data-sfx="+">0+</div><div class="ach-lbl">Years Exp.</div></div>
+        </div>
+        <div class="abt-section">
+          <div class="abt-sec-title">Technical Expertise</div>
+          <div class="skill-rows">
+            <div class="skill-row"><div class="sr-head"><span class="sr-name">Routing & Switching (CCNP)</span><span class="sr-pct">97%</span></div><div class="sr-bg"><div class="sr-fill" data-w="97%"></div></div></div>
+            <div class="skill-row"><div class="sr-head"><span class="sr-name">Network Security & Firewalls</span><span class="sr-pct">90%</span></div><div class="sr-bg"><div class="sr-fill" data-w="90%"></div></div></div>
+            <div class="skill-row"><div class="sr-head"><span class="sr-name">SD-WAN & Cloud Networking</span><span class="sr-pct">85%</span></div><div class="sr-bg"><div class="sr-fill" data-w="85%"></div></div></div>
+            <div class="skill-row"><div class="sr-head"><span class="sr-name">Network Automation (Python)</span><span class="sr-pct">82%</span></div><div class="sr-bg"><div class="sr-fill" data-w="82%"></div></div></div>
+          </div>
+        </div>
+        <div class="abt-section">
+          <div class="abt-sec-title">Career Timeline</div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-yr">2024 – Present</div><div class="tl-title">Senior Cisco Instructor & Course Developer</div><div class="tl-desc">Delivering CCNA, CCNP, and Security courses online and on-site across the GCC</div></div>
+            <div class="tl-item"><div class="tl-yr">2020 – 2024</div><div class="tl-title">Network Engineering Consultant</div><div class="tl-desc">Designed enterprise Cisco networks for banking and telecoms clients</div></div>
+            <div class="tl-item"><div class="tl-yr">2016 – 2020</div><div class="tl-title">Cisco NetAcad Instructor</div><div class="tl-desc">Delivered official Cisco curriculum at a regional NetAcad</div></div>
+            <div class="tl-item"><div class="tl-yr">2013 – 2016</div><div class="tl-title">Network Administrator</div><div class="tl-desc">Managed multi-site Cisco campus networks and data center infrastructure</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CONTACT PAGE ═══════════════════ -->
+<div id="page-contact" class="page">
+  <div class="pg-header">
+    <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
+    <div class="pg-header-inner">
+      <div class="breadcrumb"><a href="#" onclick="showPage('home');return false;">Home</a><i class="fas fa-chevron-right"></i>Contact</div>
+      <div class="pg-title">GET IN TOUCH</div>
+      <div class="pg-subtitle">Questions about courses or certifications? I respond to all inquiries within 24 hours.</div>
+    </div>
+  </div>
+  <div class="contact-layout">
+    <div class="contact-left">
+      <div class="ci-card"><div class="ci-row"><div class="ci-ico"><i class="fas fa-envelope"></i></div><div><div class="ci-lbl">Email</div><div class="ci-val">ahmed@ahmedhussein.org</div></div></div></div>
+      <div class="ci-card"><div class="ci-row"><div class="ci-ico"><i class="fab fa-whatsapp"></i></div><div><div class="ci-lbl">WhatsApp / Phone</div><div class="ci-val">+973 XXXX XXXX</div></div></div></div>
+      <div class="ci-card"><div class="ci-row"><div class="ci-ico"><i class="fas fa-map-marker-alt"></i></div><div><div class="ci-lbl">Location</div><div class="ci-val">Manama, Kingdom of Bahrain</div></div></div></div>
+      <div class="oh-card">
+        <div class="oh-title"><i class="fas fa-clock" style="color:var(--c);margin-right:6px"></i>Office Hours</div>
+        <div class="oh-row"><span>Saturday – Thursday</span><span>9:00 AM – 9:00 PM</span></div>
+        <div class="oh-row"><span>Friday</span><span style="color:var(--tm)">Closed</span></div>
+        <div class="oh-row"><span>Time Zone</span><span>AST (UTC +3)</span></div>
+      </div>
+      <div class="ci-card">
+        <div class="ci-lbl" style="margin-bottom:0.6rem">Follow & Connect</div>
+        <div class="social-links">
+          <a href="#" class="soc-btn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-telegram"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="soc-btn"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form-card">
+      <div class="form-msg" id="contact-ok"><i class="fas fa-check-circle"></i> Message sent! I'll respond within 24 hours.</div>
+      <div class="form-row2">
+        <div class="fgrp"><label class="flbl">First Name</label><input id="cf-fname" class="finp" placeholder="Ahmed"></div>
+        <div class="fgrp"><label class="flbl">Last Name</label><input id="cf-lname" class="finp" placeholder="Hassan"></div>
+      </div>
+      <div class="fgrp"><label class="flbl">Email Address</label><input id="cf-email" class="finp" type="email" placeholder="you@example.com"></div>
+      <div class="fgrp"><label class="flbl">Phone / WhatsApp</label><input id="cf-phone" class="finp" placeholder="+973..."></div>
+      <div class="fgrp"><label class="flbl">Subject</label>
+        <select id="cf-subject" class="finp">
+          <option>Course Inquiry — CCNA</option><option>Course Inquiry — CCNP</option>
+          <option>Course Inquiry — Security</option><option>Corporate / Group Training</option><option>General Question</option>
+        </select>
+      </div>
+      <div class="fgrp"><label class="flbl">Message</label><textarea id="cf-msg" class="finp" placeholder="Tell me about your goals..."></textarea></div>
+      <button class="btn btn-c btn-full" onclick="sendContact()"><i class="fas fa-paper-plane"></i> Send Message</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ DASHBOARD ═══════════════════ -->
+<div id="page-dashboard" class="page">
+  <div class="dash-layout">
+    <aside class="dash-sidebar">
+      <div class="ds-logo-area"><div class="ds-logo">DASHBOARD</div><div class="ds-role">Student Portal</div></div>
+      <nav class="ds-nav">
+        <div class="ds-item act" data-pnl="overview" onclick="showDashPanel('overview',this)"><i class="fas fa-th-large"></i> Overview</div>
+        <div class="ds-item" data-pnl="my-courses" onclick="showDashPanel('my-courses',this)"><i class="fas fa-graduation-cap"></i> My Courses</div>
+        <div class="ds-item" data-pnl="profile" onclick="showDashPanel('profile',this)"><i class="fas fa-user-circle"></i> Profile</div>
+        <div class="ds-sep"></div>
+        <div class="ds-item" onclick="showPage('courses')"><i class="fas fa-compass"></i> Browse Courses</div>
+        <div class="ds-item" onclick="showPage('contact')"><i class="fas fa-headset"></i> Support</div>
+        <div class="ds-sep"></div>
+        <div class="ds-item ds-logout" onclick="doLogout()"><i class="fas fa-power-off"></i> Logout</div>
+      </nav>
+    </aside>
+    <main class="dash-main">
+      <div class="dash-panel act" id="dash-overview">
+        <div class="dash-toprow">
+          <div><div class="dash-hello">WELCOME, <span id="dash-name">STUDENT</span></div><div class="dash-sub">Continue your certification journey</div></div>
+          <div class="dash-plan-chip"><div class="dpc-lbl">Your Plan</div><div class="dpc-val" id="dash-plan">FREE</div></div>
+        </div>
+        <div class="dash-stats">
+          <div class="dstat"><div class="dstat-ico ico-c"><i class="fas fa-book-open"></i></div><div class="dstat-num" id="dash-enrolled-n">0</div><div class="dstat-lbl">Enrolled</div></div>
+          <div class="dstat"><div class="dstat-ico ico-g"><i class="fas fa-check-circle"></i></div><div class="dstat-num">0</div><div class="dstat-lbl">Completed</div></div>
+          <div class="dstat"><div class="dstat-ico ico-o"><i class="fas fa-certificate"></i></div><div class="dstat-num">0</div><div class="dstat-lbl">Certificates</div></div>
+          <div class="dstat"><div class="dstat-ico ico-p"><i class="fas fa-clock"></i></div><div class="dstat-num">0h</div><div class="dstat-lbl">Study Time</div></div>
+        </div>
+        <div class="dash-sec-title">Enrolled Courses</div>
+        <div class="enrolled-list" id="dash-enr-list"></div>
+        <div class="upgrade-banner">
+          <div class="ub-text"><div class="ub-t">UPGRADE TO PREMIUM ⚡</div><div class="ub-d">Full course access, downloadable labs, and certificates.</div></div>
+          <button class="btn btn-o" onclick="openModal('register')"><i class="fas fa-crown"></i> Upgrade Now</button>
+        </div>
+      </div>
+      <div class="dash-panel" id="dash-my-courses">
+        <div class="dash-toprow"><div><div class="dash-hello">MY COURSES</div><div class="dash-sub">All your enrolled courses</div></div></div>
+        <div class="enrolled-list" id="dash-mc-list"></div>
+      </div>
+      <div class="dash-panel" id="dash-profile">
+        <div class="dash-toprow"><div><div class="dash-hello">MY PROFILE</div></div></div>
+        <div class="profile-card">
+          <div class="form-row2">
+            <div class="fgrp"><label class="flbl">First Name</label><input id="pf-fname" class="finp"></div>
+            <div class="fgrp"><label class="flbl">Last Name</label><input id="pf-lname" class="finp"></div>
+          </div>
+          <div class="fgrp"><label class="flbl">Email (read-only)</label><input id="pf-email" class="finp" readonly style="opacity:0.5;cursor:not-allowed"></div>
+          <div class="fgrp"><label class="flbl">Phone</label><input id="pf-phone" class="finp" placeholder="+973..."></div>
+          <button class="btn btn-c" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand"><span>AHMED</span> HUSSEIN</div>
+        <p class="f-desc">Cisco Certified Instructor offering expert CCNA, CCNP, and Network Security training across the GCC and Middle East.</p>
+        <div class="social-links"><a href="#" class="soc-btn"><i class="fab fa-linkedin-in"></i></a><a href="#" class="soc-btn"><i class="fab fa-youtube"></i></a><a href="#" class="soc-btn"><i class="fab fa-twitter"></i></a><a href="#" class="soc-btn"><i class="fab fa-telegram"></i></a></div>
+      </div>
+      <div><div class="f-col-title">Courses</div><div class="f-links"><a href="#" onclick="showPage('courses');return false;">CCNA 200-301</a><a href="#" onclick="showPage('courses');return false;">CCNP Enterprise</a><a href="#" onclick="showPage('courses');return false;">Network Security</a><a href="#" onclick="showPage('courses');return false;">Packet Tracer Labs</a><a href="#" onclick="showPage('courses');return false;">Exam Bootcamp</a></div></div>
+      <div><div class="f-col-title">Navigate</div><div class="f-links"><a href="#" onclick="showPage('home');return false;">Home</a><a href="#" onclick="showPage('about');return false;">About</a><a href="#" onclick="showPage('contact');return false;">Contact</a><a href="#" onclick="openModal('register');return false;">Register</a></div></div>
+      <div><div class="f-col-title">Contact</div><div class="f-links"><span style="color:var(--tm);font-size:0.78rem">ahmed@ahmedhussein.org</span><span style="color:var(--tm);font-size:0.78rem">+973 XXXX XXXX</span><span style="color:var(--tm);font-size:0.78rem">Manama, Bahrain</span><span style="color:var(--tm);font-size:0.78rem">Sat–Thu: 9AM–9PM</span></div></div>
+    </div>
+    <div class="footer-bot"><span>© 2025 Ahmed Hussein. All rights reserved.</span><div style="display:flex;gap:1rem"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+  </div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-ov" id="auth-modal">
+  <div class="modal-box">
+    <button class="mclose" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    <div class="m-title">ACCESS PORTAL</div>
+    <div class="m-sub">Sign in or create your free account</div>
+    <div class="m-tabs"><button class="m-tab on" data-tab="login" onclick="switchTab('login')">Sign In</button><button class="m-tab" data-tab="register" onclick="switchTab('register')">Register</button></div>
+    <div class="m-panel on" id="mp-login">
+      <div class="form-msg" id="login-ok"><i class="fas fa-check-circle"></i> Logged in!</div>
+      <div class="fgrp"><label class="flbl">Email</label><input id="l-email" class="finp" type="email" placeholder="you@example.com"></div>
+      <div class="fgrp"><label class="flbl">Password <a href="#" class="forgot">Forgot?</a></label><input id="l-pass" class="finp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="form-err" id="login-err"></div>
+      <button class="btn btn-c btn-full" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+      <p style="text-align:center;font-size:0.78rem;color:var(--tm);margin-top:1rem">No account? <a href="#" onclick="switchTab('register')" style="color:var(--c)">Register free</a></p>
+    </div>
+    <div class="m-panel" id="mp-register">
+      <div class="form-msg" id="reg-ok"><i class="fas fa-check-circle"></i> Account created! Sign in now.</div>
+      <p style="font-size:0.68rem;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem">Choose Plan</p>
+      <div class="tier-row">
+        <div class="tier-opt on" data-tier="free" onclick="pickTier('free')"><div class="tier-name">FREE</div><div class="tier-price">$0</div><div class="tier-feat">Course previews & free courses</div></div>
+        <div class="tier-opt" data-tier="premium" onclick="pickTier('premium')"><div class="tier-name">PREMIUM ⚡</div><div class="tier-price">$29/mo</div><div class="tier-feat">Full access + labs + certificates</div></div>
+      </div>
+      <div class="form-row2">
+        <div class="fgrp"><label class="flbl">First Name *</label><input id="r-fname" class="finp" placeholder="Ahmed"></div>
+        <div class="fgrp"><label class="flbl">Last Name</label><input id="r-lname" class="finp" placeholder="Hassan"></div>
+      </div>
+      <div class="fgrp"><label class="flbl">Email *</label><input id="r-email" class="finp" type="email" placeholder="you@example.com"></div>
+      <div class="fgrp"><label class="flbl">Phone</label><input id="r-phone" class="finp" placeholder="+973..."></div>
+      <div class="fgrp"><label class="flbl">Password * (min 8 chars)</label><input id="r-pass" class="finp" type="password" placeholder="Min 8 characters" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="form-err" id="reg-err"></div>
+      <button class="btn btn-c btn-full" onclick="doRegister()"><i class="fas fa-user-plus"></i> Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- COURSE DETAIL MODAL -->
+<div class="modal-ov" id="course-modal">
+  <div class="modal-box" style="max-width:700px"><button class="mclose" onclick="closeCourseModal()"><i class="fas fa-times"></i></button><div id="course-detail-inner"></div></div>
+</div>
+
+<div id="toast-box"></div>
+
+<script>
+/* ──────────── COURSE DATA ──────────── */
+const COURSES=[
+  {id:1,cat:'CCNA',icon:'🌐',th:'th1',title:'CCNA 200-301: Complete Network Associate',desc:'Master routing, switching, IPv4/IPv6, VLANs, OSPF, and everything you need to pass the CCNA exam first time.',level:'Beginner',duration:'80 hrs',students:'420',price:'$149',rating:'4.9',reviews:'128',prereqs:'No prior networking knowledge required.',curriculum:['Networking Fundamentals & OSI Model','IP Addressing & Subnetting','Routing: OSPF, EIGRP, Static Routes','VLANs, Trunking & Spanning Tree','WAN Technologies & VPNs','Network Services: DHCP, DNS, NAT','Security Fundamentals & ACLs','Automation & Programmability','5 Full-Length Practice Exams']},
+  {id:2,cat:'CCNP',icon:'🔷',th:'th2',title:'CCNP Enterprise: ENCOR 350-401',desc:'Advanced enterprise networking — BGP, MPLS, SD-WAN, wireless, automation, and security. Full ENCOR exam preparation.',level:'Advanced',duration:'120 hrs',students:'180',price:'$249',rating:'4.8',reviews:'64',prereqs:'CCNA certification or equivalent knowledge.',curriculum:['Advanced OSPF, BGP & IS-IS','MPLS L3VPN Architecture','Campus Switching: STP/RSTP/MSTP','Wireless: 802.11 & Cisco WLC','SD-WAN Architecture & Deployment','Python & Ansible Automation','NETCONF/RESTCONF & YANG','Network Assurance & DNA Center','ENCOR Practice Exams']},
+  {id:3,cat:'Security',icon:'🔐',th:'th3',title:'CyberOps & Network Security (SCOR)',desc:'Comprehensive Cisco security training: ASA firewalls, Firepower NGFW, VPNs, IDS/IPS, and incident response.',level:'Intermediate',duration:'90 hrs',students:'210',price:'$199',rating:'4.9',reviews:'89',prereqs:'CCNA or basic networking knowledge.',curriculum:['Security Concepts & Cryptography','Cisco ASA Firewall & NAT','Firepower NGFW & IPS','VPN: IPsec & SSL/TLS','Identity Management: AAA & ISE','Security Monitoring & SIEM','Threat Detection & Response','CyberOps & SCOR Practice Exams']},
+  {id:4,cat:'Labs',icon:'🖧',th:'th4',title:'Packet Tracer Masterclass: 50+ Labs',desc:'50+ practical Cisco Packet Tracer labs. Build complete enterprise networks from scratch with expert guidance.',level:'Beginner',duration:'40 hrs',students:'560',price:'$79',rating:'4.9',reviews:'207',prereqs:'No prerequisites. Packet Tracer is free to download.',curriculum:['Interface & Device Setup','LAN Topology Design','Router CLI from Scratch','VLAN & Inter-VLAN Routing','OSPF Multi-Area Labs','EIGRP & Redistribution','ACL Security Labs','IPv6 Dual-Stack Lab','Final Project: Enterprise Campus']},
+  {id:5,cat:'CCNP',icon:'⚙️',th:'th5',title:'SD-WAN & Network Automation (Python)',desc:'Cisco Viptela SD-WAN, Python scripting, Ansible playbooks, NETCONF/RESTCONF APIs, and DNA Center automation.',level:'Advanced',duration:'60 hrs',students:'95',price:'$199',rating:'4.7',reviews:'38',prereqs:'CCNP ENCOR or solid enterprise networking experience.',curriculum:['SD-WAN: Control & Data Plane','vManage, vBond & vSmart','OMP Routing & Policy','Python for Network Engineers','Netmiko & NAPALM Libraries','Ansible for Cisco IOS','NETCONF & RESTCONF','DNA Center REST API','DevOps Capstone Project']},
+  {id:6,cat:'CCNA',icon:'📝',th:'th6',title:'CCNA Exam Bootcamp: 10-Day Intensive',desc:'Rapid exam prep with 5 full-length practice tests, time management strategies, and domain-by-domain review sessions.',level:'Intermediate',duration:'30 hrs',students:'340',price:'Free',rating:'4.8',reviews:'156',prereqs:'Completed CCNA training or equivalent knowledge.',curriculum:['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim']}
+];
+
+/* ──────────── STATE ──────────── */
+const S={user:null,enrolled:[],tier:'free',filter:'all'};
+
+/* ──────────── INIT ──────────── */
+document.addEventListener('DOMContentLoaded',()=>{
+  initCircuit();initCursor();initScroll();initObserver();initCounters();
+  renderCourses('home-courses-grid',COURSES.slice(0,3));
+  restoreSession();
+  setTimeout(()=>document.getElementById('loader').classList.add('gone'),1700);
+  document.getElementById('auth-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+  document.getElementById('course-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeCourseModal();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeCourseModal();}});
+});
+
+/* ──────────── CIRCUIT CANVAS ──────────── */
+function initCircuit(){
+  const c=document.getElementById('circuit-canvas');
+  const ctx=c.getContext('2d');
+  let W,H,nodes=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;nodes=[];const n=Math.floor((W*H)/22000);for(let i=0;i<n;i++)nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*0.3,vy:(Math.random()-.5)*0.3});}
+  resize();window.addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;
+      ctx.beginPath();ctx.arc(n.x,n.y,1.5,0,Math.PI*2);ctx.fillStyle='#00d4ff';ctx.fill();
+    });
+    for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+      const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<130){ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.strokeStyle=`rgba(0,212,255,${(1-d/130)*0.5})`;ctx.lineWidth=0.4;ctx.stroke();}
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ──────────── CURSOR ──────────── */
+function initCursor(){
+  if(window.innerWidth<1024)return;
+  const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+  document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';});
+  document.querySelectorAll('button,a,.ccard,.cert-tile,.feat-item').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cur.classList.add('cursor-hover');ring.classList.add('cursor-ring-hover');});
+    el.addEventListener('mouseleave',()=>{cur.classList.remove('cursor-hover');ring.classList.remove('cursor-ring-hover');});
+  });
+}
+
+/* ──────────── SCROLL ──────────── */
+function initScroll(){
+  const nav=document.getElementById('nav');
+  window.addEventListener('scroll',()=>nav.classList.toggle('stuck',window.scrollY>20),{passive:true});
+}
+
+/* ──────────── INTERSECTION OBSERVER ──────────── */
+function initObserver(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}}),{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+function reObserve(){
+  setTimeout(()=>{
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');}),{threshold:0.1});
+    document.querySelectorAll('.reveal:not(.vis)').forEach(el=>obs.observe(el));
+  },120);
+}
+
+/* ──────────── COUNTERS ──────────── */
+function initCounters(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){animCount(e.target);obs.unobserve(e.target);}}),{threshold:0.5});
+  document.querySelectorAll('[data-count]').forEach(el=>obs.observe(el));
+}
+function animCount(el){
+  const target=+el.dataset.count,sfx=el.dataset.sfx||'',dur=1800,start=performance.now();
+  (function tick(now){
+    const p=Math.min((now-start)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(target*e)+sfx;
+    if(p<1)requestAnimationFrame(tick);
+  })(start);
+}
+
+/* ──────────── PAGE ROUTING ──────────── */
+function showPage(pg){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+  const t=document.getElementById('page-'+pg);
+  if(t)t.classList.add('show');
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.toggle('act',a.dataset.pg===pg));
+  window.scrollTo({top:0,behavior:'smooth'});
+  const footer=document.getElementById('site-footer');
+  if(footer)footer.style.display=pg==='dashboard'?'none':'';
+  if(pg==='courses')renderCourses('all-courses-grid',COURSES);
+  if(pg==='about')setTimeout(animSkills,300);
+  if(pg==='dashboard'){if(!S.user){openModal('login');showPage('home');return;}updateDash();}
+  reObserve();
+}
+
+/* ──────────── COURSES ──────────── */
+function renderCourses(gridId,data){
+  const g=document.getElementById(gridId);if(!g)return;
+  g.innerHTML=data.map(c=>`
+    <div class="ccard reveal" onclick="openCourseDetail(${c.id})">
+      <div class="cc-thumb ${c.th}"><span class="cc-thumb-icon">${c.icon}</span><div class="cc-level-tag lvl-${c.level==='Beginner'?'beg':c.level==='Advanced'?'adv':'int'}">${c.level}</div></div>
+      <div class="cc-body">
+        <div class="cc-cat">${c.cat}</div>
+        <div class="cc-title">${c.title}</div>
+        <div class="cc-desc">${c.desc}</div>
+        <div class="cc-meta"><span><i class="fas fa-clock"></i>${c.duration}</span><span><i class="fas fa-users"></i>${c.students}+ students</span><span><i class="fas fa-star"></i>${c.rating}</span></div>
+        <div class="cc-footer">
+          <span class="cc-price ${c.price==='Free'?'free':''}">${c.price}</span>
+          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${c.id===6?'▶ Start Course':S.enrolled.includes(c.id)?'✓ Enrolled':'Enroll Now'}</button>
+        </div>
+      </div>
+    </div>`).join('');
+  reObserve();
+}
+function filterCourses(cat,btn){
+  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
+  S.filter=cat;applyFilter();
+}
+function searchCourses(){applyFilter();}
+function applyFilter(){
+  const q=(document.getElementById('course-search')?.value||'').toLowerCase();
+  let d=S.filter==='all'?COURSES:COURSES.filter(c=>c.cat===S.filter);
+  if(q)d=d.filter(c=>c.title.toLowerCase().includes(q)||c.desc.toLowerCase().includes(q));
+  const info=document.getElementById('results-info');
+  if(info)info.innerHTML=`<span>${d.length}</span> courses`;
+  renderCourses('all-courses-grid',d);
+}
+function openCourseDetail(id){
+  const c=COURSES.find(x=>x.id===id);if(!c)return;
+  const isEnrolled=S.enrolled.includes(id);
+  document.getElementById('course-detail-inner').innerHTML=`
+    <div class="cdm-header">
+      <div class="cdm-thumb ${c.th}">${c.icon}</div>
+      <div><div style="font-size:0.62rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:3px">${c.cat}</div>
+      <div style="font-family:'Orbitron',monospace;font-size:1.05rem;font-weight:900;color:var(--tw);line-height:1.3">${c.title}</div>
+      <div style="color:#ffd700;font-size:0.8rem;margin-top:4px">★★★★★ ${c.rating} (${c.reviews} reviews)</div></div>
+    </div>
+    <div class="cdm-meta">
+      <span class="cdm-mi"><i class="fas fa-signal"></i><strong>${c.level}</strong></span>
+      <span class="cdm-mi"><i class="fas fa-clock"></i><strong>${c.duration}</strong></span>
+      <span class="cdm-mi"><i class="fas fa-users"></i><strong>${c.students}+ enrolled</strong></span>
+      <span class="cdm-mi"><i class="fas fa-tag"></i><strong style="color:var(--tw)">${c.price}</strong></span>
+    </div>
+    <p style="color:var(--tm);font-size:0.85rem;line-height:1.75;margin-bottom:1.2rem">${c.desc}</p>
+    <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:0.9rem;margin-bottom:1.2rem">
+      <span style="font-size:0.65rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase">Prerequisites: </span>
+      <span style="font-size:0.82rem;color:var(--tm)">${c.prereqs}</span>
+    </div>
+    <div class="curr-wrap">
+      <div class="curr-title-txt">Curriculum — ${c.curriculum.length} modules</div>
+      <div class="curr-list">${c.curriculum.map((m,i)=>`<div class="curr-li"><div class="curr-num">${i+1}</div>${m}</div>`).join('')}</div>
+    </div>
+    <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:0.9rem;display:flex;align-items:center;gap:10px;margin-bottom:1.2rem">
+      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c3));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:700;font-size:0.75rem;color:var(--bg)">AH</div>
+      <div><div style="font-size:0.65rem;color:var(--tm)">Instructor</div><div style="font-size:0.88rem;font-weight:700;color:var(--tw)">Ahmed Hussein</div><div style="font-size:0.65rem;color:var(--c)">Cisco Certified Professional</div></div>
+    </div>
+    <div class="enroll-foot">
+      <div><div class="ef-price ${c.price==='Free'?'free':''}">${c.price}</div><div style="font-size:0.65rem;color:var(--tm);margin-top:3px">Full lifetime access</div></div>
+      <button class="btn ${isEnrolled?'btn-ghost':'btn-c'}" onclick="enrollCourse(${c.id});closeCourseModal()">
+        ${isEnrolled?'<i class="fas fa-check"></i> Already Enrolled':'<i class="fas fa-graduation-cap"></i> Enroll Now'}
+      </button>
+    </div>`;
+  document.getElementById('course-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeCourseModal(){document.getElementById('course-modal').classList.remove('open');document.body.style.overflow='';}
+function enrollCourse(id){
+  if(id===6){window.location.href='ccna-domain1.html';return;}
+  if(!S.user){openModal('login');toast('Sign in to enroll in a course','inf');return;}
+  if(S.enrolled.includes(id)){toast('Already enrolled in this course','inf');return;}
+  S.enrolled.push(id);S.user.enrolled=S.enrolled;saveSession();updateDash();
+  toast('Enrolled successfully! Check your dashboard.','suc');
+  renderCourses('home-courses-grid',COURSES.slice(0,3));
+  renderCourses('all-courses-grid',COURSES);
+}
+
+/* ──────────── SKILL BARS ──────────── */
+function animSkills(){document.querySelectorAll('.sr-fill').forEach(b=>b.style.width=b.dataset.w||'0%');}
+
+/* ──────────── AUTH ──────────── */
+function openModal(tab='login'){document.getElementById('auth-modal').classList.add('open');document.body.style.overflow='hidden';switchTab(tab);['login-err','reg-err'].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('show');});['login-ok','reg-ok'].forEach(id=>{const e=document.getElementById(id);if(e)e.classList.remove('show');});}
+function closeModal(){document.getElementById('auth-modal').classList.remove('open');document.body.style.overflow='';}
+function switchTab(tab){document.querySelectorAll('.m-tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===tab));document.querySelectorAll('.m-panel').forEach(p=>p.classList.toggle('on',p.id==='mp-'+tab));}
+function pickTier(t){S.tier=t;document.querySelectorAll('.tier-opt').forEach(o=>o.classList.toggle('on',o.dataset.tier===t));}
+function doLogin(){
+  const email=document.getElementById('l-email').value.trim(),pass=document.getElementById('l-pass').value;
+  const err=document.getElementById('login-err');
+  if(!email||!pass){err.textContent='Please fill in all fields.';err.classList.add('show');return;}
+  const users=JSON.parse(localStorage.getItem('ah_users')||'[]');
+  const u=users.find(x=>x.email===email&&x.pass===btoa(pass));
+  if(!u){err.textContent='Invalid email or password.';err.classList.add('show');return;}
+  err.classList.remove('show');document.getElementById('login-ok').classList.add('show');
+  S.user=u;S.enrolled=u.enrolled||[];saveSession();
+  setTimeout(()=>{closeModal();updateNav(true);updateDash();toast('Welcome back, '+u.fname+'!','suc');},900);
+}
+function doRegister(){
+  const fname=document.getElementById('r-fname').value.trim(),lname=document.getElementById('r-lname').value.trim(),email=document.getElementById('r-email').value.trim(),phone=document.getElementById('r-phone').value.trim(),pass=document.getElementById('r-pass').value;
+  const err=document.getElementById('reg-err');
+  if(!fname||!email||!pass){err.textContent='First name, email and password are required.';err.classList.add('show');return;}
+  if(!email.includes('@')){err.textContent='Please enter a valid email.';err.classList.add('show');return;}
+  if(pass.length<8){err.textContent='Password must be at least 8 characters.';err.classList.add('show');return;}
+  const users=JSON.parse(localStorage.getItem('ah_users')||'[]');
+  if(users.find(x=>x.email===email)){err.textContent='This email is already registered.';err.classList.add('show');return;}
+  err.classList.remove('show');
+  const nu={fname,lname,email,phone,pass:btoa(pass),tier:S.tier,enrolled:[],joined:new Date().toLocaleDateString()};
+  users.push(nu);localStorage.setItem('ah_users',JSON.stringify(users));
+  document.getElementById('reg-ok').classList.add('show');
+  setTimeout(()=>{document.getElementById('reg-ok').classList.remove('show');switchTab('login');},1600);
+}
+function doLogout(){S.user=null;S.enrolled=[];sessionStorage.removeItem('ah_user');updateNav(false);showPage('home');toast('Logged out successfully.','inf');}
+function saveSession(){const u={...S.user,enrolled:S.enrolled};sessionStorage.setItem('ah_user',JSON.stringify(u));const users=JSON.parse(localStorage.getItem('ah_users')||'[]');const i=users.findIndex(x=>x.email===S.user.email);if(i>-1){users[i]=u;localStorage.setItem('ah_users',JSON.stringify(users));}}
+function restoreSession(){const s=sessionStorage.getItem('ah_user');if(s){S.user=JSON.parse(s);S.enrolled=S.user.enrolled||[];updateNav(true);}}
+function updateNav(in_){document.getElementById('nav-login-btn').style.display=in_?'none':'';document.getElementById('nav-reg-btn').style.display=in_?'none':'';document.getElementById('nav-logout-btn').style.display=in_?'':'none';document.getElementById('nav-dash-lnk').style.display=in_?'':'none';}
+
+/* ──────────── DASHBOARD ──────────── */
+function showDashPanel(id,el){document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('act'));document.querySelectorAll('.ds-item').forEach(i=>i.classList.remove('act'));document.getElementById('dash-'+id)?.classList.add('act');if(el)el.classList.add('act');}
+function updateDash(){
+  if(!S.user)return;
+  document.getElementById('dash-name').textContent=S.user.fname?.toUpperCase()||'STUDENT';
+  document.getElementById('dash-plan').textContent=S.user.tier==='premium'?'PREMIUM ⚡':'FREE';
+  document.getElementById('dash-enrolled-n').textContent=S.enrolled.length;
+  const enr=COURSES.filter(c=>S.enrolled.includes(c.id));
+  const html=enr.length?enr.map(c=>`<div class="enr-item"><div class="enr-thumb ${c.th}">${c.icon}</div><div style="flex:1"><div class="enr-name">${c.title}</div><div class="enr-prog-lbl">Progress</div></div><div class="enr-prog-wrap" style="max-width:160px"><div class="enr-bar"><div class="enr-fill" style="width:0%"></div></div><div class="enr-pct">0%</div></div></div>`).join(''):`<div class="empty-state"><div class="es-ico">📡</div><div class="es-title">NO COURSES YET</div><div class="es-desc">Enroll in a course to get started.</div><button class="btn btn-c" onclick="showPage('courses')"><i class="fas fa-search"></i> Browse Courses</button></div>`;
+  ['dash-enr-list','dash-mc-list'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
+  if(document.getElementById('pf-fname'))document.getElementById('pf-fname').value=S.user.fname||'';
+  if(document.getElementById('pf-lname'))document.getElementById('pf-lname').value=S.user.lname||'';
+  if(document.getElementById('pf-email'))document.getElementById('pf-email').value=S.user.email||'';
+  if(document.getElementById('pf-phone'))document.getElementById('pf-phone').value=S.user.phone||'';
+}
+function saveProfile(){
+  if(!S.user)return;
+  S.user.fname=document.getElementById('pf-fname').value||S.user.fname;
+  S.user.lname=document.getElementById('pf-lname').value||S.user.lname;
+  S.user.phone=document.getElementById('pf-phone').value||S.user.phone;
+  saveSession();document.getElementById('dash-name').textContent=S.user.fname.toUpperCase();
+  toast('Profile updated!','suc');
+}
+
+/* ──────────── CONTACT ──────────── */
+function sendContact(){
+  if(!document.getElementById('cf-email').value){toast('Please enter your email address.','err');return;}
+  const ok=document.getElementById('contact-ok');ok.classList.add('show');
+  toast('Message sent! I\'ll respond within 24 hours.','suc');
+  ['cf-fname','cf-lname','cf-email','cf-phone','cf-msg'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  setTimeout(()=>ok.classList.remove('show'),5000);
+}
+function doSubscribe(){
+  const v=document.getElementById('nl-email').value;
+  if(!v.includes('@')){toast('Please enter a valid email.','err');return;}
+  toast('Subscribed! Weekly resources coming your way.','suc');document.getElementById('nl-email').value='';
+}
+
+/* ──────────── TOAST ──────────── */
+function toast(msg,type='inf'){
+  const box=document.getElementById('toast-box');
+  const icons={suc:'fa-check-circle',err:'fa-exclamation-circle',inf:'fa-info-circle'};
+  const t=document.createElement('div');t.className=`toast ${type}`;
+  t.innerHTML=`<i class="fas ${icons[type]||icons.inf}"></i><span>${msg}</span>`;
+  box.appendChild(t);
+  setTimeout(()=>{t.classList.add('rm');setTimeout(()=>t.remove(),300);},4200);
+}
+
+/* ──────────── MOBILE NAV ──────────── */
+function toggleMob(){document.getElementById('mob-nav').classList.toggle('open');document.getElementById('ham').classList.toggle('open');}
+</script>
+<script>
+
+/* ══ ARABIC / LIGHT MODE ADDITIONS ══════════════════════════════ */
+
+/* ── Google Font: Tajawal for Arabic ── */
+(function(){
+  const l = document.createElement('link');
+  l.rel = 'stylesheet';
+  l.href = 'https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap';
+  document.head.appendChild(l);
+})();
+
+/* ── State ── */
+let _lang = localStorage.getItem('ah_lang') || 'en';
+let _theme = localStorage.getItem('ah_theme') || 'dark';
+
+/* ── Apply on load ── */
+document.addEventListener('DOMContentLoaded', function() {
+  cacheEN();
+  setTimeout(cacheEN, 600);
+  applyTheme(_theme, false);
+  applyLang(_lang, false);
+});
+
+/* ── THEME ── */
+function applyTheme(t, save) {
+  _theme = t;
+  document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : '');
+  if (save !== false) localStorage.setItem('ah_theme', t);
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) btn.textContent = t === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() { applyTheme(_theme === 'dark' ? 'light' : 'dark'); }
+
+/* ── LANGUAGE ── */
+const AR = {
+  /* NAV */
+  nav_home:'الرئيسية', nav_courses:'الدورات', nav_about:'عني',
+  nav_contact:'تواصل', nav_dashboard:'لوحتي', nav_signin:'تسجيل الدخول',
+  nav_register:'تسجيل مجاني', nav_logout:'خروج',
+  logo_sub:'مدرب معتمد من سيسكو',
+  /* HERO */
+  hero_eyebrow:'مدرب سيسكو المعتمد · البحرين',
+  hero_line1:'أتقن', hero_line2:'الشبكات.', hero_line3:'صنع مستقبلك.',
+  hero_sub:'دورات <strong>CCNA و CCNP وأمن الشبكات</strong> متخصصة للعالم الحقيقي. مختبرات عملية، إرشاد مباشر، ومعدل نجاح 96٪.',
+  hero_btn1:'استعرض الدورات', hero_btn2:'سجل مجاناً',
+  trust1:'مختبرات Packet Tracer', trust2:'متوافق مع Cisco NetAcad', trust3:'شهادة عند الاكتمال',
+  stat1:'طالب متدرب', stat2:'معدل النجاح', stat3:'سنوات خبرة',
+  /* HOME SECTIONS */
+  feat_title:'لماذا تتعلم معي؟',
+  feat1_title:'خبرة معتمدة', feat1_desc:'10+ سنوات من تجربة شبكات المؤسسات وتعليم سيسكو المعتمد.',
+  feat2_title:'تركيز على الامتحانات', feat2_desc:'كل درس مبني على سيناريوهات امتحانات حقيقية لضمان نجاحك.',
+  feat3_title:'مختبرات عملية', feat3_desc:'50+ مختبر Packet Tracer مع إرشاد خطوة بخطوة.',
+  feat4_title:'دعم الطلاب', feat4_desc:'منتدى مجتمعي خاص وجلسات مراجعة مباشرة أسبوعية.',
+  cert_title:'شهادات معترف بها',
+  courses_home_title:'الدورات المميزة',
+  courses_home_sub:'اختر مسارك وابدأ رحلتك الاحترافية.',
+  view_all:'عرض جميع الدورات',
+  /* COURSES PAGE */
+  courses_page_title:'جميع الدورات',
+  search_placeholder:'ابحث عن دورة...',
+  filter_all:'الكل',
+  /* ABOUT */
+  about_title:'أحمد حسين',
+  about_sub:'محترف سيسكو معتمد بأكثر من 10 سنوات من خبرة الشبكات المؤسسية وشغف بتعليم تقنية المعلومات.',
+  about_breadcrumb:'الرئيسية',
+  about_breadcrumb2:'عني',
+  cert_section_title:'الشهادات',
+  bio_title:'السيرة المهنية',
+  bio1:'مع أكثر من عقد من الخبرة العملية في شبكات المؤسسات وتعليم سيسكو، كرّست مسيرتي لتمكين محترفي تقنية المعلومات في الشرق الأوسط من تحقيق أهداف شهاداتهم وبناء مسيرات مؤثرة في مجال الشبكات.',
+  bio2:'بصفتي مدرب أكاديمية سيسكو للشبكات، أتخصص في سد الفجوة بين المعرفة النظرية والتطبيق الواقعي. كل دورة تجمع بين المنهج الشامل وتمارين المختبر العملية التي تعكس بيئات الشبكات المؤسسية الفعلية.',
+  bio3:'لقد أرشدت أكثر من 1200 طالب عبر مسارات شهادات CCNA وCCNP والأمن، مع الحفاظ على معدل نجاح في الامتحانات يبلغ 96٪ عبر جميع المستويات.',
+  /* CONTACT */
+  contact_title:'تواصل معي',
+  contact_sub:'مدرب سيسكو المعتمد | البحرين',
+  contact_name:'الاسم الأول', contact_lname:'الاسم الأخير',
+  contact_email:'البريد الإلكتروني', contact_phone:'رقم الهاتف',
+  contact_subject:'الموضوع', contact_msg:'رسالتك',
+  contact_send:'إرسال الرسالة',
+  /* FOOTER */
+  footer_desc:'مدرب سيسكو المعتمد يقدم تدريب CCNA وCCNP وأمن الشبكات المتخصص في دول الخليج والشرق الأوسط.',
+  footer_courses:'الدورات', footer_navigate:'روابط', footer_contact_col:'تواصل',
+  footer_copy:'جميع الحقوق محفوظة',
+  /* MODALS */
+  signin_title:'تسجيل الدخول', register_title:'إنشاء حساب',
+  lbl_email:'البريد الإلكتروني', lbl_pass:'كلمة المرور',
+  lbl_fname:'الاسم الأول', lbl_lname:'الاسم الأخير', lbl_phone:'الهاتف',
+  btn_signin:'تسجيل الدخول', btn_register:'إنشاء حساب',
+  /* COURSES DATA */
+  courses_ar: [
+    {title:'CCNA 200-301: مهندس الشبكات الكامل', desc:'أتقن التوجيه والتبديل وIPv4/IPv6 وVLANs وOSPF وكل ما تحتاجه لاجتياز اختبار CCNA من المرة الأولى.', level:'مبتدئ', cat:'CCNA'},
+    {title:'CCNP Enterprise: ENCOR 350-401', desc:'شبكات المؤسسات المتقدمة — BGP وMPLS وSD-WAN واللاسلكي والأتمتة والأمن. تحضير كامل لاختبار ENCOR.', level:'متقدم', cat:'CCNP'},
+    {title:'CyberOps وأمن الشبكات (SCOR)', desc:'تدريب شامل على أمن سيسكو: جدران الحماية ASA وFirepower وVPNs وIDS/IPS والاستجابة للحوادث.', level:'متوسط', cat:'الأمن'},
+    {title:'Packet Tracer Masterclass: 50+ مختبر', desc:'أكثر من 50 مختبر عملي على Cisco Packet Tracer. ابنِ شبكات مؤسسية كاملة من الصفر مع إرشاد الخبراء.', level:'مبتدئ', cat:'المختبرات'},
+    {title:'SD-WAN وأتمتة الشبكات (Python)', desc:'Cisco Viptela SD-WAN وبرمجة Python وAnsible وAPIs وأتمتة DNA Center.', level:'متقدم', cat:'CCNP'},
+    {title:'بوتكامب اختبارات CCNA (تصفر في 30 يوماً)', desc:'برنامج مكثف مدته 30 يوماً لمن يريد اجتياز CCNA بسرعة. 500 سؤال اختبار + جلسات مراجعة مباشرة.', level:'متوسط', cat:'CCNA'}
+  ]
+};
+
+function applyLang(l, save) {
+  _lang = l;
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  if (save !== false) localStorage.setItem('ah_lang', l);
+  if (l === 'ar') document.body.style.fontFamily = "'Tajawal','Exo 2',sans-serif";
+  else document.body.style.fontFamily = "'Exo 2',sans-serif";
+  const btn = document.getElementById('lang-toggle-btn');
+  if (btn) btn.textContent = l === 'en' ? 'عربي' : 'EN';
+  translateUI(l);
+}
+
+function toggleLang() { applyLang(_lang === 'en' ? 'ar' : 'en'); }
+
+function setText(id, val) { const e=document.getElementById(id); if(e && val) e.textContent=val; }
+function setHTML(id, val) { const e=document.getElementById(id); if(e && val) e.innerHTML=val; }
+function setPlaceholder(id, val) { const e=document.getElementById(id); if(e && val) e.placeholder=val; }
+function setAttr(sel, attr, val) { document.querySelectorAll(sel).forEach(e=>e.setAttribute(attr,val)); }
+function setTxt(sel, val) { document.querySelectorAll(sel).forEach(e=>e.textContent=val); }
+
+/* Store original EN text on first load */
+const EN_CACHE = {};
+function cacheEN() {
+  const ids = ['nav-login-btn','nav-reg-btn','course-search'];
+  ids.forEach(id => { const e=document.getElementById(id); if(e) EN_CACHE[id]=e.textContent||e.placeholder; });
+  EN_CACHE['logo_sub'] = document.querySelector('.logo-sub')?.textContent;
+  EN_CACHE['hero_eyebrow'] = document.querySelector('.eyebrow-text')?.textContent;
+  EN_CACHE['hero_sub'] = document.querySelector('.hero-sub')?.innerHTML;
+  const hl = document.querySelectorAll('.hero-h1 div');
+  EN_CACHE['hero_lines'] = Array.from(hl).map(h=>h.textContent);
+  const hbtn = document.querySelectorAll('.hbtn');
+  EN_CACHE['hbtns'] = Array.from(hbtn).map(b=>b.innerHTML);
+  const ti = document.querySelectorAll('.trust-item');
+  EN_CACHE['trust'] = Array.from(ti).map(t=>t.innerHTML);
+  const sl = document.querySelectorAll('.hstat-label');
+  EN_CACHE['stats'] = Array.from(sl).map(s=>s.textContent);
+  EN_CACHE['navlinks'] = {};
+  document.querySelectorAll('.nav-links a[data-pg]').forEach(a=>{
+    EN_CACHE['navlinks'][a.getAttribute('data-pg')] = a.textContent;
+  });
+  // cache course cards
+  EN_CACHE['cards'] = [];
+  document.querySelectorAll('.course-card').forEach(c=>{
+    EN_CACHE['cards'].push({
+      title: c.querySelector('.cc-title')?.textContent,
+      desc: c.querySelector('.cc-desc')?.textContent,
+      level: c.querySelector('.cc-level')?.textContent,
+      cat: c.querySelector('.cc-cat')?.textContent
+    });
+  });
+}
+function restoreEN() {
+  if (!EN_CACHE['logo_sub']) { cacheEN(); return; }
+  const e = document.querySelector('.logo-sub'); if(e) e.textContent=EN_CACHE['logo_sub'];
+  const ey = document.querySelector('.eyebrow-text'); if(ey) ey.textContent=EN_CACHE['hero_eyebrow'];
+  const hs = document.querySelector('.hero-sub'); if(hs) hs.innerHTML=EN_CACHE['hero_sub']||'';
+  const hl = document.querySelectorAll('.hero-h1 div');
+  (EN_CACHE['hero_lines']||[]).forEach((t,i)=>{ if(hl[i]) hl[i].textContent=t; });
+  const hbtn = document.querySelectorAll('.hbtn');
+  (EN_CACHE['hbtns']||[]).forEach((t,i)=>{ if(hbtn[i]) hbtn[i].innerHTML=t; });
+  const ti = document.querySelectorAll('.trust-item');
+  (EN_CACHE['trust']||[]).forEach((t,i)=>{ if(ti[i]) ti[i].innerHTML=t; });
+  const sl = document.querySelectorAll('.hstat-label');
+  (EN_CACHE['stats']||[]).forEach((t,i)=>{ if(sl[i]) sl[i].textContent=t; });
+  document.querySelectorAll('.nav-links a[data-pg]').forEach(a=>{
+    const orig = EN_CACHE['navlinks']?.[a.getAttribute('data-pg')];
+    if(orig) a.textContent=orig;
+  });
+  const nb1=document.getElementById('nav-login-btn'); if(nb1) nb1.textContent='Sign In';
+  const nb2=document.getElementById('nav-reg-btn'); if(nb2) nb2.textContent='Register';
+  const nb3=document.getElementById('nav-logout-btn'); if(nb3) nb3.innerHTML='<i class="fas fa-power-off"></i> Logout';
+  const srch=document.getElementById('course-search'); if(srch) srch.placeholder='Search courses…';
+  // restore course cards
+  const allCards = document.querySelectorAll('.course-card');
+  allCards.forEach((card, i) => {
+    const d = EN_CACHE['cards']?.[i]; if(!d) return;
+    const t=card.querySelector('.cc-title'); if(t&&d.title) t.textContent=d.title;
+    const dc=card.querySelector('.cc-desc'); if(dc&&d.desc) dc.textContent=d.desc;
+    const lv=card.querySelector('.cc-level'); if(lv&&d.level) lv.textContent=d.level;
+    const ct=card.querySelector('.cc-cat'); if(ct&&d.cat) ct.textContent=d.cat;
+  });
+}
+
+function translateUI(l) {
+  if (l !== 'ar') {
+    restoreEN();
+    return;
+  }
+  const A = AR;
+  /* NAV */
+  document.querySelectorAll('.nav-links a[data-pg]').forEach(a => {
+    const pg = a.getAttribute('data-pg');
+    const map = {home:A.nav_home, courses:A.nav_courses, about:A.nav_about, contact:A.nav_contact, dashboard:A.nav_dashboard};
+    if (map[pg]) a.textContent = map[pg];
+  });
+  const lsub = document.querySelector('.logo-sub'); if(lsub) lsub.textContent=A.logo_sub;
+  const nb1 = document.getElementById('nav-login-btn'); if(nb1) nb1.textContent=A.nav_signin;
+  const nb2 = document.getElementById('nav-reg-btn'); if(nb2) nb2.textContent=A.nav_register;
+  const nb3 = document.getElementById('nav-logout-btn'); if(nb3) nb3.innerHTML='<i class="fas fa-power-off"></i> '+A.nav_logout;
+
+  /* HERO */
+  const ey = document.querySelector('.eyebrow-text'); if(ey) ey.textContent=A.hero_eyebrow;
+  const hl = document.querySelectorAll('.hero-h1 div');
+  if(hl[0]) hl[0].textContent=A.hero_line1;
+  if(hl[1]) hl[1].textContent=A.hero_line2;
+  if(hl[2]) hl[2].textContent=A.hero_line3;
+  const hsub = document.querySelector('.hero-sub'); if(hsub) hsub.innerHTML='دورات '+A.hero_sub;
+  const hbtn = document.querySelectorAll('.hbtn');
+  if(hbtn[0]) hbtn[0].innerHTML='<i class="fas fa-satellite-dish"></i> '+A.hero_btn1;
+  if(hbtn[1]) hbtn[1].innerHTML='<i class="fas fa-user-astronaut"></i> '+A.hero_btn2;
+  const ti = document.querySelectorAll('.trust-item');
+  if(ti[0]) ti[0].innerHTML='<i class="fas fa-check-circle"></i> '+A.trust1;
+  if(ti[1]) ti[1].innerHTML='<i class="fas fa-check-circle"></i> '+A.trust2;
+  if(ti[2]) ti[2].innerHTML='<i class="fas fa-check-circle"></i> '+A.trust3;
+  const sl = document.querySelectorAll('.hstat-label');
+  if(sl[0]) sl[0].textContent=A.stat1;
+  if(sl[1]) sl[1].textContent=A.stat2;
+  if(sl[2]) sl[2].textContent=A.stat3;
+
+  /* HOME FEATURED COURSES header */
+  const st = document.querySelectorAll('.section-title');
+  st.forEach(t => {
+    if(t.textContent.includes('Featured')) t.textContent=A.courses_home_title;
+    if(t.textContent.includes('Why')) t.textContent=A.feat_title;
+    if(t.textContent.includes('Certifications')) t.textContent=A.cert_title;
+  });
+  const ss = document.querySelector('.section-sub'); if(ss) ss.textContent=A.courses_home_sub;
+  const va = document.querySelector('.view-all-btn'); if(va) va.textContent=A.view_all;
+
+  /* ABOUT PAGE */
+  const pgt = document.querySelector('.pg-title'); if(pgt) pgt.textContent=A.about_title;
+  const pgs = document.querySelector('.pg-subtitle'); if(pgs) pgs.textContent=A.about_sub;
+  const brt = document.querySelectorAll('.breadcrumb a,a.breadcrumb');
+  if(brt[0]) brt[0].textContent=A.about_breadcrumb;
+  const bios = document.querySelectorAll('.bio-text');
+  if(bios[0]) bios[0].textContent=A.bio1;
+  if(bios[1]) bios[1].textContent=A.bio2;
+  if(bios[2]) bios[2].textContent=A.bio3;
+  const abtsec = document.querySelector('.abt-sec-title'); if(abtsec) abtsec.textContent=A.bio_title;
+  const clct = document.querySelector('.clc-title'); if(clct) clct.textContent=A.cert_section_title;
+
+  /* CONTACT PAGE */
+  const cpt = document.querySelectorAll('.contact-hero-title,.pg-title');
+  cpt.forEach(t=>{ if(t.textContent.includes('Contact')||t.textContent.includes('Get In')) t.textContent=A.contact_title; });
+  const cfl = document.querySelectorAll('.form-field label');
+  const fmap = ['contact_fname','contact_lname','contact_email','contact_phone','contact_subject','contact_msg'];
+  // translate labels by position
+  document.querySelectorAll('#cf-fname').forEach(e=>{const l=e.closest('.form-field')?.querySelector('label');if(l)l.textContent=A.contact_name;});
+  document.querySelectorAll('#cf-lname').forEach(e=>{const l=e.closest('.form-field')?.querySelector('label');if(l)l.textContent=A.contact_lname;});
+  document.querySelectorAll('#cf-email').forEach(e=>{const l=e.closest('.form-field')?.querySelector('label');if(l)l.textContent=A.contact_email;});
+  document.querySelectorAll('#cf-phone').forEach(e=>{const l=e.closest('.form-field')?.querySelector('label');if(l)l.textContent=A.contact_phone;});
+  document.querySelectorAll('#cf-subject').forEach(e=>{const l=e.closest('.form-field')?.querySelector('label');if(l)l.textContent=A.contact_subject;});
+  document.querySelectorAll('#cf-msg').forEach(e=>{const l=e.closest('.form-field')?.querySelector('label');if(l)l.textContent=A.contact_msg;});
+  const csend = document.querySelector('.contact-form .btn-submit,.submit-btn'); if(csend) csend.textContent=A.contact_send;
+
+  /* FOOTER */
+  const fdesc = document.querySelector('.f-desc'); if(fdesc) fdesc.textContent=A.footer_desc;
+  const fct = document.querySelectorAll('.f-col-title');
+  if(fct[0]) fct[0].textContent=A.footer_courses;
+  if(fct[1]) fct[1].textContent=A.footer_navigate;
+  if(fct[2]) fct[2].textContent=A.footer_contact_col;
+  const fcpy = document.querySelector('.f-copy'); if(fcpy && fcpy.innerHTML.includes('©')) {
+    fcpy.innerHTML = fcpy.innerHTML.replace('All Rights Reserved.',A.footer_copy);
+  }
+
+  /* COURSES - translate rendered cards */
+  translateCourseCards();
+
+  /* SEARCH placeholder */
+  const srch = document.getElementById('course-search'); if(srch) srch.placeholder=A.search_placeholder;
+
+  /* FILTER buttons */
+  const fb = document.querySelectorAll('.filter-btn');
+  if(fb[0]) fb[0].textContent=A.filter_all;
+
+  /* AUTH MODALS */
+  const ltit = document.querySelector('#mp-login .modal-title'); if(ltit) ltit.textContent=A.signin_title;
+  const rtit = document.querySelector('#mp-register .modal-title'); if(rtit) rtit.textContent=A.register_title;
+
+  /* COURSES PAGE title */
+  const cpgt = document.querySelector('#page-courses .pg-title'); if(cpgt) cpgt.textContent=A.courses_page_title;
+}
+
+function translateCourseCards() {
+  const allCards = document.querySelectorAll('.course-card');
+  allCards.forEach((card, i) => {
+    const arData = AR.courses_ar[i % AR.courses_ar.length];
+    if (!arData) return;
+    const titleEl = card.querySelector('.cc-title');
+    const descEl = card.querySelector('.cc-desc');
+    const levelEl = card.querySelector('.cc-level');
+    const catEl = card.querySelector('.cc-cat');
+    if (titleEl) titleEl.textContent = arData.title;
+    if (descEl) descEl.textContent = arData.desc;
+    if (levelEl) levelEl.textContent = arData.level;
+    if (catEl) catEl.textContent = arData.cat;
+  });
+}
+
+/* Re-translate when courses page opens */
+const _origShowPage = window.showPage;
+if (typeof _origShowPage === 'function') {
+  window.showPage = function(pg) {
+    _origShowPage(pg);
+    if (_lang === 'ar') {
+      setTimeout(translateUI, 150, 'ar');
+    }
+  };
+}
+/* Also re-translate after course cards render */
+setTimeout(function() {
+  if (_lang === 'ar') translateUI('ar');
+}, 800);
+
+</script>
+</body>
+</html>
