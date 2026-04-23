@@ -693,65 +693,70 @@ function saveProfile() {
 }
 
 /* ── CHAT WIDGET ── */
-const CHAT_REPLIES = [
-  [/\b(hi|hello|hey|salaam|marhaba)\b/i,    'Hello! 👋 How can I help you today?'],
-  [/ccna/i,                                  'Our CCNA 200-301 course takes you from zero to certified with 80 hrs of labs and 5 practice exams. Check Courses above!'],
-  [/ccnp/i,                                  'The CCNP Enterprise (ENCOR 350-401) covers BGP, SD-WAN, automation and more. Recommended after CCNA.'],
-  [/securit|cyberops|scor/i,                 'The CyberOps & Security course covers ASA firewalls, Firepower NGFW, VPNs and incident response. Great for security roles!'],
-  [/free|price|cost|paid|\$/i,               'The CCNA Exam Bootcamp is completely free! Premium courses start at $79. Register for a free account to get started.'],
-  [/lab|packet tracer/i,                     'All courses include Cisco Packet Tracer labs. The dedicated Lab course has 50+ hands-on exercises.'],
-  [/certif/i,                                'Premium members receive a completion certificate for every course — perfect for LinkedIn and job applications!'],
-  [/contact|email|whatsapp|reach/i,          'You can reach Ahmed at ahmed@ahmedhussein.org or via the Contact page. He responds within 24 hours.'],
-  [/register|sign.?up|account/i,             'Click "Register Free" in the top nav — takes 30 seconds and gives you instant access to free courses!'],
-  [/thank/i,                                 "You're welcome! 😊 Let me know if you have any other questions."],
-  [/./,                                      "Thanks for your message! Ahmed will get back to you shortly. Meanwhile feel free to browse the Courses section. 🚀"],
+const BOT_REPLIES = [
+  [/\b(hi|hello|hey|salaam)\b/i,  'Hello! 👋 How can I help you today?'],
+  [/ccna/i,                        'Our CCNA 200-301 course takes you from zero to certified — 80 hrs, 5 practice exams, and real Packet Tracer labs!'],
+  [/ccnp/i,                        'CCNP Enterprise (ENCOR 350-401) covers BGP, SD-WAN, wireless and automation. Recommended after CCNA.'],
+  [/secur|cyberops|scor/i,         'CyberOps & Security covers ASA, Firepower NGFW, VPNs and incident response — great for security roles.'],
+  [/free|price|cost|\$/i,          'The CCNA Bootcamp is 100% free! Premium courses start at $79. Register for free to get started.'],
+  [/lab|packet.?tracer/i,          'All courses include Packet Tracer labs. The dedicated Lab course has 50+ hands-on exercises.'],
+  [/certif/i,                      'Premium members get a signed certificate per course — great for LinkedIn and job applications!'],
+  [/contact|email|reach/i,         'Reach Ahmed at ahmed@ahmedhussein.org or via the Contact page. He responds within 24 hours.'],
+  [/register|sign.?up|account/i,   'Click "Register Free" in the nav — 30 seconds and you get instant access to free courses!'],
+  [/thank/i,                       "You're welcome! 😊 Let me know if you have any other questions."],
+  [/.*/,                           'Thanks for your message! Ahmed will reply soon. Feel free to browse the Courses section. 🚀'],
 ];
 
 let chatOpen = false;
 
 function initChat() {
-  setTimeout(() => addChatMsg("Hi there! 👋 Ask me about courses, pricing, or anything else.", 'bot'), 600);
+  setTimeout(() => _chatAppend('Hi there! 👋 Ask me about courses, pricing, or certifications.', 'bot'), 600);
   setTimeout(() => {
-    if (!chatOpen) document.getElementById('chat-badge').style.display = 'flex';
+    const badge = document.getElementById('chat-badge');
+    if (badge && !chatOpen) badge.style.display = 'flex';
   }, 700);
 }
 
 function toggleChat() {
-  const box = document.getElementById('chat-box');
   chatOpen = !chatOpen;
-  box.classList.toggle('open', chatOpen);
+  document.getElementById('chat-box').classList.toggle('open', chatOpen);
   document.getElementById('chat-icon').className = chatOpen ? 'fas fa-times' : 'fas fa-comment-dots';
   document.getElementById('chat-badge').style.display = 'none';
   if (chatOpen) setTimeout(() => document.getElementById('chat-input').focus(), 80);
 }
 
 function sendChat() {
-  const inp = document.getElementById('chat-input');
+  const inp  = document.getElementById('chat-input');
   const text = inp.value.trim();
-  if (!text) return;
-  addChatMsg(text, 'user');
-  inp.value = '';
-  const msgs = document.getElementById('chat-msgs');
-  const t = document.createElement('div');
-  t.className = 'chat-typing'; t.id = 'chat-typing';
-  t.innerHTML = '<div class="tydot"></div><div class="tydot"></div><div class="tydot"></div>';
-  msgs.appendChild(t); msgs.scrollTop = msgs.scrollHeight;
+  if (!text) return;                               // prevent empty send
+
+  inp.value = '';                                  // clear input immediately
+  _chatAppend(text, 'user');                       // show user message
+
+  // show typing indicator — hold direct reference to avoid ID clash
+  const msgs   = document.getElementById('chat-msgs');
+  const typing = document.createElement('div');
+  typing.className = 'chat-typing';
+  typing.innerHTML = '<div class="tydot"></div><div class="tydot"></div><div class="tydot"></div>';
+  msgs.appendChild(typing);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  // bot reply after 1s
   setTimeout(() => {
-    const ty = document.getElementById('chat-typing');
-    if (ty) ty.remove();
-    const match = CHAT_REPLIES.find(([rx]) => rx.test(text));
-    addChatMsg(match[1], 'bot');
-  }, 700 + Math.random() * 500);
+    typing.remove();
+    const match = BOT_REPLIES.find(([rx]) => rx.test(text));
+    _chatAppend((match || BOT_REPLIES.at(-1))[1], 'bot');
+  }, 1000);
 }
 
-function addChatMsg(text, from) {
+function _chatAppend(text, side) {
   const msgs = document.getElementById('chat-msgs');
   if (!msgs) return;
   const d = document.createElement('div');
-  d.className = `cmsg ${from}`;
+  d.className = 'cmsg ' + side;
   d.textContent = text;
   msgs.appendChild(d);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTop = msgs.scrollHeight;              // auto-scroll to latest
 }
 
 /* ── CONTACT & NEWSLETTER ── */
