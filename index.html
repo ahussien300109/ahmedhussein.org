@@ -678,6 +678,37 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 
 /* ── SECTION DIVIDER ── */
 .sec-divider{height:1px;background:linear-gradient(90deg,transparent,var(--bdr),transparent);margin:0 2.5rem;}
+
+/* ════════════════════════════════
+   COURSE DETAIL MODAL — parity with .ccard
+   ════════════════════════════════ */
+
+/* Hover: lift + border glow + shadow (mirrors ccard:hover) */
+#course-modal .modal-box{
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;
+}
+#course-modal .modal-box:hover{
+  transform:translateY(-4px);
+  box-shadow:0 28px 70px rgba(0,212,255,.14),0 12px 40px rgba(0,0,0,.6);
+  border-color:var(--bdr2);
+}
+
+/* Fade-in when detail content is re-rendered by JS */
+#course-detail-inner{animation:cdIn .38s cubic-bezier(.4,0,.2,1);}
+@keyframes cdIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* Thumb: subtle lift + glow on hover */
+.cdm-thumb{transition:transform .25s ease,box-shadow .25s ease;}
+.cdm-thumb:hover{transform:scale(1.07) rotate(-2deg);box-shadow:0 8px 24px rgba(0,212,255,.2);}
+
+/* ── BTN-G — free/green CTA (was undefined, button had no style) ── */
+.btn-g{background:transparent;color:var(--g);border:1px solid rgba(0,255,136,.35);}
+.btn-g:hover{background:rgba(0,255,136,.08);border-color:var(--g);box-shadow:0 0 22px rgba(0,255,136,.3);transform:translateY(-2px);}
+
+/* ── BTN CLICK RIPPLE — CSS-only, works on all .btn elements ── */
+.btn{position:relative;overflow:hidden;}
+.btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.2) 0%,transparent 65%);opacity:0;transform:scale(.15);transition:opacity .5s ease,transform .5s ease;pointer-events:none;border-radius:inherit;}
+.btn:active::after{opacity:1;transform:scale(1);transition:none;}
 </style>
 </head>
 <body>
