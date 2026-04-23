@@ -466,8 +466,7 @@ function openEditCourse(id) {
     set('cf-title', c.title); set('cf-icon', c.icon); set('cf-cat', c.cat);
     set('cf-level', c.level); set('cf-dur', c.duration); set('cf-price', c.price);
     set('cf-desc', c.desc); set('cf-prereqs', c.prereqs); set('cf-link', c.link||'');
-    set('cf-curr', (c.curriculum||[]).join('
-'));
+    set('cf-curr', (c.curriculum||[]).join('\n'));
   }
   activatePanel('admin-edit');
 }
