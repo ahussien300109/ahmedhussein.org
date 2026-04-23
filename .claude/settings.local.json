@@ -6,7 +6,10 @@
       "Bash(python patch_l1.py)",
       "Bash(python -c ' *)",
       "Bash(del \"c:\\\\Users\\\\Ahmed\\\\Desktop\\\\ahmedhussein.org\\\\patch_l1.py\")",
-      "Bash(python patch_dashboards.py)"
+      "Bash(python patch_dashboards.py)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
