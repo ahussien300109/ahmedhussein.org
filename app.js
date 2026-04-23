@@ -1,5 +1,5 @@
 /* ─────────────────────────────────────────────
-   app.js — Course Data, Routing & Application Logic
+   app.js — Main entry point: UI, data, routing
    ───────────────────────────────────────────── */
 
 /* ── COURSE PERSISTENCE ── */
@@ -59,8 +59,132 @@ let COURSES = loadCourses();
 /* ── APP STATE ── */
 const S = { user: null, enrolled: [], tier: 'free', filter: 'all', isAdmin: false };
 
-/* ── INITIALISATION ── */
+/* ── CIRCUIT CANVAS ── */
+function initCircuit() {
+  const c = document.getElementById('circuit-canvas');
+  const ctx = c.getContext('2d');
+  let W, H, nodes = [];
+  function resize() {
+    W = c.width = window.innerWidth;
+    H = c.height = window.innerHeight;
+    nodes = [];
+    const n = Math.floor((W * H) / 22000);
+    for (let i = 0; i < n; i++)
+      nodes.push({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * 0.3, vy: (Math.random() - .5) * 0.3 });
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    nodes.forEach(n => {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+      ctx.beginPath(); ctx.arc(n.x, n.y, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#00d4ff'; ctx.fill();
+    });
+    for (let i = 0; i < nodes.length; i++)
+      for (let j = i + 1; j < nodes.length; j++) {
+        const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+        const d = Math.sqrt(dx * dx + dy * dy);
+        if (d < 130) {
+          ctx.beginPath(); ctx.moveTo(nodes[i].x, nodes[i].y); ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.strokeStyle = `rgba(0,212,255,${(1 - d / 130) * 0.5})`; ctx.lineWidth = 0.4; ctx.stroke();
+        }
+      }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ── CUSTOM CURSOR ── */
+function initCursor() {
+  if (window.innerWidth < 1024) return;
+  const cur = document.getElementById('cursor'), ring = document.getElementById('cursor-ring');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
+    ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
+  });
+  document.querySelectorAll('button,a,.ccard,.cert-tile,.feat-item').forEach(el => {
+    el.addEventListener('mouseenter', () => { cur.classList.add('cursor-hover'); ring.classList.add('cursor-ring-hover'); });
+    el.addEventListener('mouseleave', () => { cur.classList.remove('cursor-hover'); ring.classList.remove('cursor-ring-hover'); });
+  });
+}
+
+/* ── SCROLL & OBSERVER ── */
+function initScroll() {
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('stuck', window.scrollY > 20), { passive: true });
+}
+
+function initObserver() {
+  const obs = new IntersectionObserver(entries =>
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } }),
+    { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+
+function reObserve() {
+  setTimeout(() => {
+    const obs = new IntersectionObserver(entries =>
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); }),
+      { threshold: 0.1 });
+    document.querySelectorAll('.reveal:not(.vis)').forEach(el => obs.observe(el));
+  }, 120);
+}
+
+/* ── COUNTERS & SKILLS ── */
+function initCounters() {
+  const obs = new IntersectionObserver(entries =>
+    entries.forEach(e => { if (e.isIntersecting) { animCount(e.target); obs.unobserve(e.target); } }),
+    { threshold: 0.5 });
+  document.querySelectorAll('[data-count]').forEach(el => obs.observe(el));
+}
+
+function animCount(el) {
+  const target = +el.dataset.count, sfx = el.dataset.sfx || '', dur = 1800, start = performance.now();
+  (function tick(now) {
+    const p = Math.min((now - start) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * e) + sfx;
+    if (p < 1) requestAnimationFrame(tick);
+  })(start);
+}
+
+function animSkills() {
+  document.querySelectorAll('.sr-fill').forEach(b => b.style.width = b.dataset.w || '0%');
+}
+
+/* ── THEME & TOAST ── */
+function toggleTheme() {
+  const html = document.documentElement;
+  const isLight = html.getAttribute('data-theme') === 'light';
+  html.setAttribute('data-theme', isLight ? 'dark' : 'light');
+  localStorage.setItem('theme', isLight ? 'dark' : 'light');
+  document.getElementById('theme-icon').className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+function toast(msg, type = 'inf') {
+  const box = document.getElementById('toast-box');
+  const icons = { suc: 'fa-check-circle', err: 'fa-exclamation-circle', inf: 'fa-info-circle' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<i class="fas ${icons[type] || icons.inf}"></i><span>${msg}</span>`;
+  box.appendChild(t);
+  setTimeout(() => { t.classList.add('rm'); setTimeout(() => t.remove(), 300); }, 4200);
+}
+
+/* ── MOBILE NAV ── */
+function toggleMob() {
+  document.getElementById('mob-nav').classList.toggle('open');
+  document.getElementById('ham').classList.toggle('open');
+}
+
+/* ── INIT ── */
 document.addEventListener('DOMContentLoaded', () => {
+  if (document.documentElement.getAttribute('data-theme') === 'light') {
+    const ic = document.getElementById('theme-icon');
+    if (ic) ic.className = 'fas fa-moon';
+  }
   initCircuit();
   initCursor();
   initScroll();
@@ -357,15 +481,10 @@ function renderStudentDash() {
   const el = document.getElementById('dash-enr-list');
   if (el) el.innerHTML = buildEnrolledHTML(S.enrolled.slice(0, 4));
   ['pf-fname','pf-lname','pf-email','pf-phone'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = S.user[id.replace('pf-','').replace('-','').replace('fname','fname').replace('lname','lname').replace('email','email').replace('phone','phone')] || '';
+    const field = document.getElementById(id);
+    const key = id.replace('pf-', '');
+    if (field) field.value = S.user[key] || '';
   });
-  if (document.getElementById('pf-fname')) {
-    document.getElementById('pf-fname').value = S.user.fname || '';
-    document.getElementById('pf-lname').value = S.user.lname || '';
-    document.getElementById('pf-email').value = S.user.email || '';
-    document.getElementById('pf-phone').value = S.user.phone || '';
-  }
 }
 
 function renderMyCourses() {
@@ -447,7 +566,7 @@ function renderAdminCourses() {
   </div>`;
 }
 
-/* ── ADMIN: OPEN EDIT FORM ── */
+/* ── ADMIN: EDIT FORM ── */
 function openEditCourse(id) {
   editingId = id;
   const heading = document.getElementById('ace-heading');
@@ -542,6 +661,7 @@ function renderAdminStudents() {
   </div>`;
 }
 
+/* ── PROFILE ── */
 function saveProfile() {
   if (!S.user) return;
   S.user.fname = document.getElementById('pf-fname').value || S.user.fname;
