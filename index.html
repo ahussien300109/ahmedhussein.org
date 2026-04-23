@@ -696,6 +696,20 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 /* Page headers: decorative bg layers pinned behind header text */
 .pg-header-bg,.pg-header-glow{z-index:0;}
 
+/* ── CREDLY BADGES ── */
+.sec-badges{padding:4.5rem 2.5rem;background:var(--bg2);}
+.badges-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;max-width:680px;margin:0 auto;}
+.badge-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2rem 1.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;text-decoration:none;transition:transform .3s,box-shadow .3s,border-color .3s;box-shadow:0 4px 24px rgba(0,0,0,.35);}
+.badge-card:hover{transform:translateY(-6px);border-color:var(--c);box-shadow:0 16px 44px rgba(0,212,255,.12),0 6px 20px rgba(0,0,0,.4);}
+.badge-img-wrap{width:130px;height:130px;margin-bottom:1.2rem;border-radius:50%;padding:3px;background:linear-gradient(135deg,var(--c),var(--c3));box-shadow:0 0 20px rgba(0,212,255,.25);}
+.badge-img-wrap img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;}
+.badge-issuer{font-size:.6rem;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:2px;margin-bottom:.35rem;}
+.badge-name{font-family:'Orbitron',monospace;font-size:.76rem;font-weight:700;color:var(--tw);line-height:1.55;margin-bottom:.5rem;}
+.badge-year{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:var(--o);margin-bottom:.9rem;}
+.badge-verify{font-size:.68rem;color:var(--tm);transition:color .2s;}
+.badge-card:hover .badge-verify{color:var(--c);}
+@media(max-width:580px){.badges-grid{grid-template-columns:1fr;max-width:320px;}}
+
 /* ── STAGGER HELPERS ── */
 .d6{transition-delay:.6s;}.d7{transition-delay:.7s;}
 
@@ -907,6 +921,38 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
         <div class="stat-card reveal d2"><div class="stat-ico"><i class="fas fa-award"></i></div><div class="stat-num" data-count="96" data-sfx="%">0%</div><div class="stat-lbl">Exam Pass Rate</div></div>
         <div class="stat-card reveal d3"><div class="stat-ico"><i class="fas fa-book-open"></i></div><div class="stat-num" data-count="6" data-sfx="">0</div><div class="stat-lbl">Active Courses</div></div>
         <div class="stat-card reveal d4"><div class="stat-ico"><i class="fas fa-clock"></i></div><div class="stat-num" data-count="10" data-sfx="+">0+</div><div class="stat-lbl">Years Experience</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CREDLY BADGES ── -->
+  <section class="sec-badges">
+    <div class="sec-wrap">
+      <div class="sec-hdr-row">
+        <div class="reveal">
+          <div class="sec-eyebrow"><i class="fas fa-certificate"></i> Verified Credentials</div>
+          <h2 class="sec-h2">Cisco <span class="accent">Excellence</span> Awards</h2>
+        </div>
+      </div>
+      <div class="badges-grid">
+        <a href="https://www.credly.com/badges/24217185-9235-45b4-89ba-cdf7130357f9" target="_blank" rel="noopener" class="badge-card reveal">
+          <div class="badge-img-wrap">
+            <img src="https://images.credly.com/images/2754960d-a07e-4764-b41f-7a8e46ec5e6b/linkedin_thumb_blob" alt="2025 Instructor Excellence Expert Level Award" loading="lazy">
+          </div>
+          <div class="badge-issuer"><i class="fas fa-shield-alt"></i> Cisco</div>
+          <div class="badge-name">Instructor Excellence<br>Expert Level Award</div>
+          <div class="badge-year">2025</div>
+          <div class="badge-verify"><i class="fas fa-external-link-alt"></i> Verify on Credly</div>
+        </a>
+        <a href="https://www.credly.com/badges/7c5fbf80-1105-483a-ba7f-8c7cd33c62ea" target="_blank" rel="noopener" class="badge-card reveal d2">
+          <div class="badge-img-wrap">
+            <img src="https://images.credly.com/images/c72e0786-0582-451b-b1e1-453f1a2c55dd/linkedin_thumb_blob" alt="2024 Instructor Excellence Expert Level Award" loading="lazy">
+          </div>
+          <div class="badge-issuer"><i class="fas fa-shield-alt"></i> Cisco</div>
+          <div class="badge-name">Instructor Excellence<br>Expert Level Award</div>
+          <div class="badge-year">2024</div>
+          <div class="badge-verify"><i class="fas fa-external-link-alt"></i> Verify on Credly</div>
+        </a>
       </div>
     </div>
   </section>
