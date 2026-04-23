@@ -173,6 +173,24 @@ function toast(msg, type = 'inf') {
   setTimeout(() => { t.classList.add('rm'); setTimeout(() => t.remove(), 300); }, 4200);
 }
 
+/* ── SCROLL PROGRESS ── */
+function initScrollProgress() {
+  const bar = document.getElementById('scroll-progress');
+  if (!bar) return;
+  window.addEventListener('scroll', () => {
+    const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+    bar.style.width = Math.min(pct, 100) + '%';
+  }, { passive: true });
+}
+
+/* ── FAQ ACCORDION ── */
+function toggleFAQ(qEl) {
+  const item = qEl.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
 /* ── MOBILE NAV ── */
 function toggleMob() {
   document.getElementById('mob-nav').classList.toggle('open');
@@ -185,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ic = document.getElementById('theme-icon');
     if (ic) ic.className = 'fas fa-moon';
   }
+  initScrollProgress();
   initCircuit();
   initCursor();
   initScroll();

@@ -612,9 +612,77 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
   .achieve-cards{grid-template-columns:1fr 1fr;}
   .footer-grid{grid-template-columns:1fr;}
 }
+
+/* ══════════════════════════════════════════
+   DESIGN UPLIFT — DEPTH · MOTION · HIERARCHY
+   ══════════════════════════════════════════ */
+
+/* ── SCROLL PROGRESS ── */
+#scroll-progress{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o));z-index:9999;width:0;pointer-events:none;transition:width .1s linear;}
+
+/* ── GRADIENT HEADLINES ── */
+.hero-h1 .line2{background:linear-gradient(135deg,#00d4ff,#00ff88);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:none;}
+.hero-h1 .line3{background:linear-gradient(135deg,#ff6a00,#ff9a40);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:none;}
+
+/* ── HERO GLOW ── */
+.hero-glow{position:absolute;top:5%;left:50%;transform:translateX(-50%);width:900px;height:700px;background:radial-gradient(ellipse,rgba(0,120,180,.09) 0%,transparent 60%);pointer-events:none;z-index:0;}
+
+/* ── SCROLL HINT ── */
+.hero-scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;z-index:2;opacity:.55;transition:opacity .25s;}
+.hero-scroll-hint:hover{opacity:1;}
+.scroll-mouse{width:20px;height:32px;border:1.5px solid var(--bdr2);border-radius:10px;display:flex;justify-content:center;padding-top:5px;}
+.scroll-wheel{width:2.5px;height:5px;background:var(--c);border-radius:2px;animation:swAnim 1.8s ease-in-out infinite;}
+.scroll-hint-lbl{font-size:.56rem;color:var(--tm);letter-spacing:2px;text-transform:uppercase;}
+@keyframes swAnim{0%{opacity:1;transform:translateY(0)}75%{opacity:0;transform:translateY(8px)}100%{opacity:0;transform:translateY(0)}}
+
+/* ── CARD DEPTH ── */
+.ccard{box-shadow:0 4px 24px rgba(0,0,0,.4);}
+.ccard:hover{transform:translateY(-8px);box-shadow:0 20px 50px rgba(0,212,255,.14),0 8px 24px rgba(0,0,0,.45);}
+.stat-card{box-shadow:0 4px 20px rgba(0,0,0,.32);}
+.stat-card:hover{transform:translateY(-6px);box-shadow:0 14px 40px rgba(0,212,255,.12),0 6px 20px rgba(0,0,0,.38);}
+.tcard{box-shadow:0 4px 20px rgba(0,0,0,.3);}
+.tcard:hover{transform:translateY(-6px);box-shadow:0 16px 44px rgba(0,0,0,.42);}
+.modal-box{box-shadow:0 28px 90px rgba(0,0,0,.65);}
+.profile-card,.contact-form-card{box-shadow:0 4px 24px rgba(0,0,0,.25);}
+
+/* ── FAQ ── */
+.sec-faq{padding:5rem 2.5rem;background:var(--bg);}
+.faq-list{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:.55rem;}
+.faq-item{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;transition:border-color .25s,box-shadow .25s;}
+.faq-item.open{border-color:var(--bdr2);box-shadow:0 4px 20px rgba(0,212,255,.07);}
+.faq-q{padding:1.15rem 1.4rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;font-size:.88rem;font-weight:600;color:var(--tw);user-select:none;transition:color .2s;}
+.faq-q:hover{color:var(--c);}
+.faq-icon{width:26px;height:26px;border-radius:50%;border:1px solid var(--bdr2);display:flex;align-items:center;justify-content:center;color:var(--c);font-size:.7rem;flex-shrink:0;transition:transform .3s,background .2s;}
+.faq-item.open .faq-icon{transform:rotate(45deg);background:rgba(0,212,255,.1);}
+.faq-body{max-height:0;overflow:hidden;transition:max-height .38s ease;}
+.faq-item.open .faq-body{max-height:260px;}
+.faq-body-inner{padding:0 1.4rem 1.2rem;font-size:.84rem;color:var(--tm);line-height:1.82;}
+
+/* ── CTA BAND ── */
+.sec-cta{padding:6rem 2.5rem;background:var(--bg2);text-align:center;position:relative;overflow:hidden;}
+.sec-cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(0,150,200,.06) 0%,transparent 65%);pointer-events:none;}
+.cta-top-line{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--c) 30%,var(--o) 70%,transparent);}
+.cta-h{font-family:'Orbitron',monospace;font-size:clamp(1.9rem,3.5vw,2.9rem);font-weight:900;color:var(--tw);line-height:1.15;margin-bottom:1rem;position:relative;z-index:1;}
+.cta-h .hl{background:linear-gradient(135deg,var(--c),#00ff88);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cta-sub{font-size:.93rem;color:var(--tm);max-width:520px;margin:0 auto 2.5rem;line-height:1.75;position:relative;z-index:1;}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
+
+/* ── BUTTON GLOW ── */
+.hbtn-primary{background:linear-gradient(135deg,var(--c),var(--c2));}
+.hbtn-primary:hover{background:linear-gradient(135deg,#00baee,var(--c));box-shadow:0 0 35px rgba(0,212,255,.55),0 0 70px rgba(0,212,255,.2);transform:translateY(-3px);}
+.hbtn-accent:hover{box-shadow:0 0 35px rgba(255,106,0,.55);transform:translateY(-3px);}
+.hbtn-outline:hover{background:rgba(0,212,255,.1);box-shadow:0 0 25px rgba(0,212,255,.2);transform:translateY(-3px);}
+
+/* ── STAGGER HELPERS ── */
+.d6{transition-delay:.6s;}.d7{transition-delay:.7s;}
+
+/* ── SECTION DIVIDER ── */
+.sec-divider{height:1px;background:linear-gradient(90deg,transparent,var(--bdr),transparent);margin:0 2.5rem;}
 </style>
 </head>
 <body>
+
+<div id="scroll-progress"></div>
 
 <!-- CUSTOM CURSOR -->
 <div id="cursor"></div>
@@ -667,6 +735,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 <!-- ═══════════════════ HOME PAGE ═══════════════════ -->
 <div id="page-home" class="page show">
   <section class="hero">
+    <div class="hero-glow"></div>
     <div class="hero-mesh"></div>
     <div class="hero-scanline"></div>
     <div class="hero-inner">
@@ -717,6 +786,10 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
         </div>
       </div>
     </div>
+    <div class="hero-scroll-hint" onclick="document.querySelector('.feat-row').scrollIntoView({behavior:'smooth'})">
+      <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+      <span class="scroll-hint-lbl">Scroll</span>
+    </div>
   </section>
 
   <div class="feat-row">
@@ -760,6 +833,42 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
     </div>
   </section>
 
+  <!-- ── FAQ ── -->
+  <section class="sec-faq">
+    <div class="sec-wrap">
+      <div class="sec-hdr reveal" style="text-align:center;max-width:600px;margin:0 auto 3rem">
+        <div class="sec-eyebrow" style="justify-content:center"><i class="fas fa-question-circle"></i> Common Questions</div>
+        <h2 class="sec-h2">Frequently <span class="accent">Asked</span></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item reveal">
+          <div class="faq-q" onclick="toggleFAQ(this)"><span>What do I need to start the CCNA course?</span><div class="faq-icon"><i class="fas fa-plus"></i></div></div>
+          <div class="faq-body"><div class="faq-body-inner">No prior networking knowledge is required. You'll need a computer with internet access and the free Cisco Packet Tracer software — everything else is provided.</div></div>
+        </div>
+        <div class="faq-item reveal d1">
+          <div class="faq-q" onclick="toggleFAQ(this)"><span>How long does it take to pass the CCNA exam?</span><div class="faq-icon"><i class="fas fa-plus"></i></div></div>
+          <div class="faq-body"><div class="faq-body-inner">Most students complete the course and pass on their first attempt within 3–6 months with consistent study. Our structured labs and practice exams are built for exam efficiency.</div></div>
+        </div>
+        <div class="faq-item reveal d2">
+          <div class="faq-q" onclick="toggleFAQ(this)"><span>Are courses aligned with official Cisco exams?</span><div class="faq-icon"><i class="fas fa-plus"></i></div></div>
+          <div class="faq-body"><div class="faq-body-inner">Yes. All courses follow official Cisco NetAcad blueprints and are updated to match current exam objectives. You'll learn exactly what's tested on the real exam.</div></div>
+        </div>
+        <div class="faq-item reveal d3">
+          <div class="faq-q" onclick="toggleFAQ(this)"><span>Is there live support or mentorship available?</span><div class="faq-icon"><i class="fas fa-plus"></i></div></div>
+          <div class="faq-body"><div class="faq-body-inner">Yes. All enrolled students have direct access to Ahmed Hussein for Q&amp;A throughout their course. Live sessions and session recordings are included.</div></div>
+        </div>
+        <div class="faq-item reveal d4">
+          <div class="faq-q" onclick="toggleFAQ(this)"><span>Do I receive a certificate after completing a course?</span><div class="faq-icon"><i class="fas fa-plus"></i></div></div>
+          <div class="faq-body"><div class="faq-body-inner">Premium members receive a signed completion certificate for every course finished. Free members have full access to the CCNA Exam Bootcamp and selected course content.</div></div>
+        </div>
+        <div class="faq-item reveal d5">
+          <div class="faq-q" onclick="toggleFAQ(this)"><span>Can I access courses on mobile?</span><div class="faq-icon"><i class="fas fa-plus"></i></div></div>
+          <div class="faq-body"><div class="faq-body-inner">Yes. The platform is fully responsive and works on any device — phone, tablet, or desktop. Study anywhere, at your own pace.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="sec-about-prev">
     <div class="sec-wrap">
       <div class="about-grid">
@@ -780,6 +889,20 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
           <p style="color:var(--tm);line-height:1.8;margin-bottom:2rem;font-size:0.92rem">As a Cisco Networking Academy instructor, every course is aligned with official exam blueprints and enriched with practical scenarios from real enterprise environments.</p>
           <button class="btn btn-c" onclick="showPage('about')"><i class="fas fa-user-circle"></i> View Full Profile</button>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA BAND ── -->
+  <section class="sec-cta">
+    <div class="cta-top-line"></div>
+    <div class="sec-wrap">
+      <div class="sec-eyebrow reveal" style="justify-content:center;margin-bottom:1rem"><i class="fas fa-graduation-cap"></i> Ready to Start?</div>
+      <h2 class="cta-h reveal d1">Become a Network Engineer<br><span class="hl">in 90 Days</span></h2>
+      <p class="cta-sub reveal d2">Join 1,200+ students who transformed their IT careers with expert-led, lab-first Cisco training built for real-world success.</p>
+      <div class="cta-btns reveal d3">
+        <button class="hbtn hbtn-primary" onclick="openModal('register')"><i class="fas fa-rocket"></i> Start Free Today</button>
+        <button class="hbtn hbtn-outline" onclick="showPage('courses')"><i class="fas fa-compass"></i> View All Courses</button>
       </div>
     </div>
   </section>
