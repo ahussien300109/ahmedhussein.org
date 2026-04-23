@@ -673,13 +673,25 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .hbtn-accent:hover{box-shadow:0 0 35px rgba(255,106,0,.55);transform:translateY(-3px);}
 .hbtn-outline:hover{background:rgba(0,212,255,.1);box-shadow:0 0 25px rgba(0,212,255,.2);transform:translateY(-3px);}
 
-/* ── HERO LAYOUT FIX ── */
-/* Grid items default to min-width:auto — without this they overflow their 1fr
-   track and the left column bleeds into (or behind) the right column */
+/* ── HERO LAYOUT & Z-INDEX FIX ── */
+/* Grid items default to min-width:auto — without this they overflow their 1fr track */
 .hero-left  { min-width: 0; }
 .hero-right { min-width: 0; }
 /* fb2 was at left:-1.8rem, protruding into the gap toward the left column */
 .fb2        { left: 0; }
+
+/* Background decorations must sit below all hero content */
+.hero-mesh    { z-index: 0; }
+.hero-scanline{ z-index: 0; }
+/* hero-inner lifts content above the absolute-positioned background layers */
+.hero-inner   { position: relative; z-index: 1; }
+/* Text column always renders above the card column */
+.hero-left    { position: relative; z-index: 2; }
+/* Card column stays below text column */
+.hero-right   { z-index: 1; }
+/* preserve-3d creates a promoted compositing layer that paints over siblings;
+   no 3D transforms are used here so flat is correct */
+.hero-device  { transform-style: flat; }
 
 /* ── STAGGER HELPERS ── */
 .d6{transition-delay:.6s;}.d7{transition-delay:.7s;}
