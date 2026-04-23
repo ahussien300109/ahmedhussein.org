@@ -211,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCounters();
   renderCourses('home-courses-grid', COURSES.slice(0, 3));
   restoreSession();
+  initChat();
   setTimeout(() => document.getElementById('loader').classList.add('gone'), 1700);
   document.getElementById('auth-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   document.getElementById('course-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
@@ -689,6 +690,68 @@ function saveProfile() {
   saveSession();
   document.getElementById('dash-name').textContent = S.user.fname.toUpperCase();
   toast('Profile updated!', 'suc');
+}
+
+/* ── CHAT WIDGET ── */
+const CHAT_REPLIES = [
+  [/\b(hi|hello|hey|salaam|marhaba)\b/i,    'Hello! 👋 How can I help you today?'],
+  [/ccna/i,                                  'Our CCNA 200-301 course takes you from zero to certified with 80 hrs of labs and 5 practice exams. Check Courses above!'],
+  [/ccnp/i,                                  'The CCNP Enterprise (ENCOR 350-401) covers BGP, SD-WAN, automation and more. Recommended after CCNA.'],
+  [/securit|cyberops|scor/i,                 'The CyberOps & Security course covers ASA firewalls, Firepower NGFW, VPNs and incident response. Great for security roles!'],
+  [/free|price|cost|paid|\$/i,               'The CCNA Exam Bootcamp is completely free! Premium courses start at $79. Register for a free account to get started.'],
+  [/lab|packet tracer/i,                     'All courses include Cisco Packet Tracer labs. The dedicated Lab course has 50+ hands-on exercises.'],
+  [/certif/i,                                'Premium members receive a completion certificate for every course — perfect for LinkedIn and job applications!'],
+  [/contact|email|whatsapp|reach/i,          'You can reach Ahmed at ahmed@ahmedhussein.org or via the Contact page. He responds within 24 hours.'],
+  [/register|sign.?up|account/i,             'Click "Register Free" in the top nav — takes 30 seconds and gives you instant access to free courses!'],
+  [/thank/i,                                 "You're welcome! 😊 Let me know if you have any other questions."],
+  [/./,                                      "Thanks for your message! Ahmed will get back to you shortly. Meanwhile feel free to browse the Courses section. 🚀"],
+];
+
+let chatOpen = false;
+
+function initChat() {
+  setTimeout(() => addChatMsg("Hi there! 👋 Ask me about courses, pricing, or anything else.", 'bot'), 600);
+  setTimeout(() => {
+    if (!chatOpen) document.getElementById('chat-badge').style.display = 'flex';
+  }, 700);
+}
+
+function toggleChat() {
+  const box = document.getElementById('chat-box');
+  chatOpen = !chatOpen;
+  box.classList.toggle('open', chatOpen);
+  document.getElementById('chat-icon').className = chatOpen ? 'fas fa-times' : 'fas fa-comment-dots';
+  document.getElementById('chat-badge').style.display = 'none';
+  if (chatOpen) setTimeout(() => document.getElementById('chat-input').focus(), 80);
+}
+
+function sendChat() {
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  addChatMsg(text, 'user');
+  inp.value = '';
+  const msgs = document.getElementById('chat-msgs');
+  const t = document.createElement('div');
+  t.className = 'chat-typing'; t.id = 'chat-typing';
+  t.innerHTML = '<div class="tydot"></div><div class="tydot"></div><div class="tydot"></div>';
+  msgs.appendChild(t); msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => {
+    const ty = document.getElementById('chat-typing');
+    if (ty) ty.remove();
+    const match = CHAT_REPLIES.find(([rx]) => rx.test(text));
+    addChatMsg(match[1], 'bot');
+  }, 700 + Math.random() * 500);
+}
+
+function addChatMsg(text, from) {
+  const msgs = document.getElementById('chat-msgs');
+  if (!msgs) return;
+  const d = document.createElement('div');
+  d.className = `cmsg ${from}`;
+  d.textContent = text;
+  msgs.appendChild(d);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
 /* ── CONTACT & NEWSLETTER ── */

@@ -709,6 +709,41 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .btn{position:relative;overflow:hidden;}
 .btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.2) 0%,transparent 65%);opacity:0;transform:scale(.15);transition:opacity .5s ease,transform .5s ease;pointer-events:none;border-radius:inherit;}
 .btn:active::after{opacity:1;transform:scale(1);transition:none;}
+
+/* ── CHAT WIDGET ── */
+#chat-widget{position:fixed;bottom:2rem;right:2rem;z-index:7000;display:flex;flex-direction:column;align-items:flex-end;gap:.75rem;}
+#chat-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:var(--bg);box-shadow:0 4px 20px rgba(0,212,255,.5);transition:transform .2s,box-shadow .2s;position:relative;}
+#chat-btn:hover{transform:scale(1.12);box-shadow:0 6px 30px rgba(0,212,255,.7);}
+#chat-badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:var(--o);border-radius:9px;font-size:.58rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:'Orbitron',monospace;}
+#chat-box{width:320px;background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden;box-shadow:0 16px 50px rgba(0,0,0,.55);display:none;flex-direction:column;}
+#chat-box.open{display:flex;animation:chatUp .25s cubic-bezier(.4,0,.2,1);}
+@keyframes chatUp{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+#chat-header{background:var(--bg3);padding:.85rem 1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr);position:relative;}
+#chat-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o));}
+.chat-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c3));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:.68rem;font-weight:700;color:var(--bg);flex-shrink:0;border:2px solid rgba(0,212,255,.35);}
+.chat-hinfo{margin-left:.65rem;flex:1;}
+.chat-hname{font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;color:var(--tw);letter-spacing:.5px;}
+.chat-status{font-size:.6rem;color:var(--g);display:flex;align-items:center;gap:4px;margin-top:2px;}
+.chat-sdot{width:5px;height:5px;background:var(--g);border-radius:50%;animation:pls 1.5s infinite;}
+#chat-close{background:none;border:none;color:var(--tm);cursor:pointer;font-size:1rem;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:color .15s,background .15s;}
+#chat-close:hover{color:var(--tw);background:var(--bg4);}
+#chat-msgs{overflow-y:auto;padding:.85rem;display:flex;flex-direction:column;gap:.55rem;min-height:240px;max-height:240px;}
+#chat-msgs::-webkit-scrollbar{width:3px;}
+#chat-msgs::-webkit-scrollbar-thumb{background:var(--c3);border-radius:3px;}
+.cmsg{max-width:84%;padding:.5rem .8rem;border-radius:12px;font-size:.79rem;line-height:1.55;word-break:break-word;animation:msgIn .2s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.cmsg.bot{background:var(--bg4);color:var(--t);border-bottom-left-radius:3px;align-self:flex-start;}
+.cmsg.user{background:linear-gradient(135deg,var(--c),var(--c2));color:var(--bg);border-bottom-right-radius:3px;align-self:flex-end;font-weight:600;}
+.chat-typing{display:flex;gap:4px;align-items:center;padding:.45rem .7rem;background:var(--bg4);border-radius:12px;border-bottom-left-radius:3px;align-self:flex-start;animation:msgIn .2s ease;}
+.tydot{width:5px;height:5px;background:var(--tm);border-radius:50%;animation:tyAnim 1.2s ease-in-out infinite;}
+.tydot:nth-child(2){animation-delay:.2s;}.tydot:nth-child(3){animation-delay:.4s;}
+@keyframes tyAnim{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-4px);opacity:1}}
+#chat-foot{display:flex;gap:.45rem;padding:.7rem .85rem;border-top:1px solid var(--bdr);background:var(--bg3);}
+#chat-input{flex:1;background:rgba(0,0,0,.3);border:1px solid var(--bdr);color:var(--t);padding:.48rem .75rem;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:.82rem;outline:none;transition:border-color .2s;}
+#chat-input:focus{border-color:var(--c);}
+#chat-input::placeholder{color:var(--tm);}
+#chat-send{width:34px;height:34px;flex-shrink:0;border-radius:8px;background:var(--c);border:none;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:background .2s,transform .15s;}
+#chat-send:hover{background:var(--o);transform:scale(1.1);}
 </style>
 </head>
 <body>
@@ -1263,6 +1298,29 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 <!-- COURSE DETAIL MODAL -->
 <div class="modal-ov" id="course-modal">
   <div class="modal-box" style="max-width:700px"><button class="mclose" onclick="closeCourseModal()"><i class="fas fa-times"></i></button><div id="course-detail-inner"></div></div>
+</div>
+
+<!-- CHAT WIDGET -->
+<div id="chat-widget">
+  <div id="chat-box">
+    <div id="chat-header">
+      <div class="chat-av">AH</div>
+      <div class="chat-hinfo">
+        <div class="chat-hname">Ahmed Hussein</div>
+        <div class="chat-status"><span class="chat-sdot"></span> Online</div>
+      </div>
+      <button id="chat-close" onclick="toggleChat()" title="Close"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="chat-msgs"></div>
+    <div id="chat-foot">
+      <input id="chat-input" type="text" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button id="chat-send" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+  <button id="chat-btn" onclick="toggleChat()" title="Chat with us">
+    <i class="fas fa-comment-dots" id="chat-icon"></i>
+    <span id="chat-badge" style="display:none">1</span>
+  </button>
 </div>
 
 <div id="toast-box"></div>
