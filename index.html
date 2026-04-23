@@ -178,7 +178,7 @@ body:hover #cursor{transform:translate(-50%,-50%) scale(1);}
 
 /* HERO RIGHT — 3D CARD */
 .hero-right{position:relative;}
-.hero-device{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r3);padding:0;overflow:hidden;position:relative;transform-style:preserve-3d;}
+.hero-device{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r3);padding:0;overflow:hidden;position:relative;}
 .hero-device::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--c),var(--o),var(--c));background-size:200%;animation:borderFlow 3s linear infinite;}
 @keyframes borderFlow{from{background-position:0%}to{background-position:200%}}
 .device-header{background:var(--bg3);padding:1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr);}
@@ -673,25 +673,28 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .hbtn-accent:hover{box-shadow:0 0 35px rgba(255,106,0,.55);transform:translateY(-3px);}
 .hbtn-outline:hover{background:rgba(0,212,255,.1);box-shadow:0 0 25px rgba(0,212,255,.2);transform:translateY(-3px);}
 
-/* ── HERO LAYOUT & Z-INDEX FIX ── */
-/* Grid items default to min-width:auto — without this they overflow their 1fr track */
-.hero-left  { min-width: 0; }
-.hero-right { min-width: 0; }
-/* fb2 was at left:-1.8rem, protruding into the gap toward the left column */
-.fb2        { left: 0; }
+/* ══ Z-INDEX LAYER SYSTEM ══════════════════
+   0  →  background / animation (never above content)
+   1  →  content
+   2  →  content that must sit above a sibling
+   ════════════════════════════════════════ */
 
-/* Background decorations must sit below all hero content */
-.hero-mesh    { z-index: 0; }
-.hero-scanline{ z-index: 0; }
-/* hero-inner lifts content above the absolute-positioned background layers */
-.hero-inner   { position: relative; z-index: 1; }
-/* Text column always renders above the card column */
-.hero-left    { position: relative; z-index: 2; }
-/* Card column stays below text column */
-.hero-right   { z-index: 1; }
-/* preserve-3d creates a promoted compositing layer that paints over siblings;
-   no 3D transforms are used here so flat is correct */
-.hero-device  { transform-style: flat; }
+/* Hero: decorative backgrounds pinned behind everything */
+.hero-glow,.hero-mesh,.hero-scanline{z-index:0;}
+
+/* Hero: content grid floats above the absolute bg layers */
+.hero-inner{position:relative;z-index:1;}
+
+/* Hero: text column above card column; min-width:0 prevents
+   1fr grid tracks from overflowing their allocated width */
+.hero-left {position:relative;z-index:2;min-width:0;}
+.hero-right{position:relative;z-index:1;min-width:0;}
+
+/* Badge: was left:-1.8rem — protruded into gap toward text column */
+.fb2{left:0;}
+
+/* Page headers: decorative bg layers pinned behind header text */
+.pg-header-bg,.pg-header-glow{z-index:0;}
 
 /* ── STAGGER HELPERS ── */
 .d6{transition-delay:.6s;}.d7{transition-delay:.7s;}
