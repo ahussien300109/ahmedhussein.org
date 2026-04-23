@@ -154,6 +154,18 @@ function animSkills() {
   document.querySelectorAll('.sr-fill').forEach(b => b.style.width = b.dataset.w || '0%');
 }
 
+function initSkillBars() {
+  document.querySelectorAll('.sr-fill').forEach(b => b.style.width = '0'); // reset on each visit
+  const rows = document.querySelector('.skill-rows');
+  if (!rows) return;
+  const obs = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    animSkills();
+    obs.disconnect();
+  }, { threshold: 0.2 });
+  obs.observe(rows);
+}
+
 /* ── THEME & TOAST ── */
 function toggleTheme() {
   const html = document.documentElement;
@@ -228,7 +240,7 @@ function showPage(pg) {
   const footer = document.getElementById('site-footer');
   if (footer) footer.style.display = pg === 'dashboard' ? 'none' : '';
   if (pg === 'courses') renderCourses('all-courses-grid', COURSES);
-  if (pg === 'about') setTimeout(animSkills, 300);
+  if (pg === 'about') setTimeout(initSkillBars, 50);
   if (pg === 'dashboard') {
     if (!S.user) { openModal('login'); showPage('home'); return; }
     updateDash();
