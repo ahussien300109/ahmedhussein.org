@@ -1028,6 +1028,15 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 [data-theme="light"] .fct-micro i{color:#16a34a;}
 @media(max-width:900px){.fct-inner{grid-template-columns:1fr;text-align:center;}.fct-actions{align-items:center;}}
 
+/* ── TAWK.TO CUSTOM TRIGGER BUTTON ── */
+#tawk-btn{position:fixed;bottom:2rem;left:2rem;z-index:6500;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--c),var(--c2));color:var(--bg);border:none;padding:11px 18px;border-radius:25px;font-family:'Exo 2',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;box-shadow:0 4px 20px rgba(0,212,255,.4);transition:transform .2s,box-shadow .2s,opacity .3s;letter-spacing:.5px;}
+#tawk-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,212,255,.55);}
+#tawk-btn i{font-size:.85rem;}
+#tawk-btn .tb-pulse{width:7px;height:7px;border-radius:50%;background:var(--g);flex-shrink:0;animation:pls 1.5s infinite;}
+[data-theme="light"] #tawk-btn{background:linear-gradient(135deg,#0062cc,#004fa3);color:#fff;box-shadow:0 4px 16px rgba(0,98,204,.35);}
+[data-theme="light"] #tawk-btn:hover{box-shadow:0 8px 24px rgba(0,98,204,.5);}
+@media(max-width:600px){#tawk-btn span.tb-label{display:none;}#tawk-btn{padding:11px 14px;border-radius:50%;width:46px;height:46px;justify-content:center;}}
+
 /* ── CHAT WIDGET ── */
 #chat-widget{position:fixed;bottom:2rem;right:2rem;z-index:7000;display:flex;flex-direction:column;align-items:flex-end;gap:.75rem;}
 #chat-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:var(--bg);box-shadow:0 4px 20px rgba(0,212,255,.5);transition:transform .2s,box-shadow .2s;position:relative;}
@@ -1801,8 +1810,55 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
   </button>
 </div>
 
+<!-- TAWK.TO TRIGGER BUTTON -->
+<button id="tawk-btn" onclick="openTawkChat()" title="Chat with Instructor">
+  <span class="tb-pulse"></span>
+  <i class="fas fa-comment-dots"></i>
+  <span class="tb-label">Chat with Instructor</span>
+</button>
+
 <div id="toast-box"></div>
 
 <script src="app.js"></script>
+
+<!-- ═══ TAWK.TO LIVE CHAT ═══════════════════════════════════════
+     Replace YOUR_PROPERTY_ID / YOUR_WIDGET_ID with values from:
+     Dashboard → Administration → Chat Widget → Direct Chat Link
+     ════════════════════════════════════════════════════════════ -->
+<script>
+(function() {
+  /* Tawk API hooks — must be set BEFORE the embed script loads */
+  var Tawk_API = window.Tawk_API = window.Tawk_API || {};
+
+  Tawk_API.onLoad = function() {
+    /* Hide default bubble — custom button is used instead */
+    Tawk_API.hideWidget();
+
+    /* Auto-open once per session after 5–8 s */
+    if (!sessionStorage.getItem('tawk_greeted')) {
+      setTimeout(function() {
+        Tawk_API.maximize();
+        sessionStorage.setItem('tawk_greeted', '1');
+      }, 6000);
+    }
+  };
+
+  /* Embed script */
+  var s1 = document.createElement('script'),
+      s0 = document.getElementsByTagName('script')[0];
+  s1.async = true;
+  s1.src = 'https://embed.tawk.to/YOUR_PROPERTY_ID/YOUR_WIDGET_ID';
+  s1.charset = 'UTF-8';
+  s1.setAttribute('crossorigin', '*');
+  s0.parentNode.insertBefore(s1, s0);
+})();
+
+/* Open Tawk chat — called by custom button and any inline onclick */
+function openTawkChat() {
+  if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
+    Tawk_API.maximize();
+  }
+}
+</script>
 </body>
 </html>
