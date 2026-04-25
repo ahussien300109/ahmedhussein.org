@@ -1805,43 +1805,18 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 
 <script src="app.js"></script>
 
-<!-- ═══ TAWK.TO LIVE CHAT ═══════════════════════════════════════
-     Replace YOUR_PROPERTY_ID / YOUR_WIDGET_ID with values from:
-     Dashboard → Administration → Chat Widget → Direct Chat Link
-     ════════════════════════════════════════════════════════════ -->
-<script>
-(function() {
-  /* Tawk API hooks — must be set BEFORE the embed script loads */
-  var Tawk_API = window.Tawk_API = window.Tawk_API || {};
-
-  Tawk_API.onLoad = function() {
-    Tawk_API.showWidget(); // ensure native bubble is always visible
-
-    /* Auto-open once per session after 6 s */
-    if (!sessionStorage.getItem('tawk_greeted')) {
-      setTimeout(function() {
-        Tawk_API.maximize();
-        sessionStorage.setItem('tawk_greeted', '1');
-      }, 6000);
-    }
-  };
-
-  /* Embed script */
-  var s1 = document.createElement('script'),
-      s0 = document.getElementsByTagName('script')[0];
-  s1.async = true;
-  s1.src = 'https://embed.tawk.to/YOUR_PROPERTY_ID/YOUR_WIDGET_ID';
-  s1.charset = 'UTF-8';
-  s1.setAttribute('crossorigin', '*');
-  s0.parentNode.insertBefore(s1, s0);
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
 })();
-
-/* Open Tawk chat — called by custom button and any inline onclick */
-function openTawkChat() {
-  if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
-    Tawk_API.maximize();
-  }
-}
 </script>
+<!--End of Tawk.to Script-->
 </body>
 </html>
