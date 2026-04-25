@@ -12,7 +12,8 @@
       "Bash(git push *)",
       "Bash(node --input-type=module)",
       "Bash(node -e ' *)",
-      "WebFetch(domain:www.credly.com)"
+      "WebFetch(domain:www.credly.com)",
+      "WebFetch(domain:ahmedhussein.org)"
     ]
   }
 }

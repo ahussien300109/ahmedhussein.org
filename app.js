@@ -255,6 +255,7 @@ function showPage(pg) {
   if (footer) footer.style.display = pg === 'dashboard' ? 'none' : '';
   if (pg === 'courses') renderCourses('all-courses-grid', COURSES);
   if (pg === 'about') setTimeout(initSkillBars, 50);
+  if (pg === 'examlabs') renderExamLabs();
   if (pg === 'dashboard') {
     if (!S.user) { openModal('login'); showPage('home'); return; }
     updateDash();
@@ -783,6 +784,168 @@ function _chatAppend(text, side) {
   d.textContent = text;
   msgs.appendChild(d);
   msgs.scrollTop = msgs.scrollHeight;              // auto-scroll to latest
+}
+
+/* ── EXAM LABS ── */
+const LAB_CATS = {
+  l2:       { label:'Layer 2 Switching',   icon:'fa-layer-group', th:'th1', lvl:'lvl-int', color:'var(--c)' },
+  routing:  { label:'Routing',             icon:'fa-route',       th:'th5', lvl:'lvl-adv', color:'var(--o)' },
+  security: { label:'Security & Services', icon:'fa-shield-alt',  th:'th3', lvl:'lvl-beg', color:'var(--g)' },
+};
+
+const LAB_DATA = [
+  { num:'01',    cat:'l2',       title:'802.1Q Trunking & LACP',
+    desc:'Configure 802.1Q trunk links between switches and LACP link aggregation with channel group 10. Verify trunk status and LACP negotiation.',
+    tags:['Trunking','LACP','EtherChannel'], file:'pkt' },
+  { num:'02',    cat:'l2',       title:'802.1Q Trunking & LACP (Advanced)',
+    desc:'Extend trunk concepts with native VLAN 45 (untagged) and LACP channel group 15. Test frame tagging behaviour and verify EtherChannel bundle.',
+    tags:['Native VLAN','LACP','Advanced'], file:'pkt' },
+  { num:'03',    cat:'l2',       title:'Voice VLAN & LLDP',
+    desc:'Combine data VLAN 77 and voice VLAN 177 on access ports. Enable LLDP neighbor discovery and verify device information exchange.',
+    tags:['Voice VLAN','LLDP','QoS'], file:'pkt' },
+  { num:'08–10', cat:'l2',       title:'VLAN & Neighbor Discovery',
+    desc:'Three-lab series covering VLAN creation, CDP/LLDP protocol configuration, and access port assignment for end devices across multiple switches.',
+    tags:['VLAN','CDP','LLDP','Series'], file:'zip' },
+  { num:'13–18', cat:'l2',       title:'Trunking & EtherChannel Series',
+    desc:'Six-lab progressive series — PAgP and LACP active/passive modes across multi-switch topologies with increasing complexity.',
+    tags:['PAgP','LACP','Multi-Switch','Series'], file:'zip' },
+  { num:'04',    cat:'routing',  title:'IPv4 & IPv6 Address Assignment',
+    desc:'Dual-stack configuration assigning specific usable host addresses on each interface. Verify end-to-end connectivity with ping and traceroute.',
+    tags:['IPv4','IPv6','Dual-Stack'], file:'pkt' },
+  { num:'05',    cat:'routing',  title:'Static Routing & Failover',
+    desc:'Implement host routes, default routes, and floating static routes with AD 225. Verify automatic failover when the primary path is removed.',
+    tags:['Static Route','Floating AD','Failover'], file:'pkt' },
+  { num:'06–07', cat:'routing',  title:'OSPF Single-Area Routing',
+    desc:'Configure OSPF without network statements using ip ospf interface commands. Control DR/BDR election with priority and verify LSDB sync.',
+    tags:['OSPF','DR/BDR','Area 0','Series'], file:'zip' },
+  { num:'19',    cat:'routing',  title:'IPv6 Static Routing',
+    desc:'Configure IPv6 static routes across a multi-router topology with floating route redundancy. Verify with ping6 and traceroute6.',
+    tags:['IPv6','Static','Redundancy'], file:'pkt' },
+  { num:'20',    cat:'routing',  title:'IPv4 Static & Default Routing',
+    desc:'Multi-router scenario with primary and backup path configuration. Test failover by simulating link failures with interface shutdown.',
+    tags:['Default Route','Multi-Router','Failover'], file:'pkt' },
+  { num:'11',    cat:'security', title:'ACLs & DHCP Snooping',
+    desc:'Implement named ACLs restricting RFC 1918 addresses and configure Dynamic ARP Inspection (DAI) on trusted and untrusted switch ports.',
+    tags:['Named ACL','DHCP Snooping','DAI'], file:'pkt' },
+  { num:'14',    cat:'security', title:'NAT, DHCP, NTP & SSH',
+    desc:'All-in-one services lab: configure PAT, DHCP pools with exclusions, NTP synchronisation, and SSH v2 for encrypted management access.',
+    tags:['NAT/PAT','DHCP','NTP','SSH v2'], file:'pkt' },
+  { num:'16–17', cat:'security', title:'ACLs & Port Security',
+    desc:'Apply VLAN-based extended ACLs and configure port security with sticky MAC learning. Test violation modes (shutdown / restrict / protect).',
+    tags:['Extended ACL','Port Security','Sticky MAC','Series'], file:'zip' },
+];
+
+const LAB_SKILLS = [
+  'VLAN Creation & Assignment','Trunk Encapsulation 802.1Q',
+  'Link Aggregation — LACP & PAgP','CDP & LLDP Discovery',
+  'Voice VLAN Configuration','IPv4 & IPv6 Dual-Stack',
+  'Static & Default Routing','OSPF Area Configuration',
+  'Standard & Extended ACLs','DHCP Snooping & DAI',
+  'SSH v2 Secure Access','Port Security & Sticky MAC',
+  'NTP Synchronisation','NAT & PAT Translation',
+];
+
+let labFilter = 'all';
+
+function renderExamLabs() {
+  const pg = document.getElementById('page-examlabs');
+  if (!pg) return;
+  if (!pg.dataset.built) {
+    pg.dataset.built = '1';
+    pg.innerHTML = `
+      <div class="pg-header">
+        <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
+        <div class="pg-header-inner">
+          <div class="breadcrumb"><a href="#" onclick="showPage('home');return false">Home</a><i class="fas fa-chevron-right"></i>Exam Labs</div>
+          <div class="sec-eyebrow" style="margin-bottom:.8rem"><i class="fas fa-flask"></i> CCNA 200-301 Practice Labs</div>
+          <div class="pg-title">EXAMLAB <span style="color:var(--c)">NETWORK</span> CONFIGURATION GUIDE</div>
+          <div class="pg-subtitle">Real-world Packet Tracer labs built for the CCNA 200-301 exam. Configure, troubleshoot, and verify — every task mirrors what Cisco tests on exam day.</div>
+          <div style="display:flex;gap:2rem;flex-wrap:wrap;padding-top:1.5rem;border-top:1px solid var(--bdr);margin-top:1.2rem">
+            ${[['20+','Lab Files'],['3','Categories'],['14','Skills Covered']].map(([n,l])=>`
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:900;color:var(--tw)">${n}</div>
+              <div style="font-size:.63rem;color:var(--c);text-transform:uppercase;letter-spacing:2px;margin-top:2px">${l}</div>
+            </div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="filter-toolbar">
+        <div class="filter-toolbar-inner" id="labs-filter-bar">
+          <button class="f-btn on" onclick="filterLabs('all',this)">All</button>
+          <button class="f-btn" onclick="filterLabs('l2',this)"><i class="fas fa-layer-group"></i> Layer 2</button>
+          <button class="f-btn" onclick="filterLabs('routing',this)"><i class="fas fa-route"></i> Routing</button>
+          <button class="f-btn" onclick="filterLabs('security',this)"><i class="fas fa-shield-alt"></i> Security</button>
+          <div class="f-sep"></div>
+          <div class="f-count" id="lab-count"><span>${LAB_DATA.length}</span> labs</div>
+        </div>
+      </div>
+      <section style="padding:3rem 2.5rem;background:var(--bg1)">
+        <div style="max-width:1300px;margin:0 auto"><div class="courses-grid" id="labs-grid"></div></div>
+      </section>
+      <section style="padding:4.5rem 2.5rem;background:var(--bg)">
+        <div class="sec-wrap">
+          <div class="sec-eyebrow"><i class="fas fa-graduation-cap"></i> What You Practice</div>
+          <h2 class="sec-h2">Skills <span class="accent">Covered</span></h2>
+          <p class="sec-desc">Every lab maps to the official CCNA 200-301 exam blueprint. Complete all three categories to cover 90%+ of practical exam skills.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem">
+            ${LAB_SKILLS.map(s=>`<span class="cert-pill">${s}</span>`).join('')}
+          </div>
+        </div>
+      </section>
+      <section class="sec-cta">
+        <div class="cta-top-line"></div>
+        <div class="sec-wrap" style="text-align:center;position:relative;z-index:1">
+          <div class="sec-eyebrow" style="justify-content:center"><i class="fas fa-rocket"></i> Ready to Practice?</div>
+          <h2 class="cta-h">Pass the CCNA with<br><span class="hl">Hands-On Labs</span></h2>
+          <p class="cta-sub">Download Packet Tracer files, complete each task, and verify with ping and traceroute — same scenarios Cisco uses on the real exam.</p>
+          <div class="cta-btns">
+            <button class="hbtn hbtn-primary" onclick="enrollCourse(6)"><i class="fas fa-play"></i> Start Free Bootcamp</button>
+            <button class="hbtn hbtn-outline" onclick="showPage('courses')"><i class="fas fa-compass"></i> All Courses</button>
+          </div>
+        </div>
+      </section>`;
+  }
+  applyLabFilter();
+  reObserve();
+}
+
+function filterLabs(cat, btn) {
+  document.querySelectorAll('#labs-filter-bar .f-btn').forEach(b => b.classList.remove('on'));
+  if (btn) btn.classList.add('on');
+  labFilter = cat;
+  applyLabFilter();
+}
+
+function applyLabFilter() {
+  const grid = document.getElementById('labs-grid');
+  const cnt  = document.getElementById('lab-count');
+  if (!grid) return;
+  const list = labFilter === 'all' ? LAB_DATA : LAB_DATA.filter(l => l.cat === labFilter);
+  if (cnt) cnt.innerHTML = `<span>${list.length}</span> labs`;
+  grid.innerHTML = list.map(l => {
+    const c = LAB_CATS[l.cat];
+    return `<div class="ccard reveal" style="cursor:default">
+      <div class="cc-thumb ${c.th}" style="height:120px">
+        <div style="font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:${c.color};z-index:1;position:relative">LAB ${l.num}</div>
+        <div class="cc-level-tag ${c.lvl}">${c.label}</div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-cat"><i class="fas ${c.icon}" style="margin-right:5px;font-size:.6rem"></i>${c.label}</div>
+        <div class="cc-title">${l.title}</div>
+        <div class="cc-desc">${l.desc}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.7rem">
+          ${l.tags.map(t=>`<span class="lvl-tag">${t}</span>`).join('')}
+        </div>
+        <div class="cc-footer">
+          <span style="font-size:.69rem;color:var(--tm);display:flex;align-items:center;gap:4px">
+            <i class="fas ${l.file==='zip'?'fa-file-archive':'fa-file-alt'}" style="color:${c.color}"></i>.${l.file}
+          </span>
+          <button class="cc-enroll" onclick="toast('Lab file coming soon!','inf')"><i class="fas fa-download"></i> Download</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  reObserve();
 }
 
 /* ── CONTACT & NEWSLETTER ── */
