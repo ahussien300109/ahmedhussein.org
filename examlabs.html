@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exam Labs | Ahmed Hussein — CCNA Network Configuration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- Theme: read localStorage before first paint to avoid flash -->
+<script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');if(t==='light')document.documentElement.setAttribute('data-theme','light');})();</script>
+<style>
+/* ════════════════════════════════════════════════
+   DESIGN TOKENS — mirror main site exactly
+   ════════════════════════════════════════════════ */
+:root{
+  --c:#00d4ff;  --c2:#0099cc;  --c3:#005577;
+  --o:#ff6a00;  --o2:#ff9a40;
+  --g:#00ff88;  --red:#ff4455;
+  --bg:#030d1a; --bg1:#060f20; --bg2:#080e1c; --bg3:#0c1628; --bg4:#101e38;
+  --card:#0a1525;
+  --t:#c8ddf0;  --tm:#7a9ab5;  --tw:#ffffff;
+  --bdr:rgba(0,212,255,.15); --bdr2:rgba(0,212,255,.3);
+  --r:10px; --r2:16px; --r3:22px;
+}
+[data-theme="light"]{
+  --c:#0062cc;  --c2:#004fa3;  --c3:#003d7a;
+  --o:#c94f08;  --o2:#e06918;
+  --g:#16a34a;  --red:#dc2626;
+  --bg:#f5f7fa; --bg1:#eef1f6; --bg2:#e7ecf4; --bg3:#f0f4f8; --bg4:#e2e8f0;
+  --card:#ffffff;
+  --t:#1e293b;  --tm:#64748b;  --tw:#0f172a;
+  --bdr:rgba(0,0,0,.07); --bdr2:rgba(0,0,0,.11);
+}
+
+/* ─── RESET ─── */
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t);overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--c3);border-radius:4px;}
+::selection{background:rgba(0,212,255,.25);color:var(--tw);}
+[data-theme="light"] ::selection{background:rgba(0,98,204,.18);}
+
+/* ─── NAV ─── */
+#nav{position:fixed;top:0;width:100%;z-index:1000;padding:0 2.5rem;transition:all .35s;}
+#nav.stuck{background:rgba(3,13,26,.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--bdr);box-shadow:0 1px 20px rgba(0,0,0,.3);}
+[data-theme="light"] #nav.stuck{background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,.07);box-shadow:0 1px 16px rgba(0,0,0,.06);}
+.nav-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:70px;}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-hex{width:36px;height:36px;flex-shrink:0;animation:lgPulse 3s ease-in-out infinite;filter:drop-shadow(0 0 3px rgba(0,212,255,.4));}
+@keyframes lgPulse{0%,100%{filter:drop-shadow(0 0 3px rgba(0,212,255,.35))}50%{filter:drop-shadow(0 0 10px rgba(0,212,255,.9))}}
+[data-theme="light"] .logo-hex{animation:lgPulseL 3s ease-in-out infinite;}
+@keyframes lgPulseL{0%,100%{filter:drop-shadow(0 0 3px rgba(0,98,204,.28))}50%{filter:drop-shadow(0 0 8px rgba(0,98,204,.55))}}
+[data-theme="light"] .logo-hex circle{stroke:rgba(0,98,204,.38);}
+[data-theme="light"] .logo-hex polygon{fill:rgba(0,98,204,.07);stroke:#0062cc;}
+[data-theme="light"] .logo-hex text{fill:#0062cc;}
+.logo-text{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--tw);letter-spacing:1px;}
+.logo-text span{color:var(--c);}
+.logo-sub{font-size:.58rem;color:var(--c);letter-spacing:3px;text-transform:uppercase;margin-top:-2px;}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{color:var(--tm);font-size:.84rem;font-weight:600;text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:color .2s;position:relative;padding-bottom:3px;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:var(--c);transition:width .25s;}
+.nav-links a:hover,.nav-links a.act{color:var(--c);}
+.nav-links a:hover::after,.nav-links a.act::after{width:100%;}
+.nav-right{display:flex;gap:.7rem;align-items:center;}
+.nbtn{font-family:'Exo 2',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 20px;border-radius:6px;cursor:pointer;transition:all .2s;border:1px solid var(--bdr2);background:transparent;color:var(--c);}
+.nbtn:hover{background:rgba(0,212,255,.08);border-color:var(--c);}
+.nbtn.solid{background:var(--c);color:var(--bg);border-color:var(--c);}
+.nbtn.solid:hover{background:var(--o);border-color:var(--o);}
+[data-theme="light"] .nbtn{color:#0062cc;border-color:rgba(0,98,204,.25);}
+[data-theme="light"] .nbtn:hover{background:rgba(0,98,204,.06);border-color:#0062cc;}
+[data-theme="light"] .nbtn.solid{background:#0062cc;color:#fff;border-color:#0062cc;}
+[data-theme="light"] .nbtn.solid:hover{background:#004fa3;}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;}
+.ham span{width:22px;height:2px;background:var(--t);border-radius:2px;transition:all .3s;display:block;}
+.ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.ham.open span:nth-child(2){opacity:0;}
+.ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mob-nav{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(3,13,26,.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);padding:1.5rem 2rem;flex-direction:column;gap:.3rem;z-index:999;}
+.mob-nav.open{display:flex;}
+.mob-nav a{padding:.7rem 0;color:var(--tm);text-decoration:none;font-size:.9rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--bdr);transition:color .2s;}
+.mob-nav a:hover,.mob-nav a.act{color:var(--c);}
+[data-theme="light"] .mob-nav{background:rgba(255,255,255,.98);}
+
+/* ─── PAGE HEADER ─── */
+.pg-hdr{padding:8rem 2.5rem 4rem;background:var(--bg1);position:relative;overflow:hidden;border-bottom:1px solid var(--bdr);}
+.ph-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:50px 50px;z-index:0;}
+[data-theme="light"] .ph-bg{background-image:linear-gradient(rgba(0,98,204,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,98,204,.035) 1px,transparent 1px);}
+.ph-glow{position:absolute;top:-20%;right:5%;width:55%;height:150%;background:radial-gradient(ellipse,rgba(0,150,200,.07) 0%,transparent 60%);z-index:0;pointer-events:none;}
+.ph-inner{max-width:1300px;margin:0 auto;position:relative;z-index:1;}
+.breadcrumb{font-size:.75rem;color:var(--tm);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.breadcrumb a{color:var(--c);text-decoration:none;}
+.breadcrumb a:hover{color:var(--o);}
+.breadcrumb i{font-size:.55rem;}
+.pg-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Orbitron',monospace;font-size:.63rem;font-weight:700;color:var(--c);letter-spacing:3px;text-transform:uppercase;margin-bottom:.9rem;}
+.pg-title{font-family:'Orbitron',monospace;font-size:clamp(1.9rem,3.5vw,3rem);font-weight:900;color:var(--tw);margin-bottom:.8rem;line-height:1.1;}
+.pg-title span{color:var(--c);text-shadow:0 0 24px rgba(0,212,255,.4);}
+[data-theme="light"] .pg-title span{text-shadow:none;}
+.pg-sub{font-size:.95rem;color:var(--tm);max-width:580px;line-height:1.8;margin-bottom:2.2rem;}
+.ph-stats{display:flex;gap:2.5rem;flex-wrap:wrap;padding-top:1.5rem;border-top:1px solid var(--bdr);}
+.ph-stat{display:flex;flex-direction:column;}
+.ph-stat-num{font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;color:var(--tw);}
+.ph-stat-lbl{font-size:.65rem;color:var(--c);text-transform:uppercase;letter-spacing:2px;margin-top:2px;}
+
+/* ─── LAYOUT HELPERS ─── */
+.sec{padding:4.5rem 2.5rem;}
+.wrap{max-width:1300px;margin:0 auto;}
+
+/* ─── SECTION HEADINGS ─── */
+.sec-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'Orbitron',monospace;font-size:.62rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:.7rem;}
+.sec-eyebrow.l2c{color:var(--c);}
+.sec-eyebrow.rtc{color:var(--o);}
+.sec-eyebrow.scc{color:var(--g);}
+.sec-eyebrow.neu{color:var(--tm);}
+.sec-h2{font-family:'Orbitron',monospace;font-size:clamp(1.3rem,2.2vw,1.9rem);font-weight:900;color:var(--tw);line-height:1.2;margin-bottom:.5rem;}
+.sec-h2 .ac{color:var(--c);}
+.sec-h2 .ao{color:var(--o);}
+.sec-h2 .ag{color:var(--g);}
+.sec-p{font-size:.88rem;color:var(--tm);line-height:1.78;max-width:640px;margin-bottom:2.5rem;}
+
+/* ─── LAB GRID ─── */
+.lab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(295px,1fr));gap:1.25rem;}
+
+/* ─── LAB CARD ─── */
+.lcard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:1.4rem 1.5rem;display:flex;flex-direction:column;gap:.85rem;transition:transform .3s,box-shadow .3s,border-color .3s;position:relative;overflow:hidden;cursor:default;}
+[data-theme="light"] .lcard{box-shadow:0 1px 4px rgba(0,0,0,.05),0 4px 16px rgba(0,0,0,.05);}
+
+/* Top accent bar (hidden until hover) */
+.lcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .3s;}
+.lcard.l2::before{background:linear-gradient(90deg,var(--c),var(--c2));}
+.lcard.rt::before{background:linear-gradient(90deg,var(--o),var(--o2));}
+.lcard.sc::before{background:linear-gradient(90deg,var(--g),var(--c));}
+.lcard:hover{transform:translateY(-5px);}
+.lcard:hover::before{opacity:1;}
+.lcard.l2:hover{border-color:rgba(0,212,255,.35);box-shadow:0 14px 40px rgba(0,212,255,.09),0 4px 14px rgba(0,0,0,.35);}
+.lcard.rt:hover{border-color:rgba(255,106,0,.35);box-shadow:0 14px 40px rgba(255,106,0,.09),0 4px 14px rgba(0,0,0,.35);}
+.lcard.sc:hover{border-color:rgba(0,255,136,.3);box-shadow:0 14px 40px rgba(0,255,136,.07),0 4px 14px rgba(0,0,0,.35);}
+[data-theme="light"] .lcard.l2:hover{border-color:rgba(0,98,204,.25);box-shadow:0 8px 24px rgba(0,98,204,.1),0 2px 8px rgba(0,0,0,.06);}
+[data-theme="light"] .lcard.rt:hover{border-color:rgba(201,79,8,.25);box-shadow:0 8px 24px rgba(201,79,8,.1),0 2px 8px rgba(0,0,0,.06);}
+[data-theme="light"] .lcard.sc:hover{border-color:rgba(22,163,74,.25);box-shadow:0 8px 24px rgba(22,163,74,.1),0 2px 8px rgba(0,0,0,.06);}
+
+/* Card top row: number badge + title */
+.lc-head{display:flex;align-items:flex-start;gap:.85rem;}
+.lc-num{font-family:'Orbitron',monospace;font-size:.58rem;font-weight:700;letter-spacing:1px;padding:4px 10px;border-radius:5px;flex-shrink:0;white-space:nowrap;margin-top:2px;}
+.l2 .lc-num{background:rgba(0,212,255,.09);color:var(--c);border:1px solid rgba(0,212,255,.2);}
+.rt .lc-num{background:rgba(255,106,0,.09);color:var(--o);border:1px solid rgba(255,106,0,.2);}
+.sc .lc-num{background:rgba(0,255,136,.09);color:var(--g);border:1px solid rgba(0,255,136,.2);}
+[data-theme="light"] .l2 .lc-num{background:rgba(0,98,204,.08);border-color:rgba(0,98,204,.2);}
+[data-theme="light"] .rt .lc-num{background:rgba(201,79,8,.08);color:#c94f08;border-color:rgba(201,79,8,.2);}
+[data-theme="light"] .sc .lc-num{background:rgba(22,163,74,.08);color:#16a34a;border-color:rgba(22,163,74,.2);}
+.lc-title{font-family:'Orbitron',monospace;font-size:.8rem;font-weight:700;color:var(--tw);line-height:1.45;}
+
+/* Description */
+.lc-desc{font-size:.82rem;color:var(--tm);line-height:1.72;flex:1;}
+
+/* Tags */
+.lc-tags{display:flex;flex-wrap:wrap;gap:.35rem;}
+.lc-tag{font-size:.6rem;font-weight:700;padding:2px 9px;border-radius:4px;background:var(--bg3);color:var(--tm);border:1px solid var(--bdr);letter-spacing:.5px;}
+[data-theme="light"] .lc-tag{background:#f1f5f9;border-color:rgba(0,0,0,.08);color:#64748b;}
+
+/* Footer row */
+.lc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:.85rem;border-top:1px solid var(--bdr);gap:.5rem;flex-wrap:wrap;}
+.lc-file{font-size:.68rem;color:var(--tm);display:flex;align-items:center;gap:5px;}
+.lc-file i{font-size:.65rem;}
+.l2 .lc-file i{color:var(--c);}
+.rt .lc-file i{color:var(--o);}
+.sc .lc-file i{color:var(--g);}
+[data-theme="light"] .l2 .lc-file i{color:#0062cc;}
+[data-theme="light"] .rt .lc-file i{color:#c94f08;}
+[data-theme="light"] .sc .lc-file i{color:#16a34a;}
+
+/* Download buttons */
+.dl-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:7px;font-family:'Exo 2',sans-serif;font-size:.71rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;text-decoration:none;cursor:pointer;border:1px solid;transition:all .2s;}
+.l2 .dl-btn{color:var(--c);border-color:rgba(0,212,255,.25);background:rgba(0,212,255,.06);}
+.l2 .dl-btn:hover{background:var(--c);color:var(--bg);border-color:var(--c);box-shadow:0 4px 12px rgba(0,212,255,.28);}
+.rt .dl-btn{color:var(--o);border-color:rgba(255,106,0,.25);background:rgba(255,106,0,.06);}
+.rt .dl-btn:hover{background:var(--o);color:#fff;border-color:var(--o);box-shadow:0 4px 12px rgba(255,106,0,.28);}
+.sc .dl-btn{color:var(--g);border-color:rgba(0,255,136,.22);background:rgba(0,255,136,.06);}
+.sc .dl-btn:hover{background:var(--g);color:var(--bg);border-color:var(--g);box-shadow:0 4px 12px rgba(0,255,136,.25);}
+[data-theme="light"] .l2 .dl-btn{color:#0062cc;border-color:rgba(0,98,204,.22);background:rgba(0,98,204,.06);}
+[data-theme="light"] .l2 .dl-btn:hover{background:#0062cc;color:#fff;box-shadow:0 4px 10px rgba(0,98,204,.25);}
+[data-theme="light"] .rt .dl-btn{color:#c94f08;border-color:rgba(201,79,8,.22);background:rgba(201,79,8,.06);}
+[data-theme="light"] .rt .dl-btn:hover{background:#c94f08;color:#fff;box-shadow:0 4px 10px rgba(201,79,8,.22);}
+[data-theme="light"] .sc .dl-btn{color:#16a34a;border-color:rgba(22,163,74,.22);background:rgba(22,163,74,.06);}
+[data-theme="light"] .sc .dl-btn:hover{background:#16a34a;color:#fff;box-shadow:0 4px 10px rgba(22,163,74,.22);}
+
+/* ─── SKILLS SECTION ─── */
+.skills-grid{display:flex;flex-wrap:wrap;gap:.6rem;}
+.skill-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;background:var(--card);border:1px solid var(--bdr);border-radius:8px;font-size:.8rem;font-weight:600;color:var(--t);transition:all .22s;cursor:default;}
+.skill-pill i{font-size:.75rem;color:var(--c);}
+[data-theme="light"] .skill-pill{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.05);}
+[data-theme="light"] .skill-pill i{color:#0062cc;}
+.skill-pill:hover{border-color:var(--c);color:var(--tw);transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,212,255,.1);}
+[data-theme="light"] .skill-pill:hover{border-color:#0062cc;color:#0f172a;box-shadow:0 4px 12px rgba(0,98,204,.1);}
+
+/* ─── CTA BAND ─── */
+.sec-cta{padding:6rem 2.5rem;background:var(--bg2);text-align:center;position:relative;overflow:hidden;}
+.sec-cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:500px;background:radial-gradient(ellipse,rgba(0,150,200,.06) 0%,transparent 65%);pointer-events:none;}
+.cta-topline{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--c) 30%,var(--o) 70%,transparent);}
+[data-theme="light"] .sec-cta{background:linear-gradient(135deg,#eef2fb,#f5f7fa);}
+[data-theme="light"] .cta-topline{background:linear-gradient(90deg,transparent,#0062cc 30%,#c94f08 70%,transparent);}
+.cta-inner{max-width:660px;margin:0 auto;position:relative;z-index:1;}
+.cta-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);border-radius:20px;padding:5px 16px;font-family:'Orbitron',monospace;font-size:.6rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:1.4rem;}
+[data-theme="light"] .cta-eyebrow{background:rgba(0,98,204,.07);border-color:rgba(0,98,204,.2);color:#0062cc;}
+.cta-h{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,3vw,2.5rem);font-weight:900;color:var(--tw);line-height:1.15;margin-bottom:.9rem;}
+.cta-h .gtext{background:linear-gradient(135deg,var(--c),var(--g));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+[data-theme="light"] .cta-h .gtext{background:linear-gradient(135deg,#0062cc,#16a34a);-webkit-background-clip:text;background-clip:text;}
+.cta-p{font-size:.9rem;color:var(--tm);line-height:1.78;margin-bottom:2.2rem;}
+.cta-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+
+/* ─── GLOBAL BUTTONS ─── */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:.83rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .22s;border:none;text-decoration:none;position:relative;overflow:hidden;}
+.btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.2) 0%,transparent 65%);opacity:0;transform:scale(.15);transition:opacity .4s,transform .4s;pointer-events:none;border-radius:inherit;}
+.btn:active::after{opacity:1;transform:scale(1);transition:none;}
+.btn-c{background:linear-gradient(135deg,var(--c),var(--c2));color:var(--bg);}
+.btn-c:hover{box-shadow:0 0 28px rgba(0,212,255,.45);transform:translateY(-2px);}
+[data-theme="light"] .btn-c{background:linear-gradient(135deg,#0062cc,#004fa3);color:#fff;box-shadow:0 2px 10px rgba(0,98,204,.28);}
+[data-theme="light"] .btn-c:hover{background:linear-gradient(135deg,#004fa3,#003d7a);box-shadow:0 6px 18px rgba(0,98,204,.32);transform:translateY(-2px);}
+.btn-ghost{background:transparent;color:var(--c);border:1px solid rgba(0,212,255,.35);}
+.btn-ghost:hover{background:rgba(0,212,255,.08);}
+[data-theme="light"] .btn-ghost{color:#0062cc;border-color:rgba(0,98,204,.3);}
+[data-theme="light"] .btn-ghost:hover{background:rgba(0,98,204,.06);}
+
+/* ─── FOOTER ─── */
+footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:1.8rem 2.5rem;}
+.foot-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.8rem;}
+.foot-copy{font-size:.75rem;color:var(--tm);}
+.foot-link{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:600;color:var(--c);text-decoration:none;transition:color .2s;}
+[data-theme="light"] .foot-link{color:#0062cc;}
+.foot-link:hover{color:var(--o);}
+
+/* ─── REVEAL ANIMATION ─── */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.1s;}.d2{transition-delay:.2s;}.d3{transition-delay:.3s;}
+.d4{transition-delay:.4s;}.d5{transition-delay:.5s;}.d6{transition-delay:.6s;}
+
+/* ─── TOAST ─── */
+#toast-box{position:fixed;bottom:2rem;right:2rem;z-index:8000;display:flex;flex-direction:column;gap:.6rem;pointer-events:none;}
+.toast{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:.9rem 1.3rem;max-width:340px;pointer-events:auto;box-shadow:0 8px 30px rgba(0,0,0,.4);animation:tIn .3s ease;}
+.toast.rm{animation:tOut .3s ease forwards;}
+.toast.suc{border-color:rgba(0,255,136,.3);}
+.toast span{font-size:.83rem;color:var(--t);}
+[data-theme="light"] .toast{background:#fff;box-shadow:0 4px 16px rgba(0,0,0,.1);}
+[data-theme="light"] .toast span{color:#1e293b;}
+@keyframes tIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tOut{from{opacity:1}to{opacity:0;transform:translateX(20px)}}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  .lab-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:768px){
+  #nav .nav-links,.nav-right{display:none;}
+  .ham{display:flex;}
+  .lab-grid{grid-template-columns:1fr;}
+  .pg-hdr,.sec,.sec-cta{padding-left:1.5rem;padding-right:1.5rem;}
+  .pg-hdr{padding-top:6rem;padding-bottom:2.5rem;}
+  .sec{padding-top:3rem;padding-bottom:3rem;}
+  .ph-stats{gap:1.5rem;}
+}
+@media(max-width:480px){
+  .cta-btns{flex-direction:column;align-items:center;}
+  .skills-grid{gap:.4rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <svg class="logo-hex" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(0,212,255,.45)" stroke-width=".8" stroke-dasharray="5 3"/>
+        <circle cx="20" cy="20" r="13.5" fill="none" stroke="rgba(0,212,255,.2)" stroke-width=".6" stroke-dasharray="2 4"/>
+        <polygon points="20,4 34,12 34,28 20,36 6,28 6,12" fill="rgba(0,212,255,.06)" stroke="#00d4ff" stroke-width="1.5"/>
+        <text x="20" y="24.5" text-anchor="middle" font-family="Orbitron,monospace" font-size="9" fill="#00d4ff" font-weight="700">AH</text>
+      </svg>
+      <div><div class="logo-text"><span>AHMED</span> HUSSEIN</div><div class="logo-sub">Cisco Certified Instructor</div></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html" onclick="sessionStorage.setItem('goto','courses')">Courses</a></li>
+      <li><a href="examlabs.html" class="act">Exam Labs</a></li>
+      <li><a href="ccna-domain1.html">CCNA Bootcamp</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nbtn" onclick="toggleTheme()" title="Toggle theme" style="padding:7px 11px;font-size:.95rem"><i class="fas fa-sun" id="theme-icon"></i></button>
+      <a href="index.html" class="nbtn solid">Back to Site</a>
+    </div>
+    <button class="ham" id="ham" onclick="toggleMob()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mob-nav" id="mob-nav">
+  <a href="index.html" onclick="toggleMob()">Home</a>
+  <a href="index.html" onclick="toggleMob()">Courses</a>
+  <a href="examlabs.html" class="act" onclick="toggleMob()">Exam Labs</a>
+  <a href="ccna-domain1.html" onclick="toggleMob()">CCNA Bootcamp</a>
+</div>
+
+<!-- ═══ PAGE HEADER ═══ -->
+<header class="pg-hdr">
+  <div class="ph-bg"></div>
+  <div class="ph-glow"></div>
+  <div class="ph-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <i class="fas fa-chevron-right"></i>
+      Exam Labs
+    </div>
+    <div class="pg-eyebrow"><i class="fas fa-flask"></i> CCNA 200-301 Practice Labs</div>
+    <h1 class="pg-title reveal">EXAMLAB <span>Network</span><br>Configuration Guide</h1>
+    <p class="pg-sub reveal d1">Real-world Packet Tracer labs built for the CCNA 200-301 exam. Configure, troubleshoot, and verify — every task mirrors what Cisco tests on exam day.</p>
+    <div class="ph-stats reveal d2">
+      <div class="ph-stat"><span class="ph-stat-num">20+</span><span class="ph-stat-lbl">Lab Files</span></div>
+      <div class="ph-stat"><span class="ph-stat-num">3</span><span class="ph-stat-lbl">Categories</span></div>
+      <div class="ph-stat"><span class="ph-stat-num">14</span><span class="ph-stat-lbl">Skills Covered</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ LAYER 2 SWITCHING ═══ -->
+<section class="sec" style="background:var(--bg)">
+  <div class="wrap">
+    <div class="sec-eyebrow l2c reveal"><i class="fas fa-layer-group"></i> Category 01</div>
+    <h2 class="sec-h2 reveal d1">Layer 2 <span class="ac">Switching</span> Labs</h2>
+    <p class="sec-p reveal d2">VLANs, trunking, EtherChannel, and neighbor discovery — the core switching skills tested across multiple CCNA exam questions.</p>
+    <div class="lab-grid">
+
+      <div class="lcard l2 reveal">
+        <div class="lc-head">
+          <span class="lc-num">LAB 01</span>
+          <div class="lc-title">802.1Q Trunking &amp; LACP</div>
+        </div>
+        <p class="lc-desc">Configure IEEE 802.1Q trunk links between switches and set up link aggregation using LACP with channel group 10. Verify trunk status and LACP negotiation.</p>
+        <div class="lc-tags"><span class="lc-tag">Trunking</span><span class="lc-tag">LACP</span><span class="lc-tag">EtherChannel</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-alt"></i> Packet Tracer .pkt</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard l2 reveal d1">
+        <div class="lc-head">
+          <span class="lc-num">LAB 02</span>
+          <div class="lc-title">802.1Q Trunking &amp; LACP (Advanced)</div>
+        </div>
+        <p class="lc-desc">Extend trunk concepts with native VLAN 45 (untagged) configuration and LACP channel group 15. Test frame tagging behaviour and verify EtherChannel bundle status.</p>
+        <div class="lc-tags"><span class="lc-tag">Native VLAN</span><span class="lc-tag">LACP</span><span class="lc-tag">Advanced</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-alt"></i> Packet Tracer .pkt</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard l2 reveal d2">
+        <div class="lc-head">
+          <span class="lc-num">LAB 03</span>
+          <div class="lc-title">Voice VLAN &amp; LLDP</div>
+        </div>
+        <p class="lc-desc">Combine data VLAN 77 and voice VLAN 177 on access ports. Enable LLDP neighbor discovery on specific interfaces and verify device information exchange.</p>
+        <div class="lc-tags"><span class="lc-tag">Voice VLAN</span><span class="lc-tag">LLDP</span><span class="lc-tag">QoS</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-alt"></i> Packet Tracer .pkt</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard l2 reveal d3">
+        <div class="lc-head">
+          <span class="lc-num">LAB 08–10</span>
+          <div class="lc-title">VLAN &amp; Neighbor Discovery</div>
+        </div>
+        <p class="lc-desc">Three-lab series covering VLAN creation and port assignment, CDP/LLDP protocol configuration, and access port setup for end-user devices across multiple switches.</p>
+        <div class="lc-tags"><span class="lc-tag">VLAN</span><span class="lc-tag">CDP</span><span class="lc-tag">LLDP</span><span class="lc-tag">Series</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-archive"></i> Packet Tracer .zip</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard l2 reveal d4">
+        <div class="lc-head">
+          <span class="lc-num">LAB 13–18</span>
+          <div class="lc-title">Trunking &amp; EtherChannel Series</div>
+        </div>
+        <p class="lc-desc">Six-lab progressive series combining trunk configuration with dynamic link aggregation. Covers PAgP and LACP active/passive modes across multi-switch topologies.</p>
+        <div class="lc-tags"><span class="lc-tag">PAgP</span><span class="lc-tag">LACP</span><span class="lc-tag">Multi-Switch</span><span class="lc-tag">Series</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-archive"></i> Packet Tracer .zip</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ROUTING ═══ -->
+<section class="sec" style="background:var(--bg1)">
+  <div class="wrap">
+    <div class="sec-eyebrow rtc reveal"><i class="fas fa-route"></i> Category 02</div>
+    <h2 class="sec-h2 reveal d1">Routing <span class="ao">Configuration</span> Labs</h2>
+    <p class="sec-p reveal d2">IPv4 and IPv6 addressing, static routes, OSPF, and redundancy — the routing fundamentals that appear on every CCNA attempt.</p>
+    <div class="lab-grid">
+
+      <div class="lcard rt reveal">
+        <div class="lc-head">
+          <span class="lc-num">LAB 04</span>
+          <div class="lc-title">IPv4 &amp; IPv6 Address Assignment</div>
+        </div>
+        <p class="lc-desc">Dual-stack configuration — assign specific usable host addresses on each router interface. Verify end-to-end connectivity with ping and basic troubleshooting steps.</p>
+        <div class="lc-tags"><span class="lc-tag">IPv4</span><span class="lc-tag">IPv6</span><span class="lc-tag">Dual-Stack</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-alt"></i> Packet Tracer .pkt</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard rt reveal d1">
+        <div class="lc-head">
+          <span class="lc-num">LAB 05</span>
+          <div class="lc-title">Static Routing &amp; Failover</div>
+        </div>
+        <p class="lc-desc">Implement host routes, default routes, and floating static routes with administrative distance 225. Verify automatic failover when the primary path is removed.</p>
+        <div class="lc-tags"><span class="lc-tag">Static Route</span><span class="lc-tag">Floating AD</span><span class="lc-tag">Failover</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-alt"></i> Packet Tracer .pkt</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard rt reveal d2">
+        <div class="lc-head">
+          <span class="lc-num">LAB 06–07</span>
+          <div class="lc-title">OSPF Single-Area Routing</div>
+        </div>
+        <p class="lc-desc">Configure OSPF without network statements using interface-level ip ospf commands. Control DR/BDR election with priority values and verify LSDB synchronisation.</p>
+        <div class="lc-tags"><span class="lc-tag">OSPF</span><span class="lc-tag">DR/BDR</span><span class="lc-tag">Area 0</span><span class="lc-tag">Series</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-archive"></i> Packet Tracer .zip</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard rt reveal d3">
+        <div class="lc-head">
+          <span class="lc-num">LAB 19</span>
+          <div class="lc-title">IPv6 Static Routing</div>
+        </div>
+        <p class="lc-desc">Configure IPv6 static routes across a multi-router topology with floating route redundancy. Verify reachability with ping6 and traceroute6 commands.</p>
+        <div class="lc-tags"><span class="lc-tag">IPv6</span><span class="lc-tag">Static</span><span class="lc-tag">Redundancy</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-alt"></i> Packet Tracer .pkt</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard rt reveal d4">
+        <div class="lc-head">
+          <span class="lc-num">LAB 20</span>
+          <div class="lc-title">IPv4 Static &amp; Default Routing</div>
+        </div>
+        <p class="lc-desc">Multi-router scenario with primary and backup path configuration. Implement default routes on edge routers and test failover by simulating link failures.</p>
+        <div class="lc-tags"><span class="lc-tag">Default Route</span><span class="lc-tag">Multi-Router</span><span class="lc-tag">Failover</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-alt"></i> Packet Tracer .pkt</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECURITY & SERVICES ═══ -->
+<section class="sec" style="background:var(--bg)">
+  <div class="wrap">
+    <div class="sec-eyebrow scc reveal"><i class="fas fa-shield-alt"></i> Category 03</div>
+    <h2 class="sec-h2 reveal d1">Security &amp; <span class="ag">Services</span> Labs</h2>
+    <p class="sec-p reveal d2">ACLs, DHCP, NAT, SSH, NTP, and port security — the services layer that separates passing candidates from failing ones on exam day.</p>
+    <div class="lab-grid">
+
+      <div class="lcard sc reveal">
+        <div class="lc-head">
+          <span class="lc-num">LAB 11</span>
+          <div class="lc-title">ACLs &amp; DHCP Snooping</div>
+        </div>
+        <p class="lc-desc">Implement named ACLs restricting RFC 1918 private addresses and configure Dynamic ARP Inspection (DAI) on trusted and untrusted ports to block ARP spoofing.</p>
+        <div class="lc-tags"><span class="lc-tag">Named ACL</span><span class="lc-tag">DHCP Snooping</span><span class="lc-tag">DAI</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-alt"></i> Packet Tracer .pkt</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard sc reveal d1">
+        <div class="lc-head">
+          <span class="lc-num">LAB 14</span>
+          <div class="lc-title">NAT, DHCP, NTP &amp; SSH</div>
+        </div>
+        <p class="lc-desc">All-in-one services lab: configure PAT for internet access, DHCP pools with address exclusions, NTP time synchronisation, and SSH v2 for encrypted management access.</p>
+        <div class="lc-tags"><span class="lc-tag">NAT/PAT</span><span class="lc-tag">DHCP</span><span class="lc-tag">NTP</span><span class="lc-tag">SSH v2</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-alt"></i> Packet Tracer .pkt</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+      <div class="lcard sc reveal d2">
+        <div class="lc-head">
+          <span class="lc-num">LAB 16–17</span>
+          <div class="lc-title">ACLs &amp; Port Security</div>
+        </div>
+        <p class="lc-desc">Apply VLAN-based extended ACLs and configure port security with sticky MAC address learning. Set and test violation modes (shutdown / restrict / protect).</p>
+        <div class="lc-tags"><span class="lc-tag">Extended ACL</span><span class="lc-tag">Port Security</span><span class="lc-tag">Sticky MAC</span><span class="lc-tag">Series</span></div>
+        <div class="lc-foot">
+          <span class="lc-file"><i class="fas fa-file-archive"></i> Packet Tracer .zip</span>
+          <a href="#" class="dl-btn" onclick="toast('Lab file coming soon!','suc');return false"><i class="fas fa-download"></i> Download</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SKILLS COVERED ═══ -->
+<section class="sec" style="background:var(--bg2)">
+  <div class="wrap">
+    <div class="sec-eyebrow neu reveal"><i class="fas fa-graduation-cap"></i> What You Practice</div>
+    <h2 class="sec-h2 reveal d1">Skills <span class="ac">Covered</span> Across All Labs</h2>
+    <p class="sec-p reveal d2">Every lab maps directly to the official CCNA 200-301 exam blueprint. Complete all three categories to cover 90%+ of the practical skills tested on exam day.</p>
+    <div class="skills-grid reveal d3">
+      <span class="skill-pill"><i class="fas fa-network-wired"></i>VLAN Creation &amp; Assignment</span>
+      <span class="skill-pill"><i class="fas fa-exchange-alt"></i>Trunk Encapsulation 802.1Q</span>
+      <span class="skill-pill"><i class="fas fa-link"></i>Link Aggregation — LACP &amp; PAgP</span>
+      <span class="skill-pill"><i class="fas fa-broadcast-tower"></i>CDP &amp; LLDP Neighbor Discovery</span>
+      <span class="skill-pill"><i class="fas fa-phone-alt"></i>Voice VLAN Configuration</span>
+      <span class="skill-pill"><i class="fas fa-globe"></i>IPv4 &amp; IPv6 Dual-Stack</span>
+      <span class="skill-pill"><i class="fas fa-route"></i>Static &amp; Default Routing</span>
+      <span class="skill-pill"><i class="fas fa-project-diagram"></i>OSPF Area Configuration</span>
+      <span class="skill-pill"><i class="fas fa-filter"></i>Standard &amp; Extended ACLs</span>
+      <span class="skill-pill"><i class="fas fa-shield-alt"></i>DHCP Snooping &amp; DAI</span>
+      <span class="skill-pill"><i class="fas fa-key"></i>SSH v2 Secure Access</span>
+      <span class="skill-pill"><i class="fas fa-lock"></i>Port Security &amp; Sticky MAC</span>
+      <span class="skill-pill"><i class="fas fa-clock"></i>NTP Synchronisation</span>
+      <span class="skill-pill"><i class="fas fa-random"></i>NAT &amp; PAT Translation</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section class="sec-cta">
+  <div class="cta-topline"></div>
+  <div class="cta-inner">
+    <div class="cta-eyebrow reveal"><i class="fas fa-rocket"></i> Ready to Practice?</div>
+    <h2 class="cta-h reveal d1">Pass the CCNA with<br><span class="gtext">Hands-On Labs</span></h2>
+    <p class="cta-p reveal d2">Download the Packet Tracer files, complete each task, and verify with ping and traceroute. The same type of scenario Cisco uses on the real exam.</p>
+    <div class="cta-btns reveal d3">
+      <a href="ccna-domain1.html" class="btn btn-c"><i class="fas fa-play"></i> Start Free Bootcamp</a>
+      <a href="index.html" class="btn btn-ghost"><i class="fas fa-compass"></i> Explore Courses</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-inner">
+    <span class="foot-copy">© 2025 Ahmed Hussein · Cisco Certified Instructor · Bahrain</span>
+    <a href="index.html" class="foot-link"><i class="fas fa-arrow-left"></i> Back to Main Site</a>
+  </div>
+</footer>
+
+<div id="toast-box"></div>
+
+<script>
+/* ── THEME ── */
+function toggleTheme(){
+  const h=document.documentElement,isL=h.getAttribute('data-theme')==='light';
+  h.setAttribute('data-theme',isL?'dark':'light');
+  localStorage.setItem('theme',isL?'dark':'light');
+  document.getElementById('theme-icon').className=isL?'fas fa-sun':'fas fa-moon';
+}
+(function(){
+  if(document.documentElement.getAttribute('data-theme')==='light'){
+    const ic=document.getElementById('theme-icon');
+    if(ic)ic.className='fas fa-moon';
+  }
+})();
+
+/* ── STICKY NAV ── */
+window.addEventListener('scroll',()=>
+  document.getElementById('nav').classList.toggle('stuck',window.scrollY>20),
+{passive:true});
+
+/* ── MOBILE NAV ── */
+function toggleMob(){
+  document.getElementById('mob-nav').classList.toggle('open');
+  document.getElementById('ham').classList.toggle('open');
+}
+
+/* ── REVEAL ON SCROLL ── */
+const obs=new IntersectionObserver(entries=>
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}}),
+  {threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* ── TOAST ── */
+function toast(msg,type='inf'){
+  const box=document.getElementById('toast-box');
+  const icons={suc:'fa-check-circle',err:'fa-exclamation-circle',inf:'fa-info-circle'};
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<i class="fas ${icons[type]||icons.inf}" style="color:var(--g);flex-shrink:0"></i><span>${msg}</span>`;
+  box.appendChild(t);
+  setTimeout(()=>{t.classList.add('rm');setTimeout(()=>t.remove(),300);},4000);
+}
+</script>
+</body>
+</html>
