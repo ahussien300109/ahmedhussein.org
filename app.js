@@ -40,12 +40,6 @@ const DEFAULT_COURSES = [
     prereqs: 'CCNA or basic networking knowledge.',
     curriculum: ['Security Concepts & Cryptography','Cisco ASA Firewall & NAT','Firepower NGFW & IPS','VPN: IPsec & SSL/TLS','Identity Management: AAA & ISE','Security Monitoring & SIEM','Threat Detection & Response','CyberOps & SCOR Practice Exams'] },
 
-  { id: 4, cat: 'Labs', icon: '🖧', th: 'th4',
-    title: 'Packet Tracer Masterclass: 50+ Labs',
-    desc: '50+ practical Cisco Packet Tracer labs. Build complete enterprise networks from scratch with expert guidance.',
-    level: 'Beginner', duration: '40 hrs', students: '560', price: '$79', rating: '4.9', reviews: '207',
-    prereqs: 'No prerequisites. Packet Tracer is free to download.',
-    curriculum: ['Interface & Device Setup','LAN Topology Design','Router CLI from Scratch','VLAN & Inter-VLAN Routing','OSPF Multi-Area Labs','EIGRP & Redistribution','ACL Security Labs','IPv6 Dual-Stack Lab','Final Project: Enterprise Campus'] },
 
   { id: 5, cat: 'CCNP', icon: '⚙️', th: 'th5',
     title: 'SD-WAN & Network Automation (Python)',
@@ -67,10 +61,11 @@ const DEFAULT_COURSES = [
     desc: '13 hands-on Packet Tracer labs across Layer 2, Routing, and Security. Each lab includes tasks, configuration commands, and a downloadable .zip file.',
     level: 'Intermediate', duration: '15 hrs', students: '280', price: 'Free', rating: '4.9', reviews: '74',
     prereqs: 'CCNA training or equivalent knowledge recommended.',
-    type: 'lab', pageLink: 'labs', btnLabel: '▶ Start Lab',
+    type: 'course', pageLink: 'labs', btnLabel: '▶ Start Lab',
     curriculum: ['Layer 2: 802.1Q Trunking & LACP (Labs 1–2)','Layer 2: Voice VLAN & LLDP (Lab 3)','Layer 2: VLAN & Neighbor Discovery (Labs 8–10)','Layer 2: EtherChannel Series (Labs 13–18)','Routing: Dual-Stack Addressing (Lab 4)','Routing: Static Routing & Failover (Lab 5)','Routing: OSPF Single-Area (Labs 6–7)','Routing: IPv6 Static (Lab 19)','Security: ACLs & DHCP Snooping (Lab 11)','Security: NAT, DHCP, NTP & SSH (Lab 14)','Security: Port Security (Labs 16–17)'] }
 ];
 let COURSES = loadCourses();
+console.log('[COURSES]', COURSES.map(c => c.id + ' ' + c.title + ' cat:' + c.cat + ' price:' + c.price));
 
 /* ── INJECT LAB CONTENT INTO CCNA EXAM LABS COURSE ──────────────
    Labs are defined here and written directly onto the course object
@@ -126,7 +121,7 @@ let COURSES = loadCourses();
   ];
   // Attach to both arrays so it survives cache merges and admin reloads
   [COURSES, DEFAULT_COURSES].forEach(arr => {
-    const c = arr.find(x => x.type === 'lab');
+    const c = arr.find(x => x.id === 7);
     if (c) c.labs = labs;
   });
 })();
@@ -385,7 +380,9 @@ function openCourseDetail(id) {
   const c = COURSES.find(x => x.id === id);
   if (!c) return;
   const isEnrolled = S.enrolled.includes(id);
-  const enrollBtn = c.link
+  const enrollBtn = c.pageLink
+    ? `<button class="btn btn-c" onclick="closeCourseModal();showPage('${c.pageLink}')"><i class="fas fa-play"></i> ${c.btnLabel||'Start'}</button>`
+    : c.link
     ? `<a href="${c.link}" class="btn btn-g"><i class="fas fa-play"></i> Start Free Course</a>`
     : `<button class="btn ${isEnrolled ? 'btn-ghost' : 'btn-c'}" onclick="enrollCourse(${c.id});closeCourseModal()">${isEnrolled ? '<i class="fas fa-check"></i> Already Enrolled' : '<i class="fas fa-graduation-cap"></i> Enroll Now'}</button>`;
   document.getElementById('course-detail-inner').innerHTML = `
@@ -870,7 +867,7 @@ function renderLabs() {
   if (pg.dataset.built) { reObserve(); return; }
   pg.dataset.built = '1';
   // Source labs from the course object — data lives in the course, not a separate const
-  const labCourse = COURSES.find(c => c.type === 'lab') || DEFAULT_COURSES.find(c => c.type === 'lab');
+  const labCourse = COURSES.find(c => c.id === 7) || DEFAULT_COURSES.find(c => c.id === 7);
   const LABS_DATA = labCourse?.labs || [];
 
   pg.innerHTML = `
