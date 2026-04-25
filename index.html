@@ -943,6 +943,91 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.2) 0%,transparent 65%);opacity:0;transform:scale(.15);transition:opacity .5s ease,transform .5s ease;pointer-events:none;border-radius:inherit;}
 .btn:active::after{opacity:1;transform:scale(1);transition:none;}
 
+/* ════════════════════════════════════════════
+   PREMIUM UI — LEARNING PATH · DEMO · BADGES
+   ════════════════════════════════════════════ */
+
+/* Urgency pill in hero */
+.urgency-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,106,0,.1);border:1px solid rgba(255,106,0,.22);border-radius:20px;padding:5px 14px;font-size:.72rem;color:var(--t);margin-bottom:1.1rem;}
+.up-dot{width:6px;height:6px;border-radius:50%;background:var(--o);animation:pls 1.5s infinite;flex-shrink:0;}
+[data-theme="light"] .urgency-pill{background:rgba(201,79,8,.08);border-color:rgba(201,79,8,.2);color:#0f172a;}
+
+/* Learning Path */
+.sec-path{padding:5rem 2.5rem;background:var(--bg2);}
+.path-track{display:flex;align-items:center;justify-content:center;gap:.7rem;flex-wrap:wrap;max-width:1100px;margin:0 auto;}
+.path-step{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:1.5rem 1.1rem;text-align:center;flex:1;min-width:160px;max-width:210px;transition:transform .3s,box-shadow .3s,border-color .3s;position:relative;overflow:hidden;cursor:default;}
+.path-step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--ps-c,var(--c));opacity:.7;transition:opacity .3s;}
+.path-step:hover{transform:translateY(-6px);}
+.path-step:hover::before{opacity:1;}
+.ps1:hover{border-color:var(--g);box-shadow:0 12px 36px rgba(0,255,136,.1),0 4px 14px rgba(0,0,0,.3);}
+.ps2:hover{border-color:var(--c);box-shadow:0 12px 36px rgba(0,212,255,.1),0 4px 14px rgba(0,0,0,.3);}
+.ps3:hover{border-color:var(--o);box-shadow:0 12px 36px rgba(255,106,0,.1),0 4px 14px rgba(0,0,0,.3);}
+.ps4:hover{border-color:var(--c2);box-shadow:0 12px 36px rgba(0,153,204,.1),0 4px 14px rgba(0,0,0,.3);}
+[data-theme="light"] .path-step{box-shadow:0 1px 4px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.05);}
+[data-theme="light"] .path-step:hover{box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.ps-num{font-family:'Orbitron',monospace;font-size:.52rem;font-weight:700;color:var(--tm);letter-spacing:3px;text-transform:uppercase;margin-bottom:.5rem;}
+.ps-ico{font-size:1.6rem;margin-bottom:.5rem;}
+.ps-title{font-family:'Orbitron',monospace;font-size:.76rem;font-weight:700;color:var(--tw);margin-bottom:.25rem;line-height:1.3;}
+.ps-sub{font-size:.7rem;color:var(--tm);margin-bottom:.75rem;}
+.ps-tag{font-size:.6rem;font-weight:700;padding:3px 10px;border-radius:4px;display:inline-block;letter-spacing:.5px;}
+.pst-g{background:rgba(0,255,136,.1);color:var(--g);}
+.pst-c{background:rgba(0,212,255,.1);color:var(--c);}
+.pst-o{background:rgba(255,106,0,.1);color:var(--o);}
+.pst-b{background:rgba(0,153,204,.1);color:var(--c2);}
+[data-theme="light"] .pst-g{background:rgba(22,163,74,.08);color:#16a34a;}
+[data-theme="light"] .pst-c{background:rgba(0,98,204,.08);color:#0062cc;}
+[data-theme="light"] .pst-o{background:rgba(201,79,8,.08);color:#c94f08;}
+[data-theme="light"] .pst-b{background:rgba(0,82,163,.08);color:#004fa3;}
+.path-arr{font-size:1.3rem;color:var(--bdr2);font-weight:700;flex-shrink:0;line-height:1;}
+@media(max-width:860px){.path-track{flex-direction:column;align-items:center;}.path-arr{transform:rotate(90deg);}.path-step{max-width:300px;width:100%;}}
+
+/* Demo / Try Free Lab */
+.sec-demo{padding:5rem 2.5rem;background:var(--bg1);}
+.demo-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;max-width:1200px;margin:0 auto;}
+.demo-cli-wrap{background:#020b18;border:1px solid rgba(0,212,255,.2);border-radius:var(--r2);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.55);}
+[data-theme="light"] .demo-cli-wrap{box-shadow:0 8px 32px rgba(0,0,0,.18);}
+.demo-cli-bar{background:#071525;padding:.65rem 1rem;display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(0,212,255,.1);}
+.dcb-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.demo-cli-body{padding:1rem 1.2rem;min-height:220px;max-height:260px;overflow-y:auto;font-family:'Courier New',monospace;font-size:.77rem;line-height:1.85;}
+.demo-cli-body::-webkit-scrollbar{width:3px;}
+.demo-cli-body::-webkit-scrollbar-thumb{background:rgba(0,212,255,.2);border-radius:3px;}
+.demo-checks{display:flex;flex-direction:column;gap:.55rem;margin-bottom:2rem;}
+.demo-check{display:flex;align-items:center;gap:.6rem;font-size:.83rem;color:var(--tm);}
+.demo-check i{color:var(--g);font-size:.75rem;flex-shrink:0;}
+@media(max-width:900px){.demo-inner{grid-template-columns:1fr;}.demo-cli-wrap{display:none;}}
+
+/* Course card badges */
+.cc-badge{position:absolute;top:10px;right:10px;z-index:3;font-size:.58rem;font-weight:700;letter-spacing:.5px;padding:3px 10px;border-radius:4px;text-transform:uppercase;}
+.ccb-hot{background:rgba(255,106,0,.88);color:#fff;}
+.ccb-new{background:rgba(0,212,255,.88);color:#030d1a;}
+.ccb-free{background:rgba(0,255,136,.88);color:#030d1a;}
+[data-theme="light"] .ccb-hot{background:#c94f08;}
+[data-theme="light"] .ccb-new{background:#0062cc;color:#fff;}
+[data-theme="light"] .ccb-free{background:#16a34a;color:#fff;}
+
+/* Micro-interactions */
+.hbtn{transition:all .22s cubic-bezier(.4,0,.2,1)!important;}
+.hbtn:active{transform:scale(.97) translateY(0)!important;}
+.ccard{will-change:transform;}
+.nbtn{transition:all .18s!important;}
+.ds-item{transition:all .15s!important;}
+
+/* Final CTA */
+.sec-final-cta{padding:5rem 2.5rem;background:var(--bg2);border-top:1px solid var(--bdr);position:relative;overflow:hidden;}
+.sec-final-cta::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;height:600px;background:radial-gradient(ellipse,rgba(0,150,200,.07) 0%,transparent 65%);pointer-events:none;}
+[data-theme="light"] .sec-final-cta{background:linear-gradient(135deg,#eef2fb,#f0f4f9);}
+.fct-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;position:relative;z-index:1;}
+.fct-proof{font-size:.82rem;color:var(--g);margin-bottom:.9rem;letter-spacing:.5px;}
+[data-theme="light"] .fct-proof{color:#16a34a;}
+.fct-h{font-family:'Orbitron',monospace;font-size:clamp(1.4rem,2.2vw,2rem);font-weight:900;color:var(--tw);line-height:1.2;margin-bottom:.9rem;}
+.fct-h span{color:var(--c);}
+.fct-p{color:var(--tm);font-size:.9rem;line-height:1.78;}
+.fct-actions{display:flex;flex-direction:column;gap:.9rem;align-items:flex-start;}
+.fct-micro{font-size:.7rem;color:var(--tm);display:flex;align-items:center;gap:6px;}
+.fct-micro i{color:var(--g);font-size:.65rem;}
+[data-theme="light"] .fct-micro i{color:#16a34a;}
+@media(max-width:900px){.fct-inner{grid-template-columns:1fr;text-align:center;}.fct-actions{align-items:center;}}
+
 /* ── CHAT WIDGET ── */
 #chat-widget{position:fixed;bottom:2rem;right:2rem;z-index:7000;display:flex;flex-direction:column;align-items:flex-end;gap:.75rem;}
 #chat-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c2));border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.25rem;color:var(--bg);box-shadow:0 4px 20px rgba(0,212,255,.5);transition:transform .2s,box-shadow .2s;position:relative;}
@@ -1048,6 +1133,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
     <div class="hero-scanline"></div>
     <div class="hero-inner">
       <div class="hero-left">
+        <div class="urgency-pill reveal"><span class="up-dot"></span>Next cohort starts <strong>May 2025</strong> — Only <strong id="seats-count">4</strong> seats left</div>
         <div class="hero-eyebrow reveal"><span class="eyebrow-line"></span><span class="eyebrow-text">Cisco Certified Instructor · Bahrain</span></div>
         <h1 class="hero-h1 reveal d1">
           <div>MASTER THE</div>
@@ -1109,6 +1195,50 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
     </div>
   </div>
 
+  <!-- ── LEARNING PATH ── -->
+  <section class="sec-path">
+    <div class="sec-wrap">
+      <div class="sec-hdr reveal" style="text-align:center;max-width:600px;margin:0 auto 3rem">
+        <div class="sec-eyebrow" style="justify-content:center"><i class="fas fa-road"></i> Your Certification Journey</div>
+        <h2 class="sec-h2">From Zero to <span class="accent">Cisco Professional</span></h2>
+        <p class="sec-desc" style="margin:0 auto">Follow the proven path. Each step builds on the last — most students reach CCNA in 3–6 months.</p>
+      </div>
+      <div class="path-track">
+        <div class="path-step ps1 reveal" style="--ps-c:var(--g)">
+          <div class="ps-num">STEP 01</div>
+          <div class="ps-ico">🎯</div>
+          <div class="ps-title">Start Free</div>
+          <div class="ps-sub">CCNA Bootcamp & Exam Labs</div>
+          <div class="ps-tag pst-g">Free · Start Now</div>
+        </div>
+        <div class="path-arr reveal">›</div>
+        <div class="path-step ps2 reveal d1" style="--ps-c:var(--c)">
+          <div class="ps-num">STEP 02</div>
+          <div class="ps-ico">🌐</div>
+          <div class="ps-title">CCNA 200-301</div>
+          <div class="ps-sub">Full Exam Preparation</div>
+          <div class="ps-tag pst-c">80 hrs · $149</div>
+        </div>
+        <div class="path-arr reveal d1">›</div>
+        <div class="path-step ps3 reveal d2" style="--ps-c:var(--o)">
+          <div class="ps-num">STEP 03</div>
+          <div class="ps-ico">🔷</div>
+          <div class="ps-title">CCNP / Security</div>
+          <div class="ps-sub">Enterprise & Security Track</div>
+          <div class="ps-tag pst-o">Advanced · $199+</div>
+        </div>
+        <div class="path-arr reveal d2">›</div>
+        <div class="path-step ps4 reveal d3" style="--ps-c:var(--c2)">
+          <div class="ps-num">RESULT</div>
+          <div class="ps-ico">💼</div>
+          <div class="ps-title">Network Engineer</div>
+          <div class="ps-sub">Career Ready · GCC Market</div>
+          <div class="ps-tag pst-b">$60k–$120k avg</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="sec-courses">
     <div class="sec-wrap">
       <div class="sec-hdr-row">
@@ -1158,6 +1288,35 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
           <div class="badge-year">2024</div>
           <div class="badge-verify"><i class="fas fa-external-link-alt"></i> Verify on Credly</div>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TRY FREE LAB ── -->
+  <section class="sec-demo">
+    <div class="demo-inner">
+      <div class="reveal">
+        <div class="sec-eyebrow"><i class="fas fa-terminal"></i> Try Before You Enroll</div>
+        <h2 class="sec-h2" style="margin-bottom:1rem">Run a Real Lab <span class="accent">Right Now</span></h2>
+        <p style="color:var(--tm);font-size:.92rem;line-height:1.8;margin-bottom:1.5rem">Configure 802.1Q trunking and LACP on actual Cisco topology. Download the .pkt file and start in under 60 seconds — no install required beyond Packet Tracer.</p>
+        <div class="demo-checks">
+          <div class="demo-check"><i class="fas fa-check-circle"></i>Real Cisco IOS commands — not simulations</div>
+          <div class="demo-check"><i class="fas fa-check-circle"></i>Step-by-step task guide included in every lab</div>
+          <div class="demo-check"><i class="fas fa-check-circle"></i>Free Packet Tracer — official Cisco download</div>
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap">
+          <button class="hbtn hbtn-primary" onclick="enrollCourse(7)"><i class="fas fa-flask"></i> Start Free Lab</button>
+          <button class="hbtn hbtn-outline" onclick="openCourseDetail(7)"><i class="fas fa-eye"></i> Preview Labs</button>
+        </div>
+      </div>
+      <div class="demo-cli-wrap reveal d2">
+        <div class="demo-cli-bar">
+          <span class="dcb-dot" style="background:#ff5f57"></span>
+          <span class="dcb-dot" style="background:#febc2e"></span>
+          <span class="dcb-dot" style="background:#28c840"></span>
+          <span style="font-family:'Orbitron',monospace;font-size:.58rem;color:var(--tm);margin-left:auto;letter-spacing:1px">CISCO IOS · LAB 01</span>
+        </div>
+        <div class="demo-cli-body" id="cli-demo"></div>
       </div>
     </div>
   </section>
@@ -1247,11 +1406,24 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
     </div>
   </section>
 
-  <section class="sec-nl">
-    <div class="sec-wrap">
-      <div class="nl-card reveal">
-        <div class="nl-text"><div class="sec-eyebrow" style="margin-bottom:0.4rem"><i class="fas fa-envelope-open-text"></i> Free Resources</div><h3>Get Weekly Networking Tips</h3><p>Join 800+ students receiving free labs, cheat sheets, and Cisco exam tips weekly.</p></div>
-        <div class="nl-form"><input class="nl-input" id="nl-email" type="email" placeholder="your@email.com"><button class="btn btn-o" onclick="doSubscribe()"><i class="fas fa-paper-plane"></i> Subscribe</button></div>
+  <!-- ── FINAL CTA ── -->
+  <section class="sec-final-cta">
+    <div class="fct-inner">
+      <div class="reveal">
+        <div class="fct-proof">★★★★★ &nbsp;4.9/5 from 500+ students across 15 countries</div>
+        <h2 class="fct-h">Join 1,200+ Engineers Who Passed<br>Their CCNA on the <span>First Attempt</span></h2>
+        <p class="fct-p">No prior experience required. Start the free bootcamp, run your first lab, and see real progress in week one.</p>
+      </div>
+      <div class="reveal d2">
+        <div class="fct-actions">
+          <button class="hbtn hbtn-primary" onclick="openModal('register')" style="width:100%;justify-content:center"><i class="fas fa-rocket"></i> Start Free — No Card Needed</button>
+          <button class="hbtn hbtn-outline" onclick="showPage('courses')" style="width:100%;justify-content:center"><i class="fas fa-compass"></i> View All Courses</button>
+          <div class="fct-micro"><i class="fas fa-lock"></i>Free forever · <i class="fas fa-certificate"></i>Certificate on completion · <i class="fas fa-undo"></i>Cancel anytime</div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1rem 1.2rem;margin-top:1.5rem">
+          <div class="nl-form"><input class="nl-input" id="nl-email" type="email" placeholder="Get free weekly labs + exam tips"><button class="btn btn-o btn-sm" onclick="doSubscribe()"><i class="fas fa-paper-plane"></i> Subscribe</button></div>
+          <div style="font-size:.65rem;color:var(--tm);margin-top:.4rem">Join 800+ students · Unsubscribe any time</div>
+        </div>
       </div>
     </div>
   </section>

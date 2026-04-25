@@ -19,7 +19,7 @@ function saveCourses() { localStorage.setItem('ah_courses', JSON.stringify(COURS
 
 /* ── COURSE DATA ── */
 const DEFAULT_COURSES = [
-  { id: 1, cat: 'CCNA', icon: '🌐', th: 'th1',
+  { id: 1, cat: 'CCNA', icon: '🌐', th: 'th1', badge: 'hot',
     title: 'CCNA 200-301: Complete Network Associate',
     desc: 'Master routing, switching, IPv4/IPv6, VLANs, OSPF, and everything you need to pass the CCNA exam first time.',
     level: 'Beginner', duration: '80 hrs', students: '420', price: '$149', rating: '4.9', reviews: '128',
@@ -48,7 +48,7 @@ const DEFAULT_COURSES = [
     prereqs: 'CCNP ENCOR or solid enterprise networking experience.',
     curriculum: ['SD-WAN: Control & Data Plane','vManage, vBond & vSmart','OMP Routing & Policy','Python for Network Engineers','Netmiko & NAPALM Libraries','Ansible for Cisco IOS','NETCONF & RESTCONF','DNA Center REST API','DevOps Capstone Project'] },
 
-  { id: 6, cat: 'CCNA', icon: '📝', th: 'th6',
+  { id: 6, cat: 'CCNA', icon: '📝', th: 'th6', badge: 'free',
     title: 'CCNA Exam Bootcamp: 10-Day Intensive',
     desc: 'Rapid exam prep with 5 full-length practice tests, time management strategies, and domain-by-domain review sessions.',
     level: 'Intermediate', duration: '30 hrs', students: '340', price: 'Free', rating: '4.8', reviews: '156',
@@ -56,7 +56,7 @@ const DEFAULT_COURSES = [
     link: 'ccna-domain1.html',
     curriculum: ['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim'] },
 
-  { id: 7, cat: 'CCNA', icon: '🔬', th: 'th1',
+  { id: 7, cat: 'CCNA', icon: '🔬', th: 'th1', badge: 'new',
     title: 'CCNA Exam Labs',
     desc: '13 hands-on Packet Tracer labs across Layer 2, Routing, and Security. Each lab includes tasks, configuration commands, and a downloadable .zip file.',
     level: 'Intermediate', duration: '15 hrs', students: '280', price: 'Free', rating: '4.9', reviews: '74',
@@ -269,6 +269,52 @@ function toast(msg, type = 'inf') {
   setTimeout(() => { t.classList.add('rm'); setTimeout(() => t.remove(), 300); }, 4200);
 }
 
+/* ── CLI DEMO ANIMATION ── */
+function initCliDemo() {
+  const el = document.getElementById('cli-demo');
+  if (!el || el.dataset.started) return;
+  const lines = [
+    {t:'cmd', v:'SW1# configure terminal'},
+    {t:'cmd', v:'SW1(config)# interface range Fa0/1-2'},
+    {t:'cmd', v:'SW1(config-if)# switchport trunk encapsulation dot1q'},
+    {t:'cmd', v:'SW1(config-if)# switchport mode trunk'},
+    {t:'cmd', v:'SW1(config-if)# channel-group 10 mode active'},
+    {t:'out', v:'% Creating a channel-group...'},
+    {t:'cmd', v:'SW1(config-if)# end'},
+    {t:'cmd', v:'SW1# show etherchannel summary'},
+    {t:'out', v:'Group  Port-channel  Protocol   Ports'},
+    {t:'out', v:'  10   Po10(SU)      LACP       Fa0/1(P) Fa0/2(P)'},
+    {t:'ok',  v:'✓ EtherChannel verified — Lab 01 complete!'},
+  ];
+  const obs = new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) return;
+    obs.disconnect();
+    el.dataset.started = '1';
+    let i = 0;
+    function next() {
+      if (i >= lines.length) { setTimeout(() => { el.innerHTML = ''; i = 0; next(); }, 4000); return; }
+      const {t, v} = lines[i++];
+      const d = document.createElement('div');
+      d.style.cssText = `color:${t==='cmd'?'#7ec8e3':t==='ok'?'#00ff88':'#667788'}`;
+      d.textContent = v;
+      el.appendChild(d);
+      el.scrollTop = el.scrollHeight;
+      setTimeout(next, t==='cmd' ? 140 + Math.random()*80 : 55);
+    }
+    next();
+  }, {threshold: 0.4});
+  obs.observe(el);
+}
+
+/* ── URGENCY SEATS COUNTER ── */
+function initUrgency() {
+  const el = document.getElementById('seats-count');
+  if (!el) return;
+  // Pseudo-random but stable seats count based on day of month
+  const seats = Math.max(2, 7 - (new Date().getDate() % 5));
+  el.textContent = seats;
+}
+
 /* ── SCROLL PROGRESS ── */
 function initScrollProgress() {
   const bar = document.getElementById('scroll-progress');
@@ -300,6 +346,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (ic) ic.className = 'fas fa-moon';
   }
   initScrollProgress();
+  initUrgency();
+  initCliDemo();
   initCircuit();
   initCursor();
   initScroll();
@@ -339,7 +387,7 @@ function renderCourses(gridId, data) {
   if (!g) return;
   g.innerHTML = data.map(c => `
     <div class="ccard reveal" onclick="openCourseDetail(${c.id})">
-      <div class="cc-thumb ${c.th}"><span class="cc-thumb-icon">${c.icon}</span><div class="cc-level-tag lvl-${c.level === 'Beginner' ? 'beg' : c.level === 'Advanced' ? 'adv' : 'int'}">${c.level}</div></div>
+      <div class="cc-thumb ${c.th}"><span class="cc-thumb-icon">${c.icon}</span><div class="cc-level-tag lvl-${c.level === 'Beginner' ? 'beg' : c.level === 'Advanced' ? 'adv' : 'int'}">${c.level}</div>${c.badge ? `<div class="cc-badge ccb-${c.badge}">${{hot:'🔥 Popular',free:'✓ Free',new:'New'}[c.badge]}</div>` : ''}</div>
       <div class="cc-body">
         <div class="cc-cat">${c.cat}</div>
         <div class="cc-title">${c.title}</div>
