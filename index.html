@@ -963,6 +963,28 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.2) 0%,transparent 65%);opacity:0;transform:scale(.15);transition:opacity .5s ease,transform .5s ease;pointer-events:none;border-radius:inherit;}
 .btn:active::after{opacity:1;transform:scale(1);transition:none;}
 
+/* ── TAWK.TO HOST-PAGE BUBBLE GLOW ──
+   The chat panel lives in a cross-origin iframe (can't be styled here).
+   These rules apply to the bubble wrapper Tawk injects into the host DOM. */
+div[id*="tawk"]:not(iframe),
+iframe[id*="tawk"] + div,
+.tawk-min-container {
+  filter: drop-shadow(0 0 14px rgba(0,212,255,.28)) !important;
+  transition: filter .3s ease !important;
+}
+div[id*="tawk"]:not(iframe):hover,
+.tawk-min-container:hover {
+  filter: drop-shadow(0 0 22px rgba(0,212,255,.5)) !important;
+}
+[data-theme="light"] div[id*="tawk"]:not(iframe),
+[data-theme="light"] .tawk-min-container {
+  filter: drop-shadow(0 0 12px rgba(0,98,204,.25)) !important;
+}
+[data-theme="light"] div[id*="tawk"]:not(iframe):hover,
+[data-theme="light"] .tawk-min-container:hover {
+  filter: drop-shadow(0 0 18px rgba(0,98,204,.45)) !important;
+}
+
 /* ════════════════════════════════════════════
    PREMIUM UI — LEARNING PATH · DEMO · BADGES
    ════════════════════════════════════════════ */
@@ -1807,16 +1829,84 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+/* API hooks must be defined BEFORE the embed loads */
+var Tawk_API = window.Tawk_API = Tawk_API || {},
+    Tawk_LoadStart = new Date();
+
+Tawk_API.onLoad = function() {
+  Tawk_API.showWidget(); /* always show native bubble */
+  /* NO auto-open — visitor initiates */
+};
+
 (function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
 <!--End of Tawk.to Script-->
+
+<!--
+  ═══ TAWK.TO INTERIOR THEME — paste into Dashboard ═════════════════
+  Path: Administration → Chat Widget → Appearance → Custom CSS
+  ═══════════════════════════════════════════════════════════════════
+
+.tawk-header {
+  background: #020617 !important;
+  border-bottom: 1px solid rgba(0,212,255,0.2) !important;
+}
+.tawk-header-content .tawk-text-bold {
+  color: #00d4ff !important;
+}
+.tawk-chatmessage-wrap,
+.tawk-chat-panel {
+  background: #0a0f1c !important;
+}
+.tawk-button-circle {
+  background: linear-gradient(135deg,#00d4ff,#0099cc) !important;
+  box-shadow: 0 0 20px rgba(0,212,255,0.45) !important;
+  border-radius: 50% !important;
+}
+.tawk-chat-panel .tawk-text-3xl {
+  color: #00d4ff !important;
+}
+.tawk-footer {
+  background: #020617 !important;
+  border-top: 1px solid rgba(0,212,255,0.15) !important;
+}
+.tawk-input-wrap textarea {
+  background: #0a0f1c !important;
+  color: #c8ddf0 !important;
+  border: 1px solid rgba(0,212,255,0.2) !important;
+  border-radius: 10px !important;
+}
+.tawk-input-wrap textarea:focus {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 0 2px rgba(0,212,255,0.12) !important;
+}
+.tawk-send-button {
+  background: transparent !important;
+  border: 1px solid rgba(0,212,255,0.4) !important;
+  border-radius: 8px !important;
+  color: #00d4ff !important;
+}
+.tawk-send-button:hover {
+  background: rgba(0,212,255,0.1) !important;
+  box-shadow: 0 0 14px rgba(0,212,255,0.3) !important;
+}
+.tawk-visitor-container {
+  background: rgba(0,212,255,0.08) !important;
+  border: 1px solid rgba(0,212,255,0.15) !important;
+  border-radius: 10px !important;
+}
+.tawk-message-container {
+  background: #0f1a2e !important;
+  border-radius: 10px !important;
+}
+.tawk-text-primary { color: #00d4ff !important; }
+  ═══════════════════════════════════════════════════════════════════ -->
 </body>
 </html>
