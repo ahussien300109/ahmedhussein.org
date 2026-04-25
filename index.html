@@ -1195,6 +1195,14 @@ div[id*="tawk"] svg polygon,
 #chat-send{width:34px;height:34px;flex-shrink:0;border-radius:8px;background:var(--c);border:none;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:background .2s,transform .15s;}
 #chat-send:hover{background:var(--o);transform:scale(1.1);}
 </style>
+<!-- Zero-flash cloak: hides Tawk iframe from the very first render,
+     before any script has a chance to run. Removed in onLoad after
+     hideWidget() has set its own display:none. -->
+<style id="tawk-cloak">
+  iframe[title="chat widget"],
+  iframe[src*="tawk.to"],
+  .tawk-min-container { display:none !important; }
+</style>
 </head>
 <body>
 
@@ -1954,7 +1962,11 @@ div[id*="tawk"] svg polygon,
 <script type="text/javascript">
 var Tawk_API = window.Tawk_API = Tawk_API || {};
 Tawk_API.onLoad = function() {
-  Tawk_API.hideWidget(); /* hide default bubble — custom widget used */
+  Tawk_API.hideWidget(); /* API-level hide — keeps maximize() working */
+  /* Remove CSS cloak: Tawk's own display:none now takes over,
+     so the iframe is manageable by maximize() / minimize() */
+  var cloak = document.getElementById('tawk-cloak');
+  if (cloak) cloak.parentNode.removeChild(cloak);
 };
 </script>
 
