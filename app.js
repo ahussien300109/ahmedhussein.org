@@ -1101,6 +1101,27 @@ function renderLabs() {
   reObserve();
 }
 
+/* ── LIVE SUPPORT WIDGET ── */
+function toggleLcPanel() {
+  const panel = document.getElementById('lc-panel');
+  const badge = document.getElementById('lc-badge');
+  if (!panel) return;
+  const isOpen = panel.classList.toggle('open');
+  if (isOpen && badge) badge.style.display = 'none';
+}
+
+function closeLcPanel() {
+  const panel = document.getElementById('lc-panel');
+  if (panel) panel.classList.remove('open');
+}
+
+function startLiveChat() {
+  closeLcPanel();
+  if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
+    Tawk_API.maximize();
+  }
+}
+
 /* ── CONTACT & NEWSLETTER ── */
 function sendContact() {
   if (!document.getElementById('cf-email').value) { toast('Please enter your email address.', 'err'); return; }

@@ -963,6 +963,48 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.2) 0%,transparent 65%);opacity:0;transform:scale(.15);transition:opacity .5s ease,transform .5s ease;pointer-events:none;border-radius:inherit;}
 .btn:active::after{opacity:1;transform:scale(1);transition:none;}
 
+/* ══ LIVE SUPPORT WIDGET ═══════════════════════════════════ */
+#live-chat{position:fixed;bottom:2rem;right:2rem;z-index:7000;display:flex;flex-direction:column;align-items:flex-end;gap:.8rem;}
+
+/* Preview panel */
+#lc-panel{width:295px;background:rgba(2,6,23,.96);backdrop-filter:blur(24px);border:1px solid rgba(0,212,255,.2);border-radius:14px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.65),0 0 0 1px rgba(0,212,255,.06);opacity:0;transform:translateY(10px) scale(.97);pointer-events:none;transition:opacity .26s cubic-bezier(.4,0,.2,1),transform .26s cubic-bezier(.4,0,.2,1);}
+#lc-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}
+
+/* Panel header */
+.lc-hdr{background:rgba(0,212,255,.06);border-bottom:1px solid rgba(0,212,255,.12);padding:.95rem 1.1rem;display:flex;align-items:center;gap:.75rem;position:relative;}
+.lc-hdr-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c3));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--bg);flex-shrink:0;border:1.5px solid rgba(0,212,255,.35);}
+.lc-hdr-info{flex:1;min-width:0;}
+.lc-hdr-name{font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:#fff;letter-spacing:.5px;}
+.lc-hdr-status{font-size:.62rem;color:var(--g);display:flex;align-items:center;gap:4px;margin-top:2px;}
+.lc-sdot{width:5px;height:5px;border-radius:50%;background:var(--g);flex-shrink:0;animation:pls 1.5s infinite;}
+#lc-close{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);background:none;border:none;color:#3a5a78;cursor:pointer;font-size:.78rem;line-height:1;padding:4px;border-radius:4px;transition:color .15s;}
+#lc-close:hover{color:#c8ddf0;}
+
+/* Panel body */
+.lc-body{padding:.95rem 1.1rem;font-size:.82rem;color:#7a9ab5;line-height:1.7;}
+
+/* Start Chat button */
+#lc-start{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 2.2rem);margin:0 1.1rem 1.1rem;padding:.68rem 1.2rem;background:linear-gradient(135deg,#00d4ff,#0099cc);color:#020617;border:none;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:box-shadow .2s,transform .15s;}
+#lc-start:hover{box-shadow:0 0 24px rgba(0,212,255,.5);transform:translateY(-1px);}
+
+/* Circular trigger button */
+#lc-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#020617,#0a0f1c);border:1.5px solid rgba(0,212,255,.45);box-shadow:0 0 20px rgba(0,212,255,.28),0 4px 20px rgba(0,0,0,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:box-shadow .25s,border-color .25s,transform .2s;}
+#lc-btn:hover{border-color:#00d4ff;box-shadow:0 0 32px rgba(0,212,255,.55),0 4px 24px rgba(0,0,0,.5);transform:scale(1.07);}
+#lc-btn svg{width:22px;height:22px;flex-shrink:0;}
+#lc-badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:var(--o);border-radius:9px;font-size:.56rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:'Orbitron',monospace;}
+
+/* Light mode */
+[data-theme="light"] #lc-panel{background:rgba(255,255,255,.96);border-color:rgba(0,98,204,.2);box-shadow:0 8px 32px rgba(0,0,0,.12);}
+[data-theme="light"] .lc-hdr{background:rgba(0,98,204,.05);border-bottom-color:rgba(0,98,204,.12);}
+[data-theme="light"] .lc-hdr-name{color:#0f172a;}
+[data-theme="light"] .lc-body{color:#64748b;}
+[data-theme="light"] #lc-btn{background:linear-gradient(135deg,#0062cc,#004fa3);border-color:rgba(0,98,204,.45);box-shadow:0 0 16px rgba(0,98,204,.3),0 4px 16px rgba(0,0,0,.1);}
+[data-theme="light"] #lc-btn:hover{border-color:#0062cc;box-shadow:0 0 28px rgba(0,98,204,.5),0 4px 18px rgba(0,0,0,.12);}
+[data-theme="light"] #lc-btn svg path{fill:#fff!important;}
+[data-theme="light"] #lc-start{background:linear-gradient(135deg,#0062cc,#004fa3);color:#fff;}
+
+@media(max-width:480px){#live-chat{bottom:1.2rem;right:1.2rem;}#lc-panel{width:calc(100vw - 2.4rem);}}
+
 /* ── TAWK.TO HOST-PAGE OVERRIDES ─────────────────────────────────
    The chat PANEL is a cross-origin iframe — styled via dashboard CSS.
    Everything below targets elements Tawk injects into the host DOM:
@@ -1869,6 +1911,31 @@ div[id*="tawk"] svg polygon,
 
 
 
+<!-- LIVE SUPPORT WIDGET -->
+<div id="live-chat">
+  <div id="lc-panel">
+    <div class="lc-hdr">
+      <div class="lc-hdr-av">AH</div>
+      <div class="lc-hdr-info">
+        <div class="lc-hdr-name">Live Support</div>
+        <div class="lc-hdr-status"><span class="lc-sdot"></span>Ahmed Hussein · Online</div>
+      </div>
+      <button id="lc-close" onclick="closeLcPanel()" title="Close">✕</button>
+    </div>
+    <div class="lc-body">Ask about courses, certifications, or labs. Ahmed responds directly — usually within minutes.</div>
+    <button id="lc-start" onclick="startLiveChat()">
+      <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="currentColor"/></svg>
+      Start Chat
+    </button>
+  </div>
+  <button id="lc-btn" onclick="toggleLcPanel()" title="Live Support">
+    <span id="lc-badge">1</span>
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M12 2C6.48 2 2 6.48 2 12v5c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1h-.93C3.54 7.68 7.42 4 12 4s8.46 3.68 8.93 8H20c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-5c0-5.52-4.48-10-10-10z" fill="#00d4ff"/>
+    </svg>
+  </button>
+</div>
+
 <div id="toast-box"></div>
 
 <script src="app.js"></script>
@@ -1877,8 +1944,7 @@ div[id*="tawk"] svg polygon,
 <script type="text/javascript">
 var Tawk_API = window.Tawk_API = Tawk_API || {};
 Tawk_API.onLoad = function() {
-  Tawk_API.showWidget();  /* always show bubble        */
-  Tawk_API.minimize();    /* icon-only — never auto-open */
+  Tawk_API.hideWidget(); /* hide default bubble — custom widget used */
 };
 </script>
 
