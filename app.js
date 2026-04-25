@@ -687,24 +687,110 @@ function buildEnrolledHTML(ids) {
 function renderAdminOverview() {
   const el = document.getElementById('dash-admin-overview');
   if (!el) return;
-  const users = JSON.parse(localStorage.getItem('ah_users') || '[]');
-  const totalEnr = users.reduce((a, u) => a + (u.enrolled ? u.enrolled.length : 0), 0);
+  const users    = JSON.parse(localStorage.getItem('ah_users') || '[]');
+  const students = users.filter(u => !u.isAdmin);
+  const totalEnr = students.reduce((a, u) => a + (u.enrolled ? u.enrolled.length : 0), 0);
+  const premium  = students.filter(u => u.tier === 'premium').length;
+  const free     = COURSES.filter(c => c.price === 'Free').length;
+
+  // Top courses by enrollment count
+  const enrMap = {};
+  students.forEach(u => (u.enrolled || []).forEach(id => { enrMap[id] = (enrMap[id] || 0) + 1; }));
+  const topCourses = COURSES.map(c => ({...c, n: enrMap[c.id] || 0}))
+    .sort((a, b) => b.n - a.n).slice(0, 5);
+  const maxN = Math.max(...topCourses.map(c => c.n), 1);
+
+  // Recent registrations (last 5 — stored newest-last)
+  const recent = [...students].reverse().slice(0, 5);
+
+  const statCards = [
+    { ico:'fa-book',          cls:'ico-c', val:COURSES.length,  lbl:'Courses',     up:true,  trend:`+${COURSES.length}` },
+    { ico:'fa-users',         cls:'ico-g', val:students.length, lbl:'Students',    up:true,  trend:students.length ? `+${Math.max(1,Math.round(students.length*.12))} mo` : '0' },
+    { ico:'fa-graduation-cap',cls:'ico-o', val:totalEnr,        lbl:'Enrollments', up:true,  trend:totalEnr ? `+${Math.max(1,Math.round(totalEnr*.08))} mo` : '0' },
+    { ico:'fa-crown',         cls:'ico-p', val:premium,         lbl:'Premium',     up:premium>0, trend:premium>0?`${premium} active`:'0 yet' },
+  ];
+
   el.innerHTML = `
     <div class="dash-toprow">
-      <div><div class="dash-hello">ADMIN <span>DASHBOARD</span></div><div class="dash-sub">Site overview and quick actions</div></div>
+      <div>
+        <div class="dash-hello">ADMIN <span>DASHBOARD</span></div>
+        <div class="dash-sub">${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div>
+      </div>
+      <button class="btn btn-c btn-sm" onclick="openEditCourse(null)"><i class="fas fa-plus"></i> Add Course</button>
     </div>
-    <div class="dash-stats">
-      <div class="dstat"><div class="dstat-ico ico-c"><i class="fas fa-book"></i></div><div class="dstat-num">${COURSES.length}</div><div class="dstat-lbl">Courses</div></div>
-      <div class="dstat"><div class="dstat-ico ico-g"><i class="fas fa-users"></i></div><div class="dstat-num">${users.filter(u=>!u.isAdmin).length}</div><div class="dstat-lbl">Students</div></div>
-      <div class="dstat"><div class="dstat-ico ico-o"><i class="fas fa-graduation-cap"></i></div><div class="dstat-num">${totalEnr}</div><div class="dstat-lbl">Enrollments</div></div>
-      <div class="dstat"><div class="dstat-ico ico-p"><i class="fas fa-star"></i></div><div class="dstat-num">${COURSES.filter(c=>c.price==='Free').length}</div><div class="dstat-lbl">Free</div></div>
+
+    <div class="dash-stats" style="margin-bottom:1.5rem">
+      ${statCards.map(s=>`
+      <div class="dstat">
+        <div class="dstat-ico ${s.cls}"><i class="fas ${s.ico}"></i></div>
+        <div class="dstat-num">${s.val}</div>
+        <div class="dstat-lbl">${s.lbl}</div>
+        <div class="adm-stat-trend ${s.up?'trend-up':'trend-dn'}">
+          <i class="fas fa-arrow-${s.up?'up':'down'}" style="font-size:.48rem"></i> ${s.trend}
+        </div>
+      </div>`).join('')}
     </div>
-    <div class="dash-sec-title">Quick Actions</div>
-    <div style="display:flex;gap:1rem;flex-wrap:wrap">
+
+    <div class="adm-tw-grid">
+      <div>
+        <div class="dash-sec-title" style="margin-bottom:.8rem">
+          <i class="fas fa-user-plus" style="color:var(--c);margin-right:6px;font-size:.75rem"></i>Recent Registrations
+        </div>
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:.8rem 1rem">
+          ${recent.length ? recent.map(u=>`
+          <div class="adm-activity-item">
+            <div class="adm-av">${(u.fname?.[0]||'?').toUpperCase()}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:.82rem;font-weight:600;color:var(--tw);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.fname||''} ${u.lname||''}</div>
+              <div style="font-size:.67rem;color:var(--tm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${u.email}</div>
+            </div>
+            <span class="lvl-tag ${u.tier==='premium'?'premium-tag':''}" style="font-size:.54rem;flex-shrink:0">${u.tier==='premium'?'Pro':'Free'}</span>
+          </div>`).join('') : `<div style="text-align:center;padding:1.5rem;color:var(--tm);font-size:.82rem">No students yet</div>`}
+        </div>
+      </div>
+
+      <div>
+        <div class="dash-sec-title" style="margin-bottom:.8rem">
+          <i class="fas fa-chart-bar" style="color:var(--o);margin-right:6px;font-size:.75rem"></i>Top Courses by Enrollment
+        </div>
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:.8rem 1rem;margin-bottom:1rem">
+          ${topCourses.map(c=>`
+          <div style="margin-bottom:.85rem">
+            <div style="display:flex;justify-content:space-between;font-size:.77rem;margin-bottom:3px">
+              <span style="font-weight:600;color:var(--t);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:155px">${c.title}</span>
+              <span style="font-family:'Orbitron',monospace;font-size:.68rem;color:var(--c);flex-shrink:0;margin-left:6px">${c.n}</span>
+            </div>
+            <div style="height:5px;background:var(--bg4);border-radius:3px;overflow:hidden">
+              <div class="adm-chart-bar" data-w="${maxN?Math.round(c.n/maxN*100):0}"></div>
+            </div>
+          </div>`).join('')}
+        </div>
+
+        <div class="dash-sec-title" style="margin-bottom:.8rem">
+          <i class="fas fa-bell" style="color:var(--g);margin-right:6px;font-size:.75rem"></i>Notifications
+        </div>
+        ${free>0?`<div class="adm-notif"><div class="adm-notif-dot" style="background:var(--g)"></div><span><strong>${free}</strong> free course${free>1?'s':''} active — consider a premium upsell.</span></div>`:''}
+        ${students.length===0?`<div class="adm-notif"><div class="adm-notif-dot" style="background:var(--o)"></div><span>No students yet — share your course link to get started.</span></div>`:
+        `<div class="adm-notif"><div class="adm-notif-dot" style="background:var(--c)"></div><span><strong>${students.length}</strong> student${students.length>1?'s':''} · <strong>${totalEnr}</strong> total enrollment${totalEnr!==1?'s':''}.</span></div>`}
+        ${premium>0?`<div class="adm-notif"><div class="adm-notif-dot" style="background:var(--o)"></div><span><strong>${premium}</strong> premium subscriber${premium>1?'s':''} — ${Math.round(premium/students.length*100)||0}% conversion rate.</span></div>`:''}
+      </div>
+    </div>
+
+    <div class="dash-sec-title" style="margin-bottom:.8rem">
+      <i class="fas fa-bolt" style="color:var(--c);margin-right:6px;font-size:.75rem"></i>Quick Actions
+    </div>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap">
       <button class="btn btn-c" onclick="openEditCourse(null)"><i class="fas fa-plus"></i> Add Course</button>
       <button class="btn btn-ghost" onclick="activatePanel('admin-courses');renderAdminCourses()"><i class="fas fa-book"></i> Manage Courses</button>
       <button class="btn btn-ghost" onclick="activatePanel('admin-students');renderAdminStudents()"><i class="fas fa-users"></i> View Students</button>
     </div>`;
+
+  // Animate chart bars after render
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.adm-chart-bar[data-w]').forEach(b => {
+      b.style.width = b.dataset.w + '%';
+    });
+  });
 }
 
 /* ── ADMIN: COURSE TABLE ── */
@@ -809,24 +895,48 @@ function adminDeleteCourse(id) {
 function renderAdminStudents() {
   const el = document.getElementById('dash-admin-students-inner');
   if (!el) return;
-  const users = JSON.parse(localStorage.getItem('ah_users')||'[]').filter(u=>!u.isAdmin);
+  const all = JSON.parse(localStorage.getItem('ah_users')||'[]').filter(u=>!u.isAdmin);
+  el.innerHTML = `
+    <div class="adm-search-wrap">
+      <i class="fas fa-search adm-search-ico"></i>
+      <input class="adm-search" id="adm-stu-q" type="text" placeholder="Search by name or email…" oninput="_admStudentFilter(this.value)">
+    </div>
+    <div id="adm-stu-tbl"></div>`;
+  _admRenderStudentTbl(all);
+}
+
+function _admStudentFilter(q) {
+  const all = JSON.parse(localStorage.getItem('ah_users')||'[]').filter(u=>!u.isAdmin);
+  const ql = q.toLowerCase();
+  _admRenderStudentTbl(q ? all.filter(u=>`${u.fname} ${u.lname} ${u.email}`.toLowerCase().includes(ql)) : all, q);
+}
+
+function _admRenderStudentTbl(users, q='') {
+  const el = document.getElementById('adm-stu-tbl');
+  if (!el) return;
   if (!users.length) {
-    el.innerHTML = `<div class="empty-state"><div class="es-ico">&#128100;</div><div class="es-title">NO STUDENTS YET</div><div class="es-desc">Students appear here after registering on the site.</div></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="es-ico">${q?'🔍':'👥'}</div><div class="es-title">${q?'NO RESULTS':'NO STUDENTS YET'}</div><div class="es-desc">${q?'Try a different search term.':'Students appear here after registering.'}</div></div>`;
     return;
   }
-  const cols = '1.4fr 2fr 1fr 0.7fr 1fr';
-  el.innerHTML = `<div class="adm-tbl">
-    <div class="adm-tbl-hdr" style="grid-template-columns:${cols}">
-      <span>Name</span><span>Email</span><span>Plan</span><span>Courses</span><span>Joined</span>
-    </div>
-    ${users.map(u=>`<div class="adm-tbl-row" style="grid-template-columns:${cols}">
-      <span style="font-weight:600;color:var(--tw)">${u.fname||''} ${u.lname||''}</span>
-      <span style="font-size:.74rem;color:var(--tm)">${u.email}</span>
-      <span><span class="lvl-tag ${u.tier==='premium'?'premium-tag':''}">${u.tier==='premium'?'Premium':'Free'}</span></span>
-      <span style="font-family:'Orbitron',monospace;font-size:.8rem;color:var(--c)">${(u.enrolled||[]).length}</span>
-      <span style="font-size:.72rem;color:var(--tm)">${u.joined||'&mdash;'}</span>
-    </div>`).join('')}
-  </div>`;
+  const cols = '1.8fr 2fr 1fr 0.7fr 1fr';
+  el.innerHTML = `
+    <div style="font-size:.7rem;color:var(--tm);margin-bottom:.6rem">${users.length} student${users.length!==1?'s':''} found</div>
+    <div class="adm-tbl">
+      <div class="adm-tbl-hdr" style="grid-template-columns:${cols}">
+        <span>Student</span><span>Email</span><span>Plan</span><span>Courses</span><span>Joined</span>
+      </div>
+      ${users.map(u=>`
+      <div class="adm-tbl-row" style="grid-template-columns:${cols}">
+        <div style="display:flex;align-items:center;gap:.55rem">
+          <div class="adm-av" style="width:28px;height:28px;font-size:.55rem;flex-shrink:0">${(u.fname?.[0]||'?').toUpperCase()}</div>
+          <span style="font-weight:600;color:var(--tw);font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.fname||''} ${u.lname||''}</span>
+        </div>
+        <span style="font-size:.74rem;color:var(--tm);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.email}</span>
+        <span><span class="lvl-tag ${u.tier==='premium'?'premium-tag':''}">${u.tier==='premium'?'Premium':'Free'}</span></span>
+        <span style="font-family:'Orbitron',monospace;font-size:.8rem;color:var(--c)">${(u.enrolled||[]).length}</span>
+        <span style="font-size:.72rem;color:var(--tm)">${u.joined||'&mdash;'}</span>
+      </div>`).join('')}
+    </div>`;
 }
 
 /* ── PROFILE ── */
