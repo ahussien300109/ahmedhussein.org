@@ -1815,10 +1815,9 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
   var Tawk_API = window.Tawk_API = window.Tawk_API || {};
 
   Tawk_API.onLoad = function() {
-    /* Hide default bubble — custom button is used instead */
-    Tawk_API.hideWidget();
+    Tawk_API.showWidget(); // ensure native bubble is always visible
 
-    /* Auto-open once per session after 5–8 s */
+    /* Auto-open once per session after 6 s */
     if (!sessionStorage.getItem('tawk_greeted')) {
       setTimeout(function() {
         Tawk_API.maximize();
