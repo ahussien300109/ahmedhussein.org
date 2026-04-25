@@ -245,6 +245,16 @@
 [data-theme="light"] .skill-row:hover .sr-bg{box-shadow:0 0 5px rgba(0,98,204,.18);}
 [data-theme="light"] #chat-btn:hover{box-shadow:0 6px 18px rgba(0,98,204,.32);}
 [data-theme="light"] .finp:focus{background:#fff;box-shadow:0 0 0 3px rgba(0,98,204,.1)!important;}
+
+/* Modal overlay: softer backdrop in light mode */
+[data-theme="light"] .modal-ov{background:rgba(15,23,42,.45);}
+/* Modal inner surfaces: --bg3 resolves to #dde4ef in light; force white */
+[data-theme="light"] .m-tabs{background:#f1f5f9;}
+[data-theme="light"] .tier-opt{background:#f8fafc;border-color:rgba(0,0,0,.1);}
+[data-theme="light"] .tier-opt.on{background:rgba(0,98,204,.07);}
+/* Upgrade banner inner surface */
+[data-theme="light"] .enr-item{background:#fff;border-color:rgba(0,0,0,.08);}
+[data-theme="light"] .dstat{background:#fff;border-color:rgba(0,0,0,.07);}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;font-size:16px;}
 body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t);overflow-x:hidden;cursor:none;}

@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- Theme persistence: read localStorage before first paint to avoid flash -->
+<script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');if(t==='light')document.documentElement.setAttribute('data-theme','light');})();</script>
 <style>
 :root{--c:#00d4ff;--c2:#0099cc;--c3:#004f6e;--o:#ff6a00;--o2:#ffaa55;--g:#00ff88;--g2:#00cc66;--yl:#ffd700;--red:#ff4455;--bg:#030d1a;--bg2:#08111e;--bg3:#0c1628;--bg4:#101e38;--card:#0a1525;--t:#c8ddf0;--tm:#7a9ab5;--tw:#fff;--bdr:rgba(0,212,255,.13);--bdr2:rgba(0,212,255,.28);--r:10px;--r2:16px;}
 *{margin:0;padding:0;box-sizing:border-box;}html{scroll-behavior:smooth;}
@@ -289,6 +291,44 @@ td strong{color:var(--tw);}
   .se-nets{grid-template-columns:1fr 1fr;}
   .w-cards{grid-template-columns:1fr;}
 }
+
+/* ══ LIGHT MODE ═══════════════════════════════════
+   Variables cascade to all children automatically.
+   Only hardcoded rgba/hex values need explicit rules.
+   ════════════════════════════════════════════════ */
+[data-theme="light"]{
+  --c:#0062cc;--c2:#004fa3;--c3:#003d7a;
+  --o:#c94f08;--o2:#e06918;--g:#16a34a;
+  --bg:#f5f7fa;--bg2:#f0f4f8;--bg3:#ffffff;--bg4:#e2e8f0;
+  --card:#ffffff;--t:#1e293b;--tm:#64748b;--tw:#0f172a;
+  --bdr:rgba(0,0,0,.08);--bdr2:rgba(0,0,0,.14);}
+
+/* Topbar: hardcoded rgba → white glass */
+[data-theme="light"] .topbar{background:rgba(255,255,255,.94);border-bottom-color:rgba(0,0,0,.08);box-shadow:0 1px 12px rgba(0,0,0,.06);}
+
+/* CLI code blocks: dark #010810 → soft surface */
+[data-theme="light"] .cli{background:#f8fafc;border-color:rgba(0,0,0,.1);}
+[data-theme="light"] .cli-hdr{background:#f1f5f9;border-bottom-color:rgba(0,0,0,.08);}
+
+/* Swap hardcoded rgba(0,212,255,…) → rgba(0,98,204,…) */
+[data-theme="light"] .sb-lesson:hover{background:rgba(0,98,204,.05);}
+[data-theme="light"] .sb-lesson.active{background:rgba(0,98,204,.09);}
+[data-theme="light"] .sb-lesson.active .sb-num{background:rgba(0,98,204,.12);border-color:rgba(0,98,204,.3);}
+[data-theme="light"] .tag-b,[data-theme="light"] .ic-badge{background:rgba(0,98,204,.08);border-color:rgba(0,98,204,.18);}
+[data-theme="light"] .hb-i{background:rgba(0,98,204,.05);}
+[data-theme="light"] tr:hover td{background:rgba(0,98,204,.03);}
+[data-theme="light"] .se-prob{background:rgba(0,98,204,.06);}
+[data-theme="light"] .quiz-hdr{background:linear-gradient(135deg,rgba(0,98,204,.07),rgba(0,98,204,.03));border-color:rgba(0,98,204,.18);}
+[data-theme="light"] .q-opt:hover{background:rgba(0,98,204,.05);}
+[data-theme="light"] .q-opt.sel{background:rgba(0,98,204,.09);}
+
+/* Button glows → clean shadows */
+[data-theme="light"] .submit-btn:hover,
+[data-theme="light"] .btn-c:hover,
+[data-theme="light"] .w-start:hover,
+[data-theme="light"] .ln-btn.pri:hover{box-shadow:0 4px 14px rgba(0,98,204,.3);transform:translateY(-1px);}
+[data-theme="light"] .btn-ghost:hover{background:rgba(0,98,204,.07);box-shadow:none;}
+[data-theme="light"] .back-btn:hover{background:rgba(0,98,204,.05);}
 </style>
 </head>
 <body>
