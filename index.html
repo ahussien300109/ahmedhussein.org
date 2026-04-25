@@ -646,7 +646,8 @@ select.finp option{background:var(--bg3);}
 .ds-sep{height:1px;background:var(--bdr);margin:0.6rem 0;}
 .ds-logout{color:var(--tm);}
 .ds-logout:hover{color:var(--o)!important;}
-.dash-main{padding:2.5rem;overflow-y:auto;background:var(--bg1);}
+.dash-main{padding:2.5rem;padding-top:calc(70px + 1.5rem);overflow-y:auto;background:var(--bg1);}
+@media(max-width:1100px){.dash-main{padding-top:calc(70px + 1rem);}}
 .dash-panel{display:none;}
 .dash-panel.act{display:block;}
 .dash-toprow{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
