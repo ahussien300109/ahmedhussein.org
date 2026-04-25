@@ -52,7 +52,15 @@ const DEFAULT_COURSES = [
     level: 'Intermediate', duration: '30 hrs', students: '340', price: 'Free', rating: '4.8', reviews: '156',
     prereqs: 'Completed CCNA training or equivalent knowledge.',
     link: 'ccna-domain1.html',
-    curriculum: ['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim'] }
+    curriculum: ['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim'] },
+
+  { id: 7, cat: 'CCNA', icon: '🔬', th: 'th1',
+    title: 'CCNA Exam Labs',
+    desc: '13 hands-on Packet Tracer labs across Layer 2, Routing, and Security. Each lab includes tasks, configuration commands, and a downloadable .zip file.',
+    level: 'Intermediate', duration: '15 hrs', students: '280', price: 'Free', rating: '4.9', reviews: '74',
+    prereqs: 'CCNA training or equivalent knowledge recommended.',
+    pageLink: 'labs', btnLabel: '▶ Start Lab',
+    curriculum: ['Layer 2: 802.1Q Trunking & LACP (Labs 1–2)','Layer 2: Voice VLAN & LLDP (Lab 3)','Layer 2: VLAN & Neighbor Discovery (Labs 8–10)','Layer 2: EtherChannel Series (Labs 13–18)','Routing: Dual-Stack Addressing (Lab 4)','Routing: Static Routing & Failover (Lab 5)','Routing: OSPF Single-Area (Labs 6–7)','Routing: IPv6 Static (Lab 19)','Security: ACLs & DHCP Snooping (Lab 11)','Security: NAT, DHCP, NTP & SSH (Lab 14)','Security: Port Security (Labs 16–17)'] }
 ];
 let COURSES = loadCourses();
 
@@ -255,7 +263,7 @@ function showPage(pg) {
   if (footer) footer.style.display = pg === 'dashboard' ? 'none' : '';
   if (pg === 'courses') renderCourses('all-courses-grid', COURSES);
   if (pg === 'about') setTimeout(initSkillBars, 50);
-  if (pg === 'freecourse') renderFreeCourse();
+  if (pg === 'labs') renderLabs();
   if (pg === 'dashboard') {
     if (!S.user) { openModal('login'); showPage('home'); return; }
     updateDash();
@@ -281,7 +289,7 @@ function renderCourses(gridId, data) {
         </div>
         <div class="cc-footer">
           <span class="cc-price ${c.price === 'Free' ? 'free' : ''}">${c.price}</span>
-          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${c.link ? '▶ Start Course' : S.enrolled.includes(c.id) ? '✓ Enrolled' : 'Enroll Now'}</button>
+          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${(c.link||c.pageLink) ? (c.btnLabel||'▶ Start Course') : S.enrolled.includes(c.id) ? '✓ Enrolled' : 'Enroll Now'}</button>
         </div>
       </div>
     </div>`).join('');
@@ -363,6 +371,7 @@ function closeCourseModal() {
 
 function enrollCourse(id) {
   const course = COURSES.find(x => x.id === id);
+  if (course?.pageLink) { closeCourseModal(); showPage(course.pageLink); return; }
   if (course?.link) { window.location.href = course.link; return; }
   if (!S.user) { openModal('login'); toast('Sign in to enroll in a course', 'inf'); return; }
   if (S.enrolled.includes(id)) { toast('Already enrolled in this course', 'inf'); return; }
@@ -786,117 +795,130 @@ function _chatAppend(text, side) {
   msgs.scrollTop = msgs.scrollHeight;              // auto-scroll to latest
 }
 
-/* ── FREE COURSE PAGE ── */
-const FC_FEATURES = [
-  ['fa-map-signs',      'Domain-by-Domain Review',    'All 6 CCNA exam domains covered with exam-focused notes and key concepts.'],
-  ['fa-laptop-code',    'Packet Tracer Labs',          'Hands-on network configuration exercises you complete directly in Cisco PT.'],
-  ['fa-question-circle','10-Question Quiz per Lesson', 'Test your knowledge after each module with real exam-style questions.'],
-  ['fa-chart-line',     'Exam Strategy',               'Time management techniques and question-answering methods that boost your score.'],
-  ['fa-users',          '340+ Students Enrolled',      'Join hundreds of students who already started and passed their CCNA exam.'],
+/* ── LABS PAGE DATA ── */
+const LABS_DATA = [
+  { id:'l2', category:'Layer 2 Switching', icon:'fa-layer-group', color:'var(--c)', labs:[
+    { num:'01', title:'802.1Q Trunking & LACP', file:'lab01-trunking-lacp.zip',
+      tasks:['Configure 802.1Q trunk encapsulation on SW1–SW2 links','Create EtherChannel using LACP with channel-group 10 mode active','Verify trunk status: show interfaces trunk','Verify bundle: show etherchannel summary'],
+      config:['interface range Fa0/1-2',' switchport trunk encapsulation dot1q',' switchport mode trunk',' channel-group 10 mode active','!','interface Port-channel 10',' switchport trunk encapsulation dot1q',' switchport mode trunk'] },
+    { num:'02', title:'802.1Q Trunking & LACP (Advanced)', file:'lab02-native-vlan-lacp.zip',
+      tasks:['Set native VLAN 45 on all trunk interfaces','Create LACP EtherChannel (channel-group 15, mode passive)','Verify native VLAN: show interfaces trunk','Test untagged frame forwarding across the bundle'],
+      config:['interface range Fa0/3-4',' switchport trunk encapsulation dot1q',' switchport trunk native vlan 45',' switchport mode trunk',' channel-group 15 mode passive'] },
+    { num:'03', title:'Voice VLAN & LLDP', file:'lab03-voice-vlan-lldp.zip',
+      tasks:['Create VLAN 77 (data) and VLAN 177 (voice)','Configure access port with data and voice VLAN assignment','Enable LLDP globally and on specific interfaces','Verify neighbors: show lldp neighbors detail'],
+      config:['vlan 77',' name DATA','vlan 177',' name VOICE','!','interface Fa0/5',' switchport mode access',' switchport access vlan 77',' switchport voice vlan 177','!','lldp run'] },
+    { num:'08–10', title:'VLAN & Neighbor Discovery', file:'lab08-10-vlan-cdp-lldp.zip',
+      tasks:['Create VLANs 10, 20, 30 and assign access ports','Enable CDP on SW1, enable LLDP on SW2','Assign hostnames and verify: show cdp neighbors','Compare CDP and LLDP output fields'],
+      config:['vlan 10',' name SALES','vlan 20',' name IT','!','interface Fa0/10',' switchport mode access',' switchport access vlan 10','!','cdp run','lldp run'] },
+    { num:'13–18', title:'Trunking & EtherChannel Series', file:'lab13-18-etherchannel-series.zip',
+      tasks:['Lab 13: LACP active/active — channel-group 1','Lab 15: PAgP desirable/auto — channel-group 2','Lab 17: Static EtherChannel (mode on) — channel-group 3','Lab 18: Mixed trunk + EtherChannel with allowed VLANs'],
+      config:['! Lab 13 — LACP','channel-group 1 mode active','! Lab 15 — PAgP','channel-group 2 mode desirable','! Lab 17 — Static','channel-group 3 mode on','!','switchport trunk allowed vlan 10,20,30'] },
+  ]},
+  { id:'routing', category:'Routing', icon:'fa-route', color:'var(--o)', labs:[
+    { num:'04', title:'IPv4 & IPv6 Address Assignment', file:'lab04-dual-stack-addressing.zip',
+      tasks:['Assign first usable IPv4 host address per subnet on each interface','Configure IPv6 global unicast and link-local addresses','Enable IPv6 routing: ipv6 unicast-routing','Verify: ping, show interfaces, show ipv6 interface brief'],
+      config:['ipv6 unicast-routing','!','interface GigabitEthernet0/0',' ip address 192.168.1.1 255.255.255.0',' ipv6 address 2001:DB8:A::/64 eui-64',' ipv6 address FE80::1 link-local',' no shutdown'] },
+    { num:'05', title:'Static Routing & Failover', file:'lab05-static-failover.zip',
+      tasks:['Configure host route to specific /32 destination','Add default route via primary ISP link','Add floating static route (AD 225) via backup ISP','Verify failover: shut primary, check routing table'],
+      config:['ip route 10.10.10.0 255.255.255.0 192.168.1.254','ip route 0.0.0.0 0.0.0.0 203.0.113.1','ip route 0.0.0.0 0.0.0.0 198.51.100.1 225'] },
+    { num:'06–07', title:'OSPF Single-Area Routing', file:'lab06-07-ospf-area0.zip',
+      tasks:['Assign router-IDs (1.1.1.1, 2.2.2.2, 3.3.3.3)','Enable OSPF on interfaces using ip ospf 1 area 0 (no network stmt)','Set OSPF priority 200 on R1 to force DR election','Verify: show ip ospf neighbor, show ip route ospf'],
+      config:['router ospf 1',' router-id 1.1.1.1','!','interface GigabitEthernet0/0',' ip ospf 1 area 0',' ip ospf priority 200'] },
+    { num:'19', title:'IPv6 Static Routing', file:'lab19-ipv6-static.zip',
+      tasks:['Configure IPv6 static routes to all remote networks','Add floating IPv6 static route (AD 5) for redundancy','Verify: ping ipv6, traceroute ipv6','Test failover by disabling primary interface'],
+      config:['ipv6 route 2001:DB8:B::/64 GigabitEthernet0/1 FE80::2','ipv6 route 2001:DB8:B::/64 GigabitEthernet0/2 FE80::3 5'] },
+    { num:'20', title:'IPv4 Static & Default Routing', file:'lab20-static-default.zip',
+      tasks:['Configure static routes for all internal subnets on edge router','Add default route pointing to ISP','Test reachability end-to-end with extended ping','Simulate failover: shut primary uplink, verify backup'],
+      config:['ip route 10.1.0.0 255.255.0.0 192.168.100.2','ip route 10.2.0.0 255.255.0.0 192.168.100.2','ip route 0.0.0.0 0.0.0.0 203.0.113.254'] },
+  ]},
+  { id:'security', category:'Security & Services', icon:'fa-shield-alt', color:'var(--g)', labs:[
+    { num:'11', title:'ACLs & DHCP Snooping', file:'lab11-acl-dhcp-snooping.zip',
+      tasks:['Create named extended ACL blocking RFC 1918 source addresses','Apply ACL inbound on WAN-facing interface','Enable DHCP snooping on VLANs 10 and 20','Mark uplink to DHCP server as trusted port','Enable DAI (Dynamic ARP Inspection) on both VLANs'],
+      config:['ip access-list extended BLOCK-RFC1918',' deny ip 10.0.0.0 0.255.255.255 any',' deny ip 172.16.0.0 0.15.255.255 any',' deny ip 192.168.0.0 0.0.255.255 any',' permit ip any any','!','ip dhcp snooping','ip dhcp snooping vlan 10,20','!','interface Fa0/1',' ip dhcp snooping trust','!','ip arp inspection vlan 10,20'] },
+    { num:'14', title:'NAT, DHCP, NTP & SSH', file:'lab14-nat-dhcp-ntp-ssh.zip',
+      tasks:['Create DHCP pool with exclusions for .1–.10 (servers)','Configure PAT (NAT overload) for internet access','Point NTP to stratum-2 server and verify sync','Generate RSA 2048-bit key and enable SSH v2','Restrict VTY lines to SSH only with local auth'],
+      config:['ip dhcp excluded-address 192.168.1.1 192.168.1.10','ip dhcp pool LAN',' network 192.168.1.0 255.255.255.0',' default-router 192.168.1.1',' dns-server 8.8.8.8','!','ip nat inside source list ACL-NAT interface Gi0/1 overload','!','ntp server 216.239.35.0','!','crypto key generate rsa modulus 2048','ip ssh version 2','line vty 0 4',' transport input ssh',' login local'] },
+    { num:'16–17', title:'ACLs & Port Security', file:'lab16-17-acl-port-security.zip',
+      tasks:['Create extended ACL allowing only VLAN 10 → VLAN 20 HTTP traffic','Apply ACL inbound on VLAN 10 SVI','Enable port security with maximum 2 MAC addresses','Configure sticky MAC learning','Set violation mode to restrict and verify log'],
+      config:['ip access-list extended VLAN-FILTER',' permit tcp 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255 eq 80',' deny ip any any','!','interface Vlan10',' ip access-group VLAN-FILTER in','!','interface Fa0/2',' switchport port-security maximum 2',' switchport port-security mac-address sticky',' switchport port-security violation restrict',' switchport port-security'] },
+  ]},
 ];
 
-function renderFreeCourse() {
-  const pg = document.getElementById('page-freecourse');
+function renderLabs() {
+  const pg = document.getElementById('page-labs');
   if (!pg) return;
+  if (pg.dataset.built) { reObserve(); return; }
+  pg.dataset.built = '1';
 
-  if (!pg.dataset.built) {
-    pg.dataset.built = '1';
-    pg.innerHTML = `
-      <div class="pg-header">
-        <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
-        <div class="pg-header-inner">
-          <div class="breadcrumb"><a href="#" onclick="showPage('home');return false">Home</a><i class="fas fa-chevron-right"></i>Free Course</div>
-          <div class="sec-eyebrow" style="margin-bottom:.8rem"><i class="fas fa-star"></i> 100% Free · No Credit Card Required</div>
-          <div class="pg-title">FREE CCNA <span style="color:var(--c)">EXAM BOOTCAMP</span></div>
-          <div class="pg-subtitle">10-day intensive preparation for the CCNA 200-301 exam. Domain reviews, Packet Tracer labs, and practice quizzes — all completely free.</div>
-          <div style="display:flex;gap:2rem;flex-wrap:wrap;padding-top:1.5rem;border-top:1px solid var(--bdr);margin-top:1.2rem">
-            ${[['30 hrs','Study Content'],['9','Modules'],['4.8★','Rating'],['Free','Forever']].map(([n,l])=>`
-            <div>
-              <div style="font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--tw)">${n}</div>
-              <div style="font-size:.63rem;color:var(--c);text-transform:uppercase;letter-spacing:2px;margin-top:2px">${l}</div>
-            </div>`).join('')}
-          </div>
+  pg.innerHTML = `
+    <div class="pg-header">
+      <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
+      <div class="pg-header-inner">
+        <div class="breadcrumb">
+          <a href="#" onclick="showPage('courses');return false">Courses</a>
+          <i class="fas fa-chevron-right"></i>CCNA Exam Labs
+        </div>
+        <div class="sec-eyebrow" style="margin-bottom:.8rem"><i class="fas fa-flask"></i> CCNA 200-301 Hands-On Labs</div>
+        <div class="pg-title">CCNA EXAM <span style="color:var(--c)">LABS</span></div>
+        <div class="pg-subtitle">Packet Tracer labs for every CCNA domain. Each lab includes tasks, exact configuration commands, and a downloadable .zip file.</div>
+        <div style="display:flex;gap:2rem;flex-wrap:wrap;padding-top:1.5rem;border-top:1px solid var(--bdr);margin-top:1.2rem">
+          ${[['13','Lab Exercises'],['3','Categories'],['Free','All Downloads']].map(([n,l])=>`
+          <div>
+            <div style="font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--tw)">${n}</div>
+            <div style="font-size:.63rem;color:var(--c);text-transform:uppercase;letter-spacing:2px;margin-top:2px">${l}</div>
+          </div>`).join('')}
         </div>
       </div>
+    </div>
 
-      <section style="padding:4rem 2.5rem;background:var(--bg1)">
-        <div class="sec-wrap">
-          <div class="about-grid" style="align-items:start">
-            <div id="fc-card-wrap"></div>
-            <div>
-              <div class="sec-eyebrow"><i class="fas fa-check-circle"></i> What's Included</div>
-              <h2 class="sec-h2" style="margin-bottom:1.5rem">Everything You Need to <span class="accent">Pass</span></h2>
-              ${FC_FEATURES.map(([icon,title,desc])=>`
-              <div class="feat-item" style="padding:.9rem;border-radius:var(--r);border:1px solid var(--bdr);background:var(--card);margin-bottom:.6rem">
-                <div class="feat-icon-wrap"><i class="fas ${icon}"></i></div>
-                <div><div class="feat-title">${title}</div><div class="feat-desc">${desc}</div></div>
-              </div>`).join('')}
+    ${LABS_DATA.map((cat, ci) => `
+    <section style="padding:3.5rem 2.5rem;background:var(${ci % 2 ? '--bg1' : '--bg'})">
+      <div class="sec-wrap">
+        <div class="sec-eyebrow" style="color:${cat.color}"><i class="fas ${cat.icon}"></i> ${cat.category}</div>
+        <h2 class="sec-h2" style="margin-bottom:1.8rem">${cat.category} <span style="color:${cat.color}">Labs</span></h2>
+        <div class="faq-list">
+          ${cat.labs.map(lab => `
+          <div class="faq-item">
+            <div class="faq-q" onclick="toggleFAQ(this)">
+              <span><span style="font-family:'Orbitron',monospace;font-weight:700;color:${cat.color};margin-right:.6rem">LAB ${lab.num}</span>${lab.title}</span>
+              <div class="faq-icon"><i class="fas fa-plus"></i></div>
             </div>
-          </div>
-        </div>
-      </section>
+            <div class="faq-body"><div class="faq-body-inner" style="padding-top:.2rem">
 
-      <section style="padding:4rem 2.5rem;background:var(--bg)" id="fc-curriculum-sec">
-        <div class="sec-wrap">
-          <div class="sec-eyebrow"><i class="fas fa-list-alt"></i> Course Curriculum</div>
-          <h2 class="sec-h2">9 Modules · <span class="accent">Exam-Focused</span> Content</h2>
-          <p class="sec-desc">Each module covers a CCNA exam domain with notes, labs, and a quiz. Complete them in order or jump to any weak area.</p>
-          <div id="fc-curriculum" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.75rem;margin-top:1.5rem"></div>
-        </div>
-      </section>
+              <p style="font-family:'Orbitron',monospace;font-size:.6rem;font-weight:700;color:${cat.color};letter-spacing:2px;text-transform:uppercase;margin-bottom:.6rem">Tasks</p>
+              <div class="curr-list" style="margin-bottom:1.2rem">
+                ${lab.tasks.map((t,i)=>`<div class="curr-li"><div class="curr-num">${i+1}</div>${t}</div>`).join('')}
+              </div>
 
-      <section class="sec-cta">
-        <div class="cta-top-line"></div>
-        <div class="sec-wrap" style="text-align:center;position:relative;z-index:1">
-          <div class="sec-eyebrow" style="justify-content:center"><i class="fas fa-rocket"></i> Start Today — It's Free</div>
-          <h2 class="cta-h">Launch Your CCNA Journey<br><span class="hl">Right Now</span></h2>
-          <p class="cta-sub">No signup needed — click Start and begin your first lesson immediately.</p>
-          <div class="cta-btns" id="fc-cta-btns"></div>
-        </div>
-      </section>`;
-  }
+              <p style="font-family:'Orbitron',monospace;font-size:.6rem;font-weight:700;color:${cat.color};letter-spacing:2px;text-transform:uppercase;margin-bottom:.6rem">Configuration</p>
+              <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:.9rem 1.1rem;overflow-x:auto;margin-bottom:1.2rem">
+                ${lab.config.map(l=>`<div style="font-family:monospace;font-size:.79rem;color:var(--t);white-space:pre;line-height:1.7">${l.replace(/</g,'&lt;')}</div>`).join('')}
+              </div>
 
-  // Always refresh dynamic parts so admin edits to course 6 are reflected
-  const course = COURSES.find(x => x.id === 6);
-  if (!course) return;
+              <a href="labs/${lab.file}" download
+                 class="btn btn-ghost btn-sm"
+                 onclick="toast('Preparing download: ${lab.file}','suc')">
+                <i class="fas fa-download"></i> ${lab.file}
+              </a>
 
-  // Course card
-  const cardWrap = document.getElementById('fc-card-wrap');
-  if (cardWrap) cardWrap.innerHTML = `
-    <div class="ccard" onclick="openCourseDetail(6)" style="cursor:pointer">
-      <div class="cc-thumb ${course.th}">
-        <span class="cc-thumb-icon">${course.icon}</span>
-        <div class="cc-level-tag lvl-int">${course.level}</div>
-      </div>
-      <div class="cc-body">
-        <div class="cc-cat">${course.cat}</div>
-        <div class="cc-title">${course.title}</div>
-        <div class="cc-desc">${course.desc}</div>
-        <div class="cc-meta">
-          <span><i class="fas fa-clock"></i>${course.duration}</span>
-          <span><i class="fas fa-users"></i>${course.students}+ students</span>
-          <span><i class="fas fa-star"></i>${course.rating}</span>
-        </div>
-        <div class="cc-footer">
-          <span class="cc-price free">${course.price}</span>
-          <a href="${course.link}" class="cc-enroll" style="text-decoration:none"><i class="fas fa-play"></i> Start Course</a>
+            </div></div>
+          </div>`).join('')}
         </div>
       </div>
-    </div>`;
+    </section>`).join('')}
 
-  // Curriculum grid
-  const curr = document.getElementById('fc-curriculum');
-  if (curr && course.curriculum) curr.innerHTML = course.curriculum.map((m, i) => `
-    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:.85rem 1rem;display:flex;align-items:center;gap:.7rem;transition:border-color .2s">
-      <div class="curr-num">${i + 1}</div>
-      <span style="font-size:.82rem;color:var(--t);font-weight:600">${m}</span>
-    </div>`).join('');
-
-  // CTA buttons
-  const ctaBtns = document.getElementById('fc-cta-btns');
-  if (ctaBtns) ctaBtns.innerHTML = `
-    <a href="${course.link}" class="hbtn hbtn-primary"><i class="fas fa-play"></i> Start Free Course</a>
-    <button class="hbtn hbtn-outline" onclick="showPage('courses')"><i class="fas fa-compass"></i> All Courses</button>`;
+    <section class="sec-cta">
+      <div class="cta-top-line"></div>
+      <div class="sec-wrap" style="text-align:center;position:relative;z-index:1">
+        <div class="sec-eyebrow" style="justify-content:center"><i class="fas fa-graduation-cap"></i> Need Theory Too?</div>
+        <h2 class="cta-h">Pair Labs with the<br><span class="hl">Free CCNA Bootcamp</span></h2>
+        <p class="cta-sub">The free bootcamp covers all 6 exam domains with lessons and quizzes. Use it alongside these labs for maximum retention.</p>
+        <div class="cta-btns">
+          <button class="hbtn hbtn-primary" onclick="enrollCourse(6)"><i class="fas fa-play"></i> Start Free Bootcamp</button>
+          <button class="hbtn hbtn-outline" onclick="showPage('courses')"><i class="fas fa-compass"></i> All Courses</button>
+        </div>
+      </div>
+    </section>`;
 
   reObserve();
 }
