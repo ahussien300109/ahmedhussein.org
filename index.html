@@ -710,6 +710,17 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .badge-card:hover .badge-verify{color:var(--c);}
 @media(max-width:580px){.badges-grid{grid-template-columns:1fr;max-width:320px;}}
 
+/* ── SKILL BAR POLISH ── */
+.sr-fill{position:relative;background:linear-gradient(90deg,var(--c2),var(--c),rgba(0,255,136,.5));}
+.sr-fill::after{content:'';position:absolute;top:0;bottom:0;left:0;width:40px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:translateX(-100%);animation:srShine 2.2s ease-in-out infinite;}
+@keyframes srShine{0%{transform:translateX(-100%)}80%,100%{transform:translateX(1400%)}}
+.sr-bg{transition:height .2s ease,box-shadow .25s;}
+.skill-row{transition:transform .2s;}
+.skill-row:hover{transform:translateX(5px);}
+.skill-row:hover .sr-bg{height:8px;box-shadow:0 0 12px rgba(0,212,255,.3);}
+.skill-row:hover .sr-name{color:var(--tw);}
+.skill-row:hover .sr-pct{text-shadow:0 0 10px rgba(0,212,255,.6);}
+
 /* ── STAGGER HELPERS ── */
 .d6{transition-delay:.6s;}.d7{transition-delay:.7s;}
 

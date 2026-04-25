@@ -151,7 +151,21 @@ function animCount(el) {
 }
 
 function animSkills() {
-  document.querySelectorAll('.sr-fill').forEach(b => b.style.width = b.dataset.w || '0%');
+  document.querySelectorAll('.sr-fill').forEach((b, i) => {
+    const target = parseInt(b.dataset.w);
+    const pct = b.closest('.skill-row')?.querySelector('.sr-pct');
+    if (pct) pct.textContent = '0%';
+    setTimeout(() => {
+      b.style.width = b.dataset.w || '0%';
+      if (!pct) return;
+      const dur = 1400, t0 = performance.now();
+      (function tick(now) {
+        const p = Math.min((now - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+        pct.textContent = Math.round(target * e) + '%';
+        if (p < 1) requestAnimationFrame(tick);
+      })(t0);
+    }, i * 60);
+  });
 }
 
 function initSkillBars() {
