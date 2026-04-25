@@ -4,7 +4,15 @@
 
 /* ── COURSE PERSISTENCE ── */
 function loadCourses() {
-  try { const s = localStorage.getItem('ah_courses'); if (s) return JSON.parse(s); } catch(e) {}
+  try {
+    const s = localStorage.getItem('ah_courses');
+    if (s) {
+      const saved = JSON.parse(s);
+      const ids = new Set(saved.map(c => c.id));
+      // Merge: any course added to DEFAULT_COURSES since last save is appended
+      return [...saved, ...DEFAULT_COURSES.filter(c => !ids.has(c.id))];
+    }
+  } catch(e) {}
   return DEFAULT_COURSES.map(c => Object.assign({}, c));
 }
 function saveCourses() { localStorage.setItem('ah_courses', JSON.stringify(COURSES)); }
@@ -59,10 +67,69 @@ const DEFAULT_COURSES = [
     desc: '13 hands-on Packet Tracer labs across Layer 2, Routing, and Security. Each lab includes tasks, configuration commands, and a downloadable .zip file.',
     level: 'Intermediate', duration: '15 hrs', students: '280', price: 'Free', rating: '4.9', reviews: '74',
     prereqs: 'CCNA training or equivalent knowledge recommended.',
-    pageLink: 'labs', btnLabel: '▶ Start Lab',
+    type: 'lab', pageLink: 'labs', btnLabel: '▶ Start Lab',
     curriculum: ['Layer 2: 802.1Q Trunking & LACP (Labs 1–2)','Layer 2: Voice VLAN & LLDP (Lab 3)','Layer 2: VLAN & Neighbor Discovery (Labs 8–10)','Layer 2: EtherChannel Series (Labs 13–18)','Routing: Dual-Stack Addressing (Lab 4)','Routing: Static Routing & Failover (Lab 5)','Routing: OSPF Single-Area (Labs 6–7)','Routing: IPv6 Static (Lab 19)','Security: ACLs & DHCP Snooping (Lab 11)','Security: NAT, DHCP, NTP & SSH (Lab 14)','Security: Port Security (Labs 16–17)'] }
 ];
 let COURSES = loadCourses();
+
+/* ── INJECT LAB CONTENT INTO CCNA EXAM LABS COURSE ──────────────
+   Labs are defined here and written directly onto the course object
+   in both COURSES and DEFAULT_COURSES, so they survive cache merges.
+   ─────────────────────────────────────────────────────────────── */
+(function() {
+  const labs = [
+    { category:'Layer 2 Switching', icon:'fa-layer-group', color:'var(--c)', items:[
+      { num:'01', title:'802.1Q Trunking & LACP', file:'lab01-trunking-lacp.zip',
+        tasks:['Configure 802.1Q trunk encapsulation on SW1–SW2 links','Set up EtherChannel using LACP — channel-group 10 mode active','Verify trunk: show interfaces trunk','Verify bundle: show etherchannel summary'],
+        config:['interface range Fa0/1-2',' switchport trunk encapsulation dot1q',' switchport mode trunk',' channel-group 10 mode active','!','interface Port-channel 10',' switchport trunk encapsulation dot1q',' switchport mode trunk'] },
+      { num:'02', title:'802.1Q Trunking & LACP (Advanced)', file:'lab02-native-vlan-lacp.zip',
+        tasks:['Set native VLAN 45 on all trunk interfaces','Create LACP EtherChannel — channel-group 15 mode passive','Verify native VLAN: show interfaces trunk','Test untagged frame forwarding across the bundle'],
+        config:['interface range Fa0/3-4',' switchport trunk encapsulation dot1q',' switchport trunk native vlan 45',' switchport mode trunk',' channel-group 15 mode passive'] },
+      { num:'03', title:'Voice VLAN & LLDP', file:'lab03-voice-vlan-lldp.zip',
+        tasks:['Create VLAN 77 (data) and VLAN 177 (voice)','Configure access port: data + voice VLAN assignment','Enable LLDP globally and on specific interfaces','Verify: show lldp neighbors detail'],
+        config:['vlan 77',' name DATA','vlan 177',' name VOICE','!','interface Fa0/5',' switchport mode access',' switchport access vlan 77',' switchport voice vlan 177','!','lldp run'] },
+      { num:'08–10', title:'VLAN & Neighbor Discovery', file:'lab08-10-vlan-cdp-lldp.zip',
+        tasks:['Create VLANs 10, 20, 30 and assign access ports','Enable CDP on SW1, LLDP on SW2','Verify: show cdp neighbors / show lldp neighbors','Compare CDP and LLDP output fields'],
+        config:['vlan 10',' name SALES','vlan 20',' name IT','!','interface Fa0/10',' switchport mode access',' switchport access vlan 10','!','cdp run','lldp run'] },
+      { num:'13–18', title:'Trunking & EtherChannel Series', file:'lab13-18-etherchannel.zip',
+        tasks:['Lab 13: LACP active/active — channel-group 1','Lab 15: PAgP desirable/auto — channel-group 2','Lab 17: Static EtherChannel (mode on) — channel-group 3','Lab 18: Trunk + EtherChannel with allowed VLANs'],
+        config:['! LACP — Lab 13','channel-group 1 mode active','! PAgP — Lab 15','channel-group 2 mode desirable','! Static — Lab 17','channel-group 3 mode on','! Allowed VLANs — Lab 18','switchport trunk allowed vlan 10,20,30'] },
+    ]},
+    { category:'Routing', icon:'fa-route', color:'var(--o)', items:[
+      { num:'04', title:'IPv4 & IPv6 Address Assignment', file:'lab04-dual-stack.zip',
+        tasks:['Assign first usable IPv4 host address per subnet','Configure IPv6 global unicast + link-local addresses','Enable ipv6 unicast-routing','Verify: ping, show interfaces, show ipv6 interface brief'],
+        config:['ipv6 unicast-routing','!','interface GigabitEthernet0/0',' ip address 192.168.1.1 255.255.255.0',' ipv6 address 2001:DB8:A::/64 eui-64',' ipv6 address FE80::1 link-local',' no shutdown'] },
+      { num:'05', title:'Static Routing & Failover', file:'lab05-static-failover.zip',
+        tasks:['Configure host route to /32 destination','Add default route via primary ISP link','Floating static route AD 225 via backup ISP','Verify failover: shut primary, check routing table'],
+        config:['ip route 10.10.10.0 255.255.255.0 192.168.1.254','ip route 0.0.0.0 0.0.0.0 203.0.113.1','ip route 0.0.0.0 0.0.0.0 198.51.100.1 225'] },
+      { num:'06–07', title:'OSPF Single-Area Routing', file:'lab06-07-ospf.zip',
+        tasks:['Assign router-IDs 1.1.1.1 / 2.2.2.2 / 3.3.3.3','Enable OSPF on interfaces: ip ospf 1 area 0 (no network stmt)','Set OSPF priority 200 on R1 to force DR election','Verify: show ip ospf neighbor, show ip route ospf'],
+        config:['router ospf 1',' router-id 1.1.1.1','!','interface GigabitEthernet0/0',' ip ospf 1 area 0',' ip ospf priority 200'] },
+      { num:'19', title:'IPv6 Static Routing', file:'lab19-ipv6-static.zip',
+        tasks:['Configure IPv6 static routes to all remote networks','Add floating IPv6 route AD 5 for redundancy','Verify: ping ipv6, traceroute ipv6','Failover test: disable primary interface'],
+        config:['ipv6 route 2001:DB8:B::/64 GigabitEthernet0/1 FE80::2','ipv6 route 2001:DB8:B::/64 GigabitEthernet0/2 FE80::3 5'] },
+      { num:'20', title:'IPv4 Static & Default Routing', file:'lab20-static-default.zip',
+        tasks:['Configure static routes for all internal subnets','Add default route pointing to ISP','Extended ping end-to-end test','Failover test: shut primary uplink, verify backup path'],
+        config:['ip route 10.1.0.0 255.255.0.0 192.168.100.2','ip route 10.2.0.0 255.255.0.0 192.168.100.2','ip route 0.0.0.0 0.0.0.0 203.0.113.254'] },
+    ]},
+    { category:'Security & Services', icon:'fa-shield-alt', color:'var(--g)', items:[
+      { num:'11', title:'ACLs & DHCP Snooping', file:'lab11-acl-dhcp-snooping.zip',
+        tasks:['Create named extended ACL blocking RFC 1918 sources','Apply ACL inbound on WAN-facing interface','Enable DHCP snooping on VLANs 10, 20','Mark uplink to DHCP server as trusted','Enable DAI (Dynamic ARP Inspection) on both VLANs'],
+        config:['ip access-list extended BLOCK-RFC1918',' deny ip 10.0.0.0 0.255.255.255 any',' deny ip 172.16.0.0 0.15.255.255 any',' deny ip 192.168.0.0 0.0.255.255 any',' permit ip any any','!','ip dhcp snooping','ip dhcp snooping vlan 10,20','!','interface Fa0/1',' ip dhcp snooping trust','!','ip arp inspection vlan 10,20'] },
+      { num:'14', title:'NAT, DHCP, NTP & SSH', file:'lab14-services.zip',
+        tasks:['DHCP pool with exclusions .1–.10 for servers','Configure PAT (NAT overload) for internet access','Set NTP server and verify synchronisation','Enable SSH v2 with RSA 2048-bit key','Restrict VTY lines to SSH-only with local auth'],
+        config:['ip dhcp excluded-address 192.168.1.1 192.168.1.10','ip dhcp pool LAN',' network 192.168.1.0 255.255.255.0',' default-router 192.168.1.1',' dns-server 8.8.8.8','!','ip nat inside source list ACL-NAT interface Gi0/1 overload','!','ntp server 216.239.35.0','!','crypto key generate rsa modulus 2048','ip ssh version 2','line vty 0 4',' transport input ssh',' login local'] },
+      { num:'16–17', title:'ACLs & Port Security', file:'lab16-17-port-security.zip',
+        tasks:['Extended ACL: permit VLAN10 → VLAN20 HTTP traffic only','Apply ACL inbound on VLAN 10 SVI','Port security: maximum 2 MAC addresses per port','Enable sticky MAC address learning','Set violation mode restrict; verify syslog'],
+        config:['ip access-list extended VLAN-FILTER',' permit tcp 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255 eq 80',' deny ip any any','!','interface Vlan10',' ip access-group VLAN-FILTER in','!','interface Fa0/2',' switchport port-security maximum 2',' switchport port-security mac-address sticky',' switchport port-security violation restrict',' switchport port-security'] },
+    ]},
+  ];
+  // Attach to both arrays so it survives cache merges and admin reloads
+  [COURSES, DEFAULT_COURSES].forEach(arr => {
+    const c = arr.find(x => x.type === 'lab');
+    if (c) c.labs = labs;
+  });
+})();
 
 /* ── APP STATE ── */
 const S = { user: null, enrolled: [], tier: 'free', filter: 'all', isAdmin: false };
@@ -796,59 +863,15 @@ function _chatAppend(text, side) {
 }
 
 /* ── LABS PAGE DATA ── */
-const LABS_DATA = [
-  { id:'l2', category:'Layer 2 Switching', icon:'fa-layer-group', color:'var(--c)', labs:[
-    { num:'01', title:'802.1Q Trunking & LACP', file:'lab01-trunking-lacp.zip',
-      tasks:['Configure 802.1Q trunk encapsulation on SW1–SW2 links','Create EtherChannel using LACP with channel-group 10 mode active','Verify trunk status: show interfaces trunk','Verify bundle: show etherchannel summary'],
-      config:['interface range Fa0/1-2',' switchport trunk encapsulation dot1q',' switchport mode trunk',' channel-group 10 mode active','!','interface Port-channel 10',' switchport trunk encapsulation dot1q',' switchport mode trunk'] },
-    { num:'02', title:'802.1Q Trunking & LACP (Advanced)', file:'lab02-native-vlan-lacp.zip',
-      tasks:['Set native VLAN 45 on all trunk interfaces','Create LACP EtherChannel (channel-group 15, mode passive)','Verify native VLAN: show interfaces trunk','Test untagged frame forwarding across the bundle'],
-      config:['interface range Fa0/3-4',' switchport trunk encapsulation dot1q',' switchport trunk native vlan 45',' switchport mode trunk',' channel-group 15 mode passive'] },
-    { num:'03', title:'Voice VLAN & LLDP', file:'lab03-voice-vlan-lldp.zip',
-      tasks:['Create VLAN 77 (data) and VLAN 177 (voice)','Configure access port with data and voice VLAN assignment','Enable LLDP globally and on specific interfaces','Verify neighbors: show lldp neighbors detail'],
-      config:['vlan 77',' name DATA','vlan 177',' name VOICE','!','interface Fa0/5',' switchport mode access',' switchport access vlan 77',' switchport voice vlan 177','!','lldp run'] },
-    { num:'08–10', title:'VLAN & Neighbor Discovery', file:'lab08-10-vlan-cdp-lldp.zip',
-      tasks:['Create VLANs 10, 20, 30 and assign access ports','Enable CDP on SW1, enable LLDP on SW2','Assign hostnames and verify: show cdp neighbors','Compare CDP and LLDP output fields'],
-      config:['vlan 10',' name SALES','vlan 20',' name IT','!','interface Fa0/10',' switchport mode access',' switchport access vlan 10','!','cdp run','lldp run'] },
-    { num:'13–18', title:'Trunking & EtherChannel Series', file:'lab13-18-etherchannel-series.zip',
-      tasks:['Lab 13: LACP active/active — channel-group 1','Lab 15: PAgP desirable/auto — channel-group 2','Lab 17: Static EtherChannel (mode on) — channel-group 3','Lab 18: Mixed trunk + EtherChannel with allowed VLANs'],
-      config:['! Lab 13 — LACP','channel-group 1 mode active','! Lab 15 — PAgP','channel-group 2 mode desirable','! Lab 17 — Static','channel-group 3 mode on','!','switchport trunk allowed vlan 10,20,30'] },
-  ]},
-  { id:'routing', category:'Routing', icon:'fa-route', color:'var(--o)', labs:[
-    { num:'04', title:'IPv4 & IPv6 Address Assignment', file:'lab04-dual-stack-addressing.zip',
-      tasks:['Assign first usable IPv4 host address per subnet on each interface','Configure IPv6 global unicast and link-local addresses','Enable IPv6 routing: ipv6 unicast-routing','Verify: ping, show interfaces, show ipv6 interface brief'],
-      config:['ipv6 unicast-routing','!','interface GigabitEthernet0/0',' ip address 192.168.1.1 255.255.255.0',' ipv6 address 2001:DB8:A::/64 eui-64',' ipv6 address FE80::1 link-local',' no shutdown'] },
-    { num:'05', title:'Static Routing & Failover', file:'lab05-static-failover.zip',
-      tasks:['Configure host route to specific /32 destination','Add default route via primary ISP link','Add floating static route (AD 225) via backup ISP','Verify failover: shut primary, check routing table'],
-      config:['ip route 10.10.10.0 255.255.255.0 192.168.1.254','ip route 0.0.0.0 0.0.0.0 203.0.113.1','ip route 0.0.0.0 0.0.0.0 198.51.100.1 225'] },
-    { num:'06–07', title:'OSPF Single-Area Routing', file:'lab06-07-ospf-area0.zip',
-      tasks:['Assign router-IDs (1.1.1.1, 2.2.2.2, 3.3.3.3)','Enable OSPF on interfaces using ip ospf 1 area 0 (no network stmt)','Set OSPF priority 200 on R1 to force DR election','Verify: show ip ospf neighbor, show ip route ospf'],
-      config:['router ospf 1',' router-id 1.1.1.1','!','interface GigabitEthernet0/0',' ip ospf 1 area 0',' ip ospf priority 200'] },
-    { num:'19', title:'IPv6 Static Routing', file:'lab19-ipv6-static.zip',
-      tasks:['Configure IPv6 static routes to all remote networks','Add floating IPv6 static route (AD 5) for redundancy','Verify: ping ipv6, traceroute ipv6','Test failover by disabling primary interface'],
-      config:['ipv6 route 2001:DB8:B::/64 GigabitEthernet0/1 FE80::2','ipv6 route 2001:DB8:B::/64 GigabitEthernet0/2 FE80::3 5'] },
-    { num:'20', title:'IPv4 Static & Default Routing', file:'lab20-static-default.zip',
-      tasks:['Configure static routes for all internal subnets on edge router','Add default route pointing to ISP','Test reachability end-to-end with extended ping','Simulate failover: shut primary uplink, verify backup'],
-      config:['ip route 10.1.0.0 255.255.0.0 192.168.100.2','ip route 10.2.0.0 255.255.0.0 192.168.100.2','ip route 0.0.0.0 0.0.0.0 203.0.113.254'] },
-  ]},
-  { id:'security', category:'Security & Services', icon:'fa-shield-alt', color:'var(--g)', labs:[
-    { num:'11', title:'ACLs & DHCP Snooping', file:'lab11-acl-dhcp-snooping.zip',
-      tasks:['Create named extended ACL blocking RFC 1918 source addresses','Apply ACL inbound on WAN-facing interface','Enable DHCP snooping on VLANs 10 and 20','Mark uplink to DHCP server as trusted port','Enable DAI (Dynamic ARP Inspection) on both VLANs'],
-      config:['ip access-list extended BLOCK-RFC1918',' deny ip 10.0.0.0 0.255.255.255 any',' deny ip 172.16.0.0 0.15.255.255 any',' deny ip 192.168.0.0 0.0.255.255 any',' permit ip any any','!','ip dhcp snooping','ip dhcp snooping vlan 10,20','!','interface Fa0/1',' ip dhcp snooping trust','!','ip arp inspection vlan 10,20'] },
-    { num:'14', title:'NAT, DHCP, NTP & SSH', file:'lab14-nat-dhcp-ntp-ssh.zip',
-      tasks:['Create DHCP pool with exclusions for .1–.10 (servers)','Configure PAT (NAT overload) for internet access','Point NTP to stratum-2 server and verify sync','Generate RSA 2048-bit key and enable SSH v2','Restrict VTY lines to SSH only with local auth'],
-      config:['ip dhcp excluded-address 192.168.1.1 192.168.1.10','ip dhcp pool LAN',' network 192.168.1.0 255.255.255.0',' default-router 192.168.1.1',' dns-server 8.8.8.8','!','ip nat inside source list ACL-NAT interface Gi0/1 overload','!','ntp server 216.239.35.0','!','crypto key generate rsa modulus 2048','ip ssh version 2','line vty 0 4',' transport input ssh',' login local'] },
-    { num:'16–17', title:'ACLs & Port Security', file:'lab16-17-acl-port-security.zip',
-      tasks:['Create extended ACL allowing only VLAN 10 → VLAN 20 HTTP traffic','Apply ACL inbound on VLAN 10 SVI','Enable port security with maximum 2 MAC addresses','Configure sticky MAC learning','Set violation mode to restrict and verify log'],
-      config:['ip access-list extended VLAN-FILTER',' permit tcp 192.168.10.0 0.0.0.255 192.168.20.0 0.0.0.255 eq 80',' deny ip any any','!','interface Vlan10',' ip access-group VLAN-FILTER in','!','interface Fa0/2',' switchport port-security maximum 2',' switchport port-security mac-address sticky',' switchport port-security violation restrict',' switchport port-security'] },
-  ]},
-];
 
 function renderLabs() {
   const pg = document.getElementById('page-labs');
   if (!pg) return;
   if (pg.dataset.built) { reObserve(); return; }
   pg.dataset.built = '1';
+  // Source labs from the course object — data lives in the course, not a separate const
+  const labCourse = COURSES.find(c => c.type === 'lab') || DEFAULT_COURSES.find(c => c.type === 'lab');
+  const LABS_DATA = labCourse?.labs || [];
 
   pg.innerHTML = `
     <div class="pg-header">
