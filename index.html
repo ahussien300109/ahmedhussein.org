@@ -1806,28 +1806,6 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
   <div class="modal-box" style="max-width:700px"><button class="mclose" onclick="closeCourseModal()"><i class="fas fa-times"></i></button><div id="course-detail-inner"></div></div>
 </div>
 
-<!-- CHAT WIDGET -->
-<div id="chat-widget">
-  <div id="chat-box">
-    <div id="chat-header">
-      <div class="chat-av">AH</div>
-      <div class="chat-hinfo">
-        <div class="chat-hname">Ahmed Hussein</div>
-        <div class="chat-status"><span class="chat-sdot"></span> Online</div>
-      </div>
-      <button id="chat-close" onclick="toggleChat()" title="Close"><i class="fas fa-times"></i></button>
-    </div>
-    <div id="chat-msgs"></div>
-    <div id="chat-foot">
-      <input id="chat-input" type="text" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter')sendChat()">
-      <button id="chat-send" onclick="sendChat()"><i class="fas fa-paper-plane"></i></button>
-    </div>
-  </div>
-  <button id="chat-btn" onclick="toggleChat()" title="Chat with us">
-    <i class="fas fa-comment-dots" id="chat-icon"></i>
-    <span id="chat-badge" style="display:none">1</span>
-  </button>
-</div>
 
 <!-- TAWK.TO TRIGGER BUTTON -->
 <button id="tawk-btn" onclick="openTawkChat()" title="Chat with Instructor">

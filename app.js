@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollProgress();
   initUrgency();
   initCliDemo();
-  initCircuit();
+  initCircuit(); // initChat() removed — Tawk.to is the sole chat system
   initCursor();
   initScroll();
   initObserver();
