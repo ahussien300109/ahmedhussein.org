@@ -963,27 +963,73 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.2) 0%,transparent 65%);opacity:0;transform:scale(.15);transition:opacity .5s ease,transform .5s ease;pointer-events:none;border-radius:inherit;}
 .btn:active::after{opacity:1;transform:scale(1);transition:none;}
 
-/* ── TAWK.TO HOST-PAGE BUBBLE GLOW ──
-   The chat panel lives in a cross-origin iframe (can't be styled here).
-   These rules apply to the bubble wrapper Tawk injects into the host DOM. */
+/* ── TAWK.TO HOST-PAGE OVERRIDES ─────────────────────────────────
+   The chat PANEL is a cross-origin iframe — styled via dashboard CSS.
+   Everything below targets elements Tawk injects into the host DOM:
+   the bubble button, "We Are Here" badge, and wrapper container.
+   ────────────────────────────────────────────────────────────── */
+
+/* 1. Remove "We Are Here" badge, callout text, and all emojis */
+.tawk-badge,
+.tawk-tooltip-content,
+div[class*="tawk-badge"],
+div[class*="tawk-callout"],
+div[class*="tawk-tooltip"],
+div[id*="tawk"] .tawk-badge,
+div[id*="tawk"] [class*="callout"],
+div[id*="tawk"] [class*="tooltip-text"],
+div[id*="tawk"] [class*="text-sm"]:not([class*="icon"]) {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* 2. Bubble wrapper — neon glow, dark background, smooth transition */
 div[id*="tawk"]:not(iframe),
-iframe[id*="tawk"] + div,
 .tawk-min-container {
-  filter: drop-shadow(0 0 14px rgba(0,212,255,.28)) !important;
+  filter: drop-shadow(0 0 16px rgba(0,212,255,.35)) !important;
   transition: filter .3s ease !important;
 }
 div[id*="tawk"]:not(iframe):hover,
 .tawk-min-container:hover {
-  filter: drop-shadow(0 0 22px rgba(0,212,255,.5)) !important;
+  filter: drop-shadow(0 0 26px rgba(0,212,255,.6)) !important;
 }
+
+/* 3. Bubble icon button — dark gradient with neon accent */
+div[id*="tawk"] button[class*="button"],
+div[id*="tawk"] [class*="button-circle"],
+.tawk-button-circle {
+  background: linear-gradient(135deg,#020617,#0a0f1c) !important;
+  border: 1.5px solid rgba(0,212,255,.45) !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 18px rgba(0,212,255,.3), inset 0 0 12px rgba(0,212,255,.06) !important;
+}
+div[id*="tawk"] button[class*="button"]:hover,
+div[id*="tawk"] [class*="button-circle"]:hover,
+.tawk-button-circle:hover {
+  border-color: #00d4ff !important;
+  box-shadow: 0 0 28px rgba(0,212,255,.55), inset 0 0 14px rgba(0,212,255,.1) !important;
+}
+
+/* 4. Bubble SVG icon — neon cyan */
+div[id*="tawk"] svg path,
+div[id*="tawk"] svg polygon,
+.tawk-button-circle svg path {
+  fill: #00d4ff !important;
+}
+
+/* 5. Light mode adjustments */
 [data-theme="light"] div[id*="tawk"]:not(iframe),
 [data-theme="light"] .tawk-min-container {
-  filter: drop-shadow(0 0 12px rgba(0,98,204,.25)) !important;
+  filter: drop-shadow(0 0 12px rgba(0,98,204,.28)) !important;
 }
-[data-theme="light"] div[id*="tawk"]:not(iframe):hover,
-[data-theme="light"] .tawk-min-container:hover {
-  filter: drop-shadow(0 0 18px rgba(0,98,204,.45)) !important;
+[data-theme="light"] div[id*="tawk"] button[class*="button"],
+[data-theme="light"] .tawk-button-circle {
+  background: linear-gradient(135deg,#0062cc,#004fa3) !important;
+  border-color: rgba(0,98,204,.5) !important;
+  box-shadow: 0 0 14px rgba(0,98,204,.3) !important;
 }
+[data-theme="light"] div[id*="tawk"] svg path,
+[data-theme="light"] .tawk-button-circle svg path { fill: #fff !important; }
 
 /* ════════════════════════════════════════════
    PREMIUM UI — LEARNING PATH · DEMO · BADGES
@@ -1829,13 +1875,13 @@ div[id*="tawk"]:not(iframe):hover,
 
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
-/* API hooks must be defined BEFORE the embed loads */
+/* Set API hooks BEFORE embed script loads */
 var Tawk_API = window.Tawk_API = Tawk_API || {},
     Tawk_LoadStart = new Date();
 
 Tawk_API.onLoad = function() {
-  Tawk_API.showWidget(); /* always show native bubble */
-  /* NO auto-open — visitor initiates */
+  Tawk_API.showWidget();   /* bubble always visible   */
+  Tawk_API.minimize();     /* start minimised — icon only, no auto-open */
 };
 
 (function(){
@@ -1850,63 +1896,134 @@ Tawk_API.onLoad = function() {
 <!--End of Tawk.to Script-->
 
 <!--
-  ═══ TAWK.TO INTERIOR THEME — paste into Dashboard ═════════════════
+  ════════════════════════════════════════════════════════════════════
+  TAWK.TO DASHBOARD CUSTOM CSS
   Path: Administration → Chat Widget → Appearance → Custom CSS
-  ═══════════════════════════════════════════════════════════════════
+  Paste the CSS below (without this comment block) into that field.
+  ════════════════════════════════════════════════════════════════════
 
+* { box-sizing: border-box; }
+
+/* ── WIDGET CONTAINER ── */
+.tawk-chat-panel,
+.tawk-chatmessage-wrap,
+.tawk-body { background: #020617 !important; }
+
+/* ── HEADER ── */
 .tawk-header {
   background: #020617 !important;
-  border-bottom: 1px solid rgba(0,212,255,0.2) !important;
+  border-bottom: 1px solid rgba(0,212,255,0.18) !important;
+  box-shadow: 0 1px 16px rgba(0,212,255,0.08) !important;
 }
-.tawk-header-content .tawk-text-bold {
-  color: #00d4ff !important;
-}
-.tawk-chatmessage-wrap,
-.tawk-chat-panel {
+.tawk-header .tawk-text-bold,
+.tawk-header .tawk-agent-name { color: #00d4ff !important; font-weight: 700 !important; }
+.tawk-header .tawk-status { color: #00ff88 !important; }
+
+/* Remove "We Are Here", badge, emojis, playful elements */
+.tawk-badge,
+.tawk-callout,
+.tawk-emoji-picker,
+[class*="badge"],
+[class*="callout"],
+[class*="emoji"],
+[class*="here"] { display: none !important; }
+
+/* ── MESSAGES AREA ── */
+.tawk-messages-container { background: #020617 !important; }
+
+/* Agent message bubble */
+.tawk-message-box .tawk-agent-content {
   background: #0a0f1c !important;
+  border: 1px solid rgba(0,212,255,0.2) !important;
+  border-radius: 10px 10px 10px 2px !important;
+  color: #c8ddf0 !important;
 }
-.tawk-button-circle {
-  background: linear-gradient(135deg,#00d4ff,#0099cc) !important;
-  box-shadow: 0 0 20px rgba(0,212,255,0.45) !important;
-  border-radius: 50% !important;
+
+/* Visitor message bubble */
+.tawk-message-box .tawk-visitor-content {
+  background: rgba(0,212,255,0.1) !important;
+  border: 1px solid rgba(0,212,255,0.25) !important;
+  border-radius: 10px 10px 2px 10px !important;
+  color: #e8f4ff !important;
 }
-.tawk-chat-panel .tawk-text-3xl {
-  color: #00d4ff !important;
-}
+
+/* Timestamp */
+.tawk-message-box .tawk-timestamp { color: #4a6a88 !important; }
+
+/* ── INPUT AREA ── */
 .tawk-footer {
   background: #020617 !important;
   border-top: 1px solid rgba(0,212,255,0.15) !important;
 }
-.tawk-input-wrap textarea {
+.tawk-input-wrap,
+.tawk-input-container { background: #020617 !important; }
+
+.tawk-input-wrap textarea,
+.tawk-input-wrap input {
   background: #0a0f1c !important;
   color: #c8ddf0 !important;
   border: 1px solid rgba(0,212,255,0.2) !important;
   border-radius: 10px !important;
+  caret-color: #00d4ff !important;
 }
-.tawk-input-wrap textarea:focus {
+.tawk-input-wrap textarea:focus,
+.tawk-input-wrap input:focus {
   border-color: #00d4ff !important;
   box-shadow: 0 0 0 2px rgba(0,212,255,0.12) !important;
+  outline: none !important;
 }
-.tawk-send-button {
+.tawk-input-wrap textarea::placeholder,
+.tawk-input-wrap input::placeholder { color: #3a5a78 !important; }
+
+/* ── SEND BUTTON ── */
+.tawk-send-button,
+button[class*="send"] {
   background: transparent !important;
-  border: 1px solid rgba(0,212,255,0.4) !important;
+  border: 1.5px solid rgba(0,212,255,0.4) !important;
   border-radius: 8px !important;
   color: #00d4ff !important;
+  transition: all 0.2s !important;
 }
-.tawk-send-button:hover {
+.tawk-send-button:hover,
+button[class*="send"]:hover {
   background: rgba(0,212,255,0.1) !important;
+  border-color: #00d4ff !important;
   box-shadow: 0 0 14px rgba(0,212,255,0.3) !important;
 }
-.tawk-visitor-container {
-  background: rgba(0,212,255,0.08) !important;
-  border: 1px solid rgba(0,212,255,0.15) !important;
-  border-radius: 10px !important;
+
+/* ── PRE-CHAT / OFFLINE FORM ── */
+.tawk-pre-chat-form,
+.tawk-offline-form {
+  background: #020617 !important;
+  border-top: 1px solid rgba(0,212,255,0.15) !important;
 }
-.tawk-message-container {
-  background: #0f1a2e !important;
-  border-radius: 10px !important;
+.tawk-pre-chat-form input,
+.tawk-offline-form input,
+.tawk-pre-chat-form select {
+  background: #0a0f1c !important;
+  border: 1px solid rgba(0,212,255,0.2) !important;
+  border-radius: 8px !important;
+  color: #c8ddf0 !important;
 }
+.tawk-pre-chat-form button,
+.tawk-offline-form button {
+  background: #00d4ff !important;
+  color: #020617 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+}
+.tawk-pre-chat-form label,
+.tawk-offline-form label { color: #7a9ab5 !important; font-size: 0.75rem !important; }
+
+/* ── GLOBAL TEXT ── */
 .tawk-text-primary { color: #00d4ff !important; }
-  ═══════════════════════════════════════════════════════════════════ -->
+.tawk-link { color: #00d4ff !important; }
+* { scrollbar-width: thin; scrollbar-color: #0a1a2e #020617; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #020617; }
+::-webkit-scrollbar-thumb { background: #0a2040; border-radius: 4px; }
+
+  ════════════════════════════════════════════════════════════════════ -->
 </body>
 </html>
