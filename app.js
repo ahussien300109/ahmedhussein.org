@@ -1117,6 +1117,7 @@ function closeLcPanel() {
 
 function startLiveChat() {
   closeLcPanel();
+  document.body.classList.add('tawk-open'); // lifts the CSS cloak for this session
   if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
     Tawk_API.maximize();
   }

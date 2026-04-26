@@ -1199,9 +1199,25 @@ div[id*="tawk"] svg polygon,
      before any script has a chance to run. Removed in onLoad after
      hideWidget() has set its own display:none. -->
 <style id="tawk-cloak">
+  /* Hide Tawk widget from first paint — zero flash */
+  #tawkchat-container,
   iframe[title="chat widget"],
   iframe[src*="tawk.to"],
-  .tawk-min-container { display:none !important; }
+  .tawk-min-container {
+    display:none !important;
+    opacity:0 !important;
+    visibility:hidden !important;
+  }
+  /* Higher-specificity override — allows maximize() to show the chat
+     when the user explicitly clicks our custom button.
+     Specificity: body.tawk-open + iframe[...] = 0,2,2 > 0,1,1 */
+  body.tawk-open #tawkchat-container,
+  body.tawk-open iframe[title="chat widget"],
+  body.tawk-open iframe[src*="tawk.to"] {
+    display:block !important;
+    opacity:1 !important;
+    visibility:visible !important;
+  }
 </style>
 </head>
 <body>
@@ -1962,11 +1978,14 @@ div[id*="tawk"] svg polygon,
 <script type="text/javascript">
 var Tawk_API = window.Tawk_API = Tawk_API || {};
 Tawk_API.onLoad = function() {
-  Tawk_API.hideWidget(); /* API-level hide — keeps maximize() working */
-  /* Remove CSS cloak: Tawk's own display:none now takes over,
-     so the iframe is manageable by maximize() / minimize() */
-  var cloak = document.getElementById('tawk-cloak');
-  if (cloak) cloak.parentNode.removeChild(cloak);
+  Tawk_API.hideWidget(); /* keep default bubble hidden — custom button only */
+  /* Cloak stays permanently. Class body.tawk-open controls maximize() */
+};
+Tawk_API.onChatMinimized = function() {
+  document.body.classList.remove('tawk-open'); /* re-apply hide on minimize */
+};
+Tawk_API.onChatEnded = function() {
+  document.body.classList.remove('tawk-open');
 };
 </script>
 
