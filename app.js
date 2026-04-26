@@ -1132,11 +1132,9 @@ function _chatAppend(text, side) {
 /* ── LABS PAGE DATA ── */
 
 function renderLabs() {
-  const pg = document.getElementById('page-labs');
+  // Target #root (SPA shell) — #page-labs no longer exists
+  const pg = document.getElementById('root');
   if (!pg) return;
-  if (pg.dataset.built) { reObserve(); return; }
-  pg.dataset.built = '1';
-  // Source labs from the course object — data lives in the course, not a separate const
   const labCourse = COURSES.find(c => c.id === 7) || DEFAULT_COURSES.find(c => c.id === 7);
   const LABS_DATA = labCourse?.labs || [];
 
