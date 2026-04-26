@@ -1128,75 +1128,6 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 [data-theme="light"] #lc-auto-tip::after{background:rgba(255,255,255,.97);border-color:rgba(0,98,204,.2);}
 [data-theme="light"] .lat-msg{color:#1e293b;}
 [data-theme="light"] .lat-cta{background:linear-gradient(135deg,#0062cc,#004fa3);color:#fff;}
-
-/* ── TAWK.TO HOST-PAGE OVERRIDES ─────────────────────────────────
-   The chat PANEL is a cross-origin iframe — styled via dashboard CSS.
-   Everything below targets elements Tawk injects into the host DOM:
-   the bubble button, "We Are Here" badge, and wrapper container.
-   ────────────────────────────────────────────────────────────── */
-
-/* 1. Remove "We Are Here" badge, callout text, and all emojis */
-.tawk-badge,
-.tawk-tooltip-content,
-div[class*="tawk-badge"],
-div[class*="tawk-callout"],
-div[class*="tawk-tooltip"],
-div[id*="tawk"] .tawk-badge,
-div[id*="tawk"] [class*="callout"],
-div[id*="tawk"] [class*="tooltip-text"],
-div[id*="tawk"] [class*="text-sm"]:not([class*="icon"]) {
-  display: none !important;
-  pointer-events: none !important;
-}
-
-/* 2. Bubble wrapper — neon glow, dark background, smooth transition */
-div[id*="tawk"]:not(iframe),
-.tawk-min-container {
-  filter: drop-shadow(0 0 16px rgba(0,212,255,.35)) !important;
-  transition: filter .3s ease !important;
-}
-div[id*="tawk"]:not(iframe):hover,
-.tawk-min-container:hover {
-  filter: drop-shadow(0 0 26px rgba(0,212,255,.6)) !important;
-}
-
-/* 3. Bubble icon button — dark gradient with neon accent */
-div[id*="tawk"] button[class*="button"],
-div[id*="tawk"] [class*="button-circle"],
-.tawk-button-circle {
-  background: linear-gradient(135deg,#020617,#0a0f1c) !important;
-  border: 1.5px solid rgba(0,212,255,.45) !important;
-  border-radius: 50% !important;
-  box-shadow: 0 0 18px rgba(0,212,255,.3), inset 0 0 12px rgba(0,212,255,.06) !important;
-}
-div[id*="tawk"] button[class*="button"]:hover,
-div[id*="tawk"] [class*="button-circle"]:hover,
-.tawk-button-circle:hover {
-  border-color: #00d4ff !important;
-  box-shadow: 0 0 28px rgba(0,212,255,.55), inset 0 0 14px rgba(0,212,255,.1) !important;
-}
-
-/* 4. Bubble SVG icon — neon cyan */
-div[id*="tawk"] svg path,
-div[id*="tawk"] svg polygon,
-.tawk-button-circle svg path {
-  fill: #00d4ff !important;
-}
-
-/* 5. Light mode adjustments */
-[data-theme="light"] div[id*="tawk"]:not(iframe),
-[data-theme="light"] .tawk-min-container {
-  filter: drop-shadow(0 0 12px rgba(0,98,204,.28)) !important;
-}
-[data-theme="light"] div[id*="tawk"] button[class*="button"],
-[data-theme="light"] .tawk-button-circle {
-  background: linear-gradient(135deg,#0062cc,#004fa3) !important;
-  border-color: rgba(0,98,204,.5) !important;
-  box-shadow: 0 0 14px rgba(0,98,204,.3) !important;
-}
-[data-theme="light"] div[id*="tawk"] svg path,
-[data-theme="light"] .tawk-button-circle svg path { fill: #fff !important; }
-
 /* ════════════════════════════════════════════
    PREMIUM UI — LEARNING PATH · DEMO · BADGES
    ════════════════════════════════════════════ */
@@ -1318,23 +1249,7 @@ div[id*="tawk"] svg polygon,
 #chat-send{width:34px;height:34px;flex-shrink:0;border-radius:8px;background:var(--c);border:none;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:background .2s,transform .15s;}
 #chat-send:hover{background:var(--o);transform:scale(1.1);}
 </style>
-<!-- Tawk cloak: blocks any iframe before scripts run -->
-<style>
-  iframe[src*="tawk"],
-  iframe[title="chat widget"],
-  .tawk-min-container {
-    display:none !important;
-    visibility:hidden !important;
-    opacity:0 !important;
-  }
-  /* Higher specificity (0,2,X) reveals chat when user opens it */
-  body.tawk-open iframe[src*="tawk"],
-  body.tawk-open iframe[title="chat widget"] {
-    display:block !important;
-    visibility:visible !important;
-    opacity:1 !important;
-  }
-</style>
+
 </head>
 <body>
 
@@ -2133,7 +2048,7 @@ div[id*="tawk"] svg polygon,
   </div>
 
   <!-- Trigger button -->
-  <button id="lc-btn" onclick="toggleLcPanel()" aria-label="Chat with Instructor">
+  <button id="lc-btn" onclick="openChat()" aria-label="Chat with Instructor">
     <span id="lc-badge" style="display:none">0</span>
     <span class="lc-gem"><i class="fas fa-headset"></i></span>
     <span class="lc-tip">Chat with Instructor</span>
@@ -2145,36 +2060,31 @@ div[id*="tawk"] svg polygon,
 
 <script src="app.js"></script>
 
-<!-- Tawk.to: hooks defined here so they fire regardless of load path -->
+<!-- Tawk.to -->
 <script>
-window.Tawk_API = window.Tawk_API || {};
-
+var Tawk_API = Tawk_API || {};
 Tawk_API.onLoad = function() {
-  Tawk_API.hideWidget();           /* default bubble always hidden */
-};
-Tawk_API.onChatMinimized = Tawk_API.onChatEnded = function() {
-  document.body.classList.remove('tawk-open');
-};
-/* Unread message badge — fires whenever agent sends a message */
-Tawk_API.onUnreadCountChanged = function(n) {
-  var b = document.getElementById('lc-badge');
-  if (!b) return;
-  if (n > 0) { b.textContent = n > 9 ? '9+' : n; b.style.display = 'flex'; }
-  else b.style.display = 'none';
+  Tawk_API.hideWidget();
 };
 
-/* Pre-load Tawk 3s after page load for instant response + badge support.
-   CSS cloak + hideWidget() guarantee zero flash. */
-function _tawkInject() {
-  if (document.getElementById('tawk-js')) return;
-  window.Tawk_LoadStart = new Date();
-  var s = document.createElement('script');
-  s.id = 'tawk-js'; s.async = true;
-  s.src = 'https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
-  s.charset = 'UTF-8'; s.setAttribute('crossorigin', '*');
-  document.body.appendChild(s);
+(function(){
+  var s1 = document.createElement("script");
+  var s0 = document.getElementsByTagName("script")[0];
+  s1.async = true;
+  s1.src = 'https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
+  s1.charset = 'UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+
+<script>
+function openChat() {
+  if (window.Tawk_API) {
+    Tawk_API.showWidget();
+    Tawk_API.maximize();
+  }
 }
-window.addEventListener('load', function() { setTimeout(_tawkInject, 3000); });
 </script>
 
 <!--
