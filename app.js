@@ -1101,31 +1101,47 @@ function renderLabs() {
   reObserve();
 }
 
-/* ── LIVE SUPPORT WIDGET ── */
+/* ── LIVE CHAT SYSTEM ── */
+let lcOpen = false;
+let lcLoading = false;
+
 function toggleLcPanel() {
   const panel = document.getElementById('lc-panel');
   const badge = document.getElementById('lc-badge');
   if (!panel) return;
-  const isOpen = panel.classList.toggle('open');
-  if (isOpen && badge) badge.style.display = 'none';
+  lcOpen = !lcOpen;
+  panel.classList.toggle('open', lcOpen);
+  if (lcOpen && badge) badge.style.display = 'none';
+  if (!lcOpen) _lcReset();
 }
 
 function closeLcPanel() {
   const panel = document.getElementById('lc-panel');
-  if (panel) panel.classList.remove('open');
+  if (!panel) return;
+  lcOpen = false;
+  panel.classList.remove('open');
+  _lcReset();
 }
 
 function startLiveChat() {
-  closeLcPanel();
-  const btn = document.getElementById('lc-btn');
-  if (btn) btn.classList.add('lc-clicking');
+  if (lcLoading) return;                         // prevent double-click
+  lcLoading = true;
+  const btn = document.getElementById('lc-start');
+  if (btn) { btn.classList.add('loading'); btn.disabled = true; }
   setTimeout(() => {
-    if (btn) btn.classList.remove('lc-clicking');
-    document.body.classList.add('tawk-open');
+    closeLcPanel();
+    document.body.classList.add('tawk-open');    // lifts CSS cloak
     if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
       Tawk_API.maximize();
     }
-  }, 180);
+    lcLoading = false;
+  }, 1000);                                      // 1s loading feel
+}
+
+function _lcReset() {
+  const btn = document.getElementById('lc-start');
+  if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+  lcLoading = false;
 }
 
 /* ── CONTACT & NEWSLETTER ── */

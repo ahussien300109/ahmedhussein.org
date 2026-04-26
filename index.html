@@ -964,83 +964,80 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .btn::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,255,255,.2) 0%,transparent 65%);opacity:0;transform:scale(.15);transition:opacity .5s ease,transform .5s ease;pointer-events:none;border-radius:inherit;}
 .btn:active::after{opacity:1;transform:scale(1);transition:none;}
 
-/* ══ LIVE SUPPORT WIDGET ═══════════════════════════════════ */
-#live-chat{position:fixed;bottom:2rem;right:2rem;z-index:7000;display:flex;flex-direction:column;align-items:flex-end;gap:.8rem;}
+/* ══ LIVE CHAT SYSTEM ══════════════════════════════════════ */
+#live-chat{position:fixed;bottom:2rem;right:2rem;z-index:7000;display:flex;flex-direction:column;align-items:flex-end;gap:.85rem;}
 
-/* Preview panel */
-#lc-panel{width:295px;background:rgba(2,6,23,.96);backdrop-filter:blur(24px);border:1px solid rgba(0,212,255,.2);border-radius:14px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.65),0 0 0 1px rgba(0,212,255,.06);opacity:0;transform:translateY(10px) scale(.97);pointer-events:none;transition:opacity .26s cubic-bezier(.4,0,.2,1),transform .26s cubic-bezier(.4,0,.2,1);}
+/* ── Panel ── */
+#lc-panel{width:320px;background:rgba(2,6,23,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(0,212,255,.18);border-radius:16px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.65),0 0 0 1px rgba(0,212,255,.06);display:flex;flex-direction:column;opacity:0;transform:translateY(14px) scale(.97);pointer-events:none;transition:opacity .28s cubic-bezier(.4,0,.2,1),transform .28s cubic-bezier(.4,0,.2,1);}
 #lc-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}
 
-/* Panel header */
-.lc-hdr{background:rgba(0,212,255,.06);border-bottom:1px solid rgba(0,212,255,.12);padding:.95rem 1.1rem;display:flex;align-items:center;gap:.75rem;position:relative;}
-.lc-hdr-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c3));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--bg);flex-shrink:0;border:1.5px solid rgba(0,212,255,.35);}
-.lc-hdr-info{flex:1;min-width:0;}
-.lc-hdr-name{font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:#fff;letter-spacing:.5px;}
-.lc-hdr-status{font-size:.62rem;color:var(--g);display:flex;align-items:center;gap:4px;margin-top:2px;}
-.lc-sdot{width:5px;height:5px;border-radius:50%;background:var(--g);flex-shrink:0;animation:pls 1.5s infinite;}
-#lc-close{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);background:none;border:none;color:#3a5a78;cursor:pointer;font-size:.78rem;line-height:1;padding:4px;border-radius:4px;transition:color .15s;}
-#lc-close:hover{color:#c8ddf0;}
+/* ── Header ── */
+.lc-hdr{background:rgba(0,212,255,.05);border-bottom:1px solid rgba(0,212,255,.12);padding:.9rem 1.1rem;display:flex;align-items:center;justify-content:space-between;position:relative;}
+.lc-hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#00d4ff,#0099cc);}
+.lc-hdr-left{display:flex;align-items:center;gap:.75rem;}
+.lc-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#00d4ff,#005577);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:.62rem;font-weight:700;color:#020617;flex-shrink:0;border:1.5px solid rgba(0,212,255,.35);}
+.lc-name{font-family:'Orbitron',monospace;font-size:.74rem;font-weight:700;color:#fff;letter-spacing:.5px;}
+.lc-status{font-size:.62rem;color:#00ff88;display:flex;align-items:center;gap:4px;margin-top:2px;}
+.lc-sdot{width:5px;height:5px;border-radius:50%;background:#00ff88;animation:pls 1.5s infinite;flex-shrink:0;}
+.lc-x{background:none;border:none;color:#3a5a78;cursor:pointer;padding:4px;border-radius:5px;font-size:.8rem;line-height:1;transition:color .15s;}
+.lc-x:hover{color:#c8ddf0;}
 
-/* Panel body */
-.lc-body{padding:.95rem 1.1rem;font-size:.82rem;color:#7a9ab5;line-height:1.7;}
+/* ── Body ── */
+.lc-body{padding:1.8rem 1.4rem 1.4rem;display:flex;flex-direction:column;align-items:center;text-align:center;}
+.lc-icon-wrap{width:58px;height:58px;border-radius:50%;background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;}
+.lc-intro{font-family:'Orbitron',monospace;font-size:.85rem;font-weight:700;color:#fff;line-height:1.5;margin-bottom:.55rem;}
+.lc-sub{font-size:.78rem;color:#7a9ab5;line-height:1.65;margin-bottom:1.4rem;max-width:220px;}
+#lc-start{width:100%;padding:.72rem 1.2rem;background:linear-gradient(135deg,#00d4ff,#0099cc);color:#020617;border:none;border-radius:9px;font-family:'Exo 2',sans-serif;font-size:.84rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:box-shadow .2s,transform .15s;}
+#lc-start:hover:not(:disabled){box-shadow:0 0 24px rgba(0,212,255,.45);transform:translateY(-1px);}
+#lc-start:disabled{opacity:.7;cursor:not-allowed;transform:none;}
+.lst-text{display:flex;align-items:center;gap:7px;}
+.lst-loader{display:none;align-items:center;gap:8px;}
+#lc-start.loading .lst-text{display:none;}
+#lc-start.loading .lst-loader{display:flex;}
+@keyframes lstSpin{to{transform:rotate(360deg)}}
+.lst-spin{width:16px;height:16px;animation:lstSpin .8s linear infinite;flex-shrink:0;}
 
-/* Start Chat button */
-#lc-start{display:flex;align-items:center;justify-content:center;gap:7px;width:calc(100% - 2.2rem);margin:0 1.1rem 1.1rem;padding:.68rem 1.2rem;background:linear-gradient(135deg,#00d4ff,#0099cc);color:#020617;border:none;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:box-shadow .2s,transform .15s;}
-#lc-start:hover{box-shadow:0 0 24px rgba(0,212,255,.5);transform:translateY(-1px);}
+/* ── Footer ── */
+.lc-foot{padding:.6rem 1.1rem;border-top:1px solid rgba(0,212,255,.08);font-size:.62rem;color:#1f3a52;text-align:center;letter-spacing:.4px;display:flex;align-items:center;justify-content:center;gap:5px;}
+.lc-foot i{font-size:.6rem;}
 
-/* Circular trigger button */
-#lc-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#020617,#0a0f1c);border:1.5px solid rgba(0,212,255,.45);box-shadow:0 0 20px rgba(0,212,255,.28),0 4px 20px rgba(0,0,0,.5);cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:box-shadow .25s,border-color .25s,transform .2s;}
-#lc-btn:hover{border-color:#00d4ff;box-shadow:0 0 32px rgba(0,212,255,.55),0 4px 24px rgba(0,0,0,.5);transform:scale(1.07);}
-#lc-btn svg{width:22px;height:22px;flex-shrink:0;}
-#lc-badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:var(--o);border-radius:9px;font-size:.56rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:'Orbitron',monospace;}
-
-/* Light mode */
-[data-theme="light"] #lc-panel{background:rgba(255,255,255,.96);border-color:rgba(0,98,204,.2);box-shadow:0 8px 32px rgba(0,0,0,.12);}
-[data-theme="light"] .lc-hdr{background:rgba(0,98,204,.05);border-bottom-color:rgba(0,98,204,.12);}
-[data-theme="light"] .lc-hdr-name{color:#0f172a;}
-[data-theme="light"] .lc-body{color:#64748b;}
-[data-theme="light"] #lc-btn{background:linear-gradient(135deg,#0062cc,#004fa3);border-color:rgba(0,98,204,.45);box-shadow:0 0 16px rgba(0,98,204,.3),0 4px 16px rgba(0,0,0,.1);}
-[data-theme="light"] #lc-btn:hover{border-color:#0062cc;box-shadow:0 0 28px rgba(0,98,204,.5),0 4px 18px rgba(0,0,0,.12);}
-[data-theme="light"] #lc-btn svg path{fill:#fff!important;}
-[data-theme="light"] #lc-start{background:linear-gradient(135deg,#0062cc,#004fa3);color:#fff;}
-
-@media(max-width:480px){#live-chat{bottom:1.2rem;right:1.2rem;}#lc-panel{width:calc(100vw - 2.4rem);}}
-
-/* ── LIVE CHAT: GLOW PULSE + CLICK + TOOLTIP ── */
-@keyframes lcGlow{
-  0%,100%{box-shadow:0 0 18px rgba(0,212,255,.22),0 4px 20px rgba(0,0,0,.5);}
-  50%{box-shadow:0 0 34px rgba(0,212,255,.58),0 0 14px rgba(0,212,255,.22),0 4px 24px rgba(0,0,0,.5);}
-}
-@keyframes lcClick{
-  0%{transform:scale(1)}
-  40%{transform:scale(.88)}
-  100%{transform:scale(1)}
-}
-/* Glow pulses every 4s; stops on hover so hover state takes over */
+/* ── Trigger button ── */
+#lc-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#020617,#0a0f1c);border:1.5px solid rgba(0,212,255,.45);cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:border-color .25s,transform .2s;}
+#lc-btn:hover{border-color:#00d4ff;transform:scale(1.07);}
+@keyframes lcGlow{0%,100%{box-shadow:0 0 18px rgba(0,212,255,.22),0 4px 20px rgba(0,0,0,.5);}50%{box-shadow:0 0 34px rgba(0,212,255,.58),0 0 14px rgba(0,212,255,.22),0 4px 24px rgba(0,0,0,.5);}}
+@keyframes lcClick{0%{transform:scale(1)}40%{transform:scale(.88)}100%{transform:scale(1)}}
 #lc-btn{animation:lcGlow 4s ease-in-out infinite;}
 #lc-btn:hover{animation:none;}
-/* Press animation class added/removed by JS */
 .lc-clicking{animation:lcClick .25s cubic-bezier(.4,0,.2,1) forwards !important;}
 
-/* Tooltip */
-.lc-tip{
-  position:absolute;right:calc(100% + 14px);top:50%;
-  transform:translateY(-50%) translateX(6px);
-  background:rgba(2,6,23,.97);
-  border:1px solid rgba(0,212,255,.2);
-  border-radius:8px;
-  color:#c8ddf0;
-  font-family:'Exo 2',sans-serif;font-size:.71rem;font-weight:600;
-  padding:5px 12px;white-space:nowrap;letter-spacing:.3px;
-  opacity:0;pointer-events:none;
-  transition:opacity .18s,transform .18s;
-}
+/* ── Badge ── */
+#lc-badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:var(--o);border-radius:9px;font-size:.56rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:'Orbitron',monospace;}
+
+/* ── Tooltip ── */
+.lc-tip{position:absolute;right:calc(100% + 14px);top:50%;transform:translateY(-50%) translateX(6px);background:rgba(2,6,23,.97);border:1px solid rgba(0,212,255,.2);border-radius:8px;color:#c8ddf0;font-family:'Exo 2',sans-serif;font-size:.71rem;font-weight:600;padding:5px 12px;white-space:nowrap;letter-spacing:.3px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;}
 #lc-btn:hover .lc-tip{opacity:1;transform:translateY(-50%) translateX(0);}
-[data-theme="light"] .lc-tip{
-  background:rgba(255,255,255,.97);
-  border-color:rgba(0,98,204,.2);
-  color:#1e293b;
-}
+
+/* ── Light mode ── */
+[data-theme="light"] #lc-panel{background:rgba(255,255,255,.97);border-color:rgba(0,98,204,.2);box-shadow:0 12px 40px rgba(0,0,0,.15);}
+[data-theme="light"] .lc-hdr{background:rgba(0,98,204,.05);border-bottom-color:rgba(0,98,204,.12);}
+[data-theme="light"] .lc-hdr::before{background:linear-gradient(90deg,#0062cc,#004fa3);}
+[data-theme="light"] .lc-av{background:linear-gradient(135deg,#0062cc,#003d7a);color:#fff;}
+[data-theme="light"] .lc-name{color:#0f172a;}
+[data-theme="light"] .lc-status{color:#16a34a;}
+[data-theme="light"] .lc-sdot{background:#16a34a;}
+[data-theme="light"] .lc-x:hover{color:#0f172a;}
+[data-theme="light"] .lc-icon-wrap{background:rgba(0,98,204,.06);border-color:rgba(0,98,204,.15);}
+[data-theme="light"] .lc-intro{color:#0f172a;}
+[data-theme="light"] .lc-sub{color:#64748b;}
+[data-theme="light"] #lc-start{background:linear-gradient(135deg,#0062cc,#004fa3);color:#fff;}
+[data-theme="light"] #lc-start:hover{box-shadow:0 0 20px rgba(0,98,204,.4);}
+[data-theme="light"] .lc-foot{border-top-color:rgba(0,98,204,.08);color:#94a3b8;}
+[data-theme="light"] #lc-btn{background:linear-gradient(135deg,#0062cc,#004fa3);border-color:rgba(0,98,204,.45);}
+[data-theme="light"] #lc-btn:hover{border-color:#0062cc;}
+[data-theme="light"] #lc-btn svg path{fill:#fff!important;}
+[data-theme="light"] .lc-tip{background:rgba(255,255,255,.97);border-color:rgba(0,98,204,.2);color:#1e293b;}
+
+@media(max-width:480px){#live-chat{bottom:1.2rem;right:1.2rem;}#lc-panel{width:calc(100vw - 2.4rem);}}
 
 /* ── TAWK.TO HOST-PAGE OVERRIDES ─────────────────────────────────
    The chat PANEL is a cross-origin iframe — styled via dashboard CSS.
@@ -1982,30 +1979,53 @@ div[id*="tawk"] svg polygon,
 
 
 
-<!-- LIVE SUPPORT WIDGET -->
+<!-- LIVE CHAT SYSTEM -->
 <div id="live-chat">
-  <div id="lc-panel">
+
+  <div id="lc-panel" role="dialog" aria-label="Live Support">
     <div class="lc-hdr">
-      <div class="lc-hdr-av">AH</div>
-      <div class="lc-hdr-info">
-        <div class="lc-hdr-name">Live Support</div>
-        <div class="lc-hdr-status"><span class="lc-sdot"></span>Ahmed Hussein · Online</div>
+      <div class="lc-hdr-left">
+        <div class="lc-av">AH</div>
+        <div>
+          <div class="lc-name">Live Support</div>
+          <div class="lc-status"><span class="lc-sdot"></span>Ahmed Hussein &middot; Online</div>
+        </div>
       </div>
-      <button id="lc-close" onclick="closeLcPanel()" title="Close">✕</button>
+      <button class="lc-x" onclick="closeLcPanel()"><i class="fas fa-times"></i></button>
     </div>
-    <div class="lc-body">Ask about courses, certifications, or labs. Ahmed responds directly — usually within minutes.</div>
-    <button id="lc-start" onclick="startLiveChat()">
-      <svg width="14" height="14" viewBox="0 0 24 24"><path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" fill="currentColor"/></svg>
-      Start Chat
-    </button>
+    <div class="lc-body">
+      <div class="lc-icon-wrap">
+        <svg viewBox="0 0 32 32" width="26" height="26" fill="none">
+          <path d="M4 9h24M4 16h16M4 23h10" stroke="#00d4ff" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="lc-intro">Ask about CCNA,<br>labs, or training</div>
+      <div class="lc-sub">Ahmed responds directly &mdash; usually within minutes.</div>
+      <button id="lc-start" onclick="startLiveChat()">
+        <span class="lst-text">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          Start Chat
+        </span>
+        <span class="lst-loader">
+          <svg class="lst-spin" viewBox="0 0 24 24" fill="none" width="16" height="16">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-dasharray="28" stroke-dashoffset="9"/>
+          </svg>
+          Connecting&hellip;
+        </span>
+      </button>
+    </div>
+    <div class="lc-foot"><i class="fas fa-shield-alt"></i>&nbsp;Secure &middot; Private &middot; No spam</div>
   </div>
+
   <button id="lc-btn" onclick="toggleLcPanel()">
     <span id="lc-badge">1</span>
-    <svg viewBox="0 0 24 24" fill="none">
-      <path d="M12 2C6.48 2 2 6.48 2 12v5c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1h-.93C3.54 7.68 7.42 4 12 4s8.46 3.68 8.93 8H20c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-5c0-5.52-4.48-10-10-10z" fill="#00d4ff"/>
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+      <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 12H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="#00d4ff"/>
     </svg>
     <span class="lc-tip">Chat with Instructor</span>
   </button>
+
+</div>
 </div>
 
 <div id="toast-box"></div>
