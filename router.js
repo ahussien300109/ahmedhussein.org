@@ -152,5 +152,9 @@ const Router = (() => {
       window.addEventListener('hashchange', () => _dispatch(_pathFromHash()));
       _dispatch(_pathFromHash());
     },
+
+    /** Alias — used by api.js admin route guard. */
+    redirectToAdmin() { this.go('admin'); },
+    redirectToLogin() { this.go('admin/login'); },
   };
 })();

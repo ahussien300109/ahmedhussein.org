@@ -354,9 +354,9 @@ function toggleMob() {
 }
 
 /* ══════════════════════════════════════════════════════
-   INIT — wires Router + UI + all subsystems
+   INIT — wires Router + UI + Api + all subsystems
    ══════════════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   /* Theme icon sync */
   if (document.documentElement.getAttribute('data-theme') === 'light') {
     const ic = document.getElementById('theme-icon');
@@ -371,7 +371,24 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollProgress();
   initAutoEngagement();
 
-  /* Auth / session */
+  /* ── Restore Supabase admin session ── */
+  const adminUser = Api.Auth.restore();
+  if (adminUser) {
+    S.isAdmin = true;
+  }
+
+  /* ── Load courses from Supabase (fallback to DEFAULT_COURSES) ── */
+  try {
+    const remote = await Api.Courses.list();
+    if (remote?.length) {
+      /* Map Supabase rows to the shape expected by renderCourses() */
+      COURSES = remote.map(mapDbCourse);
+    }
+  } catch (e) {
+    console.warn('[api] Using local course data:', e.message);
+  }
+
+  /* Legacy localStorage session for non-admin users */
   restoreSession();
 
   /* Modal close-on-backdrop */
@@ -382,7 +399,11 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ── ROUTER SETUP ── */
   Router
     .guard((path) => {
-      /* Redirect dashboard to login if not authenticated */
+      /* Protect admin routes — require Supabase session */
+      if ((path === 'admin' || path.startsWith('admin/')) && !Api.Auth.isAdmin) {
+        return 'admin/login';
+      }
+      /* Protect student dashboard */
       if (path === 'dashboard' && !S.user) { openModal('login'); return 'home'; }
     })
     .on('home', () => {
@@ -409,12 +430,25 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('site-footer').style.display = 'none';
       renderDashboard();
     })
-    /* Dynamic course page: #courses/1, #courses/2 … */
+    /* ── Admin routes ── */
+    .on('admin/login', () => {
+      document.getElementById('site-footer').style.display = 'none';
+      UI.renderAdminLogin();
+    })
+    .on('admin', () => {
+      document.getElementById('site-footer').style.display = 'none';
+      UI.renderAdminDashboard();
+    })
+    .on('admin/courses/:id', async ({ id }) => {
+      document.getElementById('site-footer').style.display = 'none';
+      UI.renderAdminCourseEditor(id);
+    })
+    /* Dynamic public course page */
     .on('courses/:courseId', ({ courseId }) => {
       document.getElementById('site-footer').style.display = '';
       renderCourseDetails(parseInt(courseId, 10));
     })
-    /* Fallback — unknown hashes redirect to home */
+    /* Fallback */
     .on('*', () => Router.go('home'))
     .init();
 
@@ -1566,6 +1600,158 @@ function enrollAndStart(id) {
   saveSession();
   updateDash();
   toast('Enrolled successfully!', 'suc');
+}
+
+/* ══════════════════════════════════════════════════════
+   SUPABASE ↔ LOCAL SHAPE MAPPER
+   ══════════════════════════════════════════════════════ */
+
+/** Map a Supabase courses row to the shape used by renderCourses(). */
+function mapDbCourse(row) {
+  const thMap = { CCNA:'th1', CCNP:'th2', Security:'th3', Labs:'th4' };
+  return {
+    id:        row.id,         /* uuid */
+    dbId:      row.id,         /* keep uuid for API calls */
+    cat:       row.category || 'CCNA',
+    icon:      row.icon    || '🌐',
+    th:        thMap[row.category] || 'th5',
+    title:     row.title,
+    desc:      row.description || '',
+    level:     row.level    || 'Beginner',
+    duration:  row.duration || '0 hrs',
+    students:  String(row.students || 0),
+    price:     row.price    || 'Free',
+    rating:    String(row.rating   || '5.0'),
+    reviews:   '0',
+    prereqs:   '',
+    curriculum:[],
+    lessons:   row.lessons  || [],
+  };
+}
+
+/* ══════════════════════════════════════════════════════
+   ADMIN AUTH ACTIONS (called from UI forms)
+   ══════════════════════════════════════════════════════ */
+
+async function adminLogin(email, password) {
+  const btn = document.getElementById('adm-login-btn');
+  const err = document.getElementById('adm-login-err');
+  if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
+  if (err) err.style.display = 'none';
+  try {
+    await Api.Auth.signIn(email, password);
+    S.isAdmin = true;
+    Router.go('admin');
+    toast('Welcome, Admin!', 'suc');
+  } catch (e) {
+    if (err) { err.textContent = e.message; err.style.display = 'block'; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
+  }
+}
+
+async function adminLogout() {
+  await Api.Auth.signOut();
+  S.isAdmin = false;
+  Router.go('home');
+  toast('Logged out.', 'inf');
+}
+
+/* ══════════════════════════════════════════════════════
+   ADMIN COURSE CRUD (called from admin UI forms)
+   ══════════════════════════════════════════════════════ */
+
+async function adminSaveCourseDb(formEl, courseId) {
+  const btn = formEl.querySelector('[type=submit]');
+  if (btn) btn.disabled = true;
+  const data = {
+    title:       formEl.querySelector('[name=title]')?.value.trim(),
+    description: formEl.querySelector('[name=description]')?.value.trim(),
+    price:       formEl.querySelector('[name=price]')?.value.trim()    || 'Free',
+    level:       formEl.querySelector('[name=level]')?.value           || 'Beginner',
+    category:    formEl.querySelector('[name=category]')?.value        || 'CCNA',
+    duration:    formEl.querySelector('[name=duration]')?.value.trim() || '0 hrs',
+    icon:        formEl.querySelector('[name=icon]')?.value.trim()     || '🌐',
+  };
+  if (!data.title) { toast('Title is required.', 'err'); if (btn) btn.disabled = false; return; }
+  try {
+    let row;
+    if (courseId) {
+      row = await Api.Courses.update(courseId, data);
+      toast('Course updated!', 'suc');
+    } else {
+      row = await Api.Courses.create(data);
+      toast('Course created!', 'suc');
+    }
+    /* Refresh local COURSES */
+    const remote = await Api.Courses.list();
+    if (remote) COURSES = remote.map(mapDbCourse);
+    Router.go('admin');
+  } catch (e) {
+    toast(e.message, 'err');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function adminDeleteCourseDb(courseId) {
+  if (!confirm('Delete this course and all its lessons?')) return;
+  try {
+    await Api.Courses.delete(courseId);
+    COURSES = COURSES.filter(c => c.dbId !== courseId);
+    toast('Course deleted.', 'inf');
+    Router.go('admin');
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+/* ══════════════════════════════════════════════════════
+   ADMIN LESSON CRUD
+   ══════════════════════════════════════════════════════ */
+
+async function adminSaveLessonDb(formEl, courseId, lessonId) {
+  const btn = formEl.querySelector('[type=submit]');
+  if (btn) btn.disabled = true;
+  const data = {
+    course_id:   courseId,
+    title:       formEl.querySelector('[name=title]')?.value.trim(),
+    content:     formEl.querySelector('[name=content]')?.value.trim(),
+    duration:    formEl.querySelector('[name=duration]')?.value.trim() || '5 min',
+    order_index: parseInt(formEl.querySelector('[name=order_index]')?.value || '0', 10),
+  };
+  if (!data.title) { toast('Lesson title required.', 'err'); if (btn) btn.disabled = false; return; }
+  try {
+    if (lessonId) {
+      await Api.Lessons.update(lessonId, data);
+      toast('Lesson updated!', 'suc');
+    } else {
+      await Api.Lessons.create(data);
+      toast('Lesson added!', 'suc');
+    }
+    /* Re-render the editor for this course */
+    UI.renderAdminCourseEditor(courseId);
+  } catch (e) {
+    toast(e.message, 'err');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function adminDeleteLessonDb(lessonId, courseId) {
+  if (!confirm('Delete this lesson?')) return;
+  try {
+    await Api.Lessons.delete(lessonId);
+    toast('Lesson deleted.', 'inf');
+    UI.renderAdminCourseEditor(courseId);
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+async function adminReorderLessons(courseId) {
+  const items = document.querySelectorAll('.lesson-item[data-lesson-id]');
+  const orderedIds = [...items].map(el => el.dataset.lessonId);
+  try {
+    await Api.Lessons.reorder(orderedIds);
+    toast('Order saved.', 'suc');
+  } catch (e) { toast(e.message, 'err'); }
 }
 
 /* ── CONTACT & NEWSLETTER ── */

@@ -332,6 +332,246 @@ const renderContact = () => {
 };
 
 /* ══════════════════════════════════════════════
+   ADMIN — LOGIN
+   ══════════════════════════════════════════════ */
+const renderAdminLogin = () => {
+  root().innerHTML = /* html */`
+    <div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:2rem">
+      <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2.5rem;width:100%;max-width:380px;position:relative">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o));border-radius:var(--r2) var(--r2) 0 0"></div>
+        <div style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--tw);margin-bottom:.3rem">ADMIN PORTAL</div>
+        <div style="font-size:.8rem;color:var(--tm);margin-bottom:1.8rem">Sign in to manage courses and lessons</div>
+        <div class="fgrp"><label class="flbl">Email</label>
+          <input id="adm-email" class="finp" type="email" placeholder="admin@example.com" autocomplete="email"></div>
+        <div class="fgrp"><label class="flbl">Password</label>
+          <input id="adm-pass" class="finp" type="password" placeholder="••••••••"
+            onkeydown="if(event.key==='Enter')adminLogin(document.getElementById('adm-email').value,document.getElementById('adm-pass').value)"></div>
+        <div id="adm-login-err" class="form-err" style="display:none;margin-bottom:.8rem"></div>
+        <button id="adm-login-btn" class="btn btn-c btn-full"
+          onclick="adminLogin(document.getElementById('adm-email').value,document.getElementById('adm-pass').value)">
+          <i class="fas fa-sign-in-alt"></i> Sign In
+        </button>
+        <div style="text-align:center;margin-top:1.2rem">
+          <a href="#" onclick="Router.go('home');return false" style="font-size:.76rem;color:var(--tm)">← Back to site</a>
+        </div>
+      </div>
+    </div>`;
+};
+
+/* ══════════════════════════════════════════════
+   ADMIN — DASHBOARD (course list)
+   ══════════════════════════════════════════════ */
+const renderAdminDashboard = async () => {
+  root().innerHTML = `<div style="padding:2rem;max-width:1200px;margin:0 auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <div style="font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--tw)">ADMIN <span style="color:var(--c)">DASHBOARD</span></div>
+        <div style="font-size:.78rem;color:var(--tm);margin-top:3px">Manage courses and lessons</div>
+      </div>
+      <div style="display:flex;gap:.6rem">
+        <button class="btn btn-c btn-sm" onclick="Router.go('admin/courses/new')"><i class="fas fa-plus"></i> New Course</button>
+        <button class="btn btn-ghost btn-sm" onclick="adminLogout()"><i class="fas fa-power-off"></i> Logout</button>
+      </div>
+    </div>
+    <div id="adm-course-list"><div style="text-align:center;padding:3rem;color:var(--tm)">Loading…</div></div>
+  </div>`;
+
+  try {
+    const courses = await Api.Courses.list();
+    const el = document.getElementById('adm-course-list');
+    if (!el) return;
+    if (!courses?.length) {
+      el.innerHTML = `<div class="empty-state"><div class="es-ico">📚</div><div class="es-title">NO COURSES YET</div><div class="es-desc">Click "New Course" to add your first course.</div></div>`;
+      return;
+    }
+    el.innerHTML = `<div class="adm-tbl">
+      <div class="adm-tbl-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr 1.5fr">
+        <span>Course</span><span>Category</span><span>Level</span><span>Price</span><span>Actions</span>
+      </div>
+      ${courses.map(c => `
+      <div class="adm-tbl-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1.5fr">
+        <div class="adm-course-name" style="font-size:.84rem;font-weight:600;color:var(--tw)">${c.title}</div>
+        <span><span class="lvl-tag">${c.category || 'CCNA'}</span></span>
+        <span style="font-size:.74rem;color:var(--tm)">${c.level || 'Beginner'}</span>
+        <span class="${c.price==='Free'?'free-tag':'price-tag'}">${c.price || 'Free'}</span>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="Router.go('admin/courses/${c.id}')">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button class="btn btn-sm" style="background:rgba(255,68,85,.1);color:var(--red);border:1px solid rgba(255,68,85,.2)"
+            onclick="adminDeleteCourseDb('${c.id}')">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  } catch (e) {
+    document.getElementById('adm-course-list').innerHTML =
+      `<div class="empty-state"><div class="es-ico">⚠️</div><div class="es-title">ERROR</div><div class="es-desc">${e.message}</div></div>`;
+  }
+};
+
+/* ══════════════════════════════════════════════
+   ADMIN — COURSE EDITOR (form + lessons)
+   ══════════════════════════════════════════════ */
+const renderAdminCourseEditor = async (courseId) => {
+  const isNew = !courseId || courseId === 'new';
+  root().innerHTML = `<div style="padding:2rem;max-width:900px;margin:0 auto">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
+      <button class="btn btn-ghost btn-sm" onclick="Router.go('admin')"><i class="fas fa-arrow-left"></i> Back</button>
+      <div style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--tw)">${isNew ? 'NEW COURSE' : 'EDIT COURSE'}</div>
+    </div>
+    <div id="adm-editor-body"><div style="text-align:center;padding:3rem;color:var(--tm)">Loading…</div></div>
+  </div>`;
+
+  let course = null;
+  let lessons = [];
+  if (!isNew) {
+    try {
+      course = await Api.Courses.get(courseId);
+      lessons = await Api.Lessons.list(courseId);
+    } catch (e) { toast(e.message, 'err'); }
+  }
+
+  const body = document.getElementById('adm-editor-body');
+  if (!body) return;
+
+  body.innerHTML = /* html */`
+    <!-- Course form -->
+    <div class="profile-card" style="margin-bottom:1.5rem">
+      <div style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem">Course Details</div>
+      <form id="adm-course-form" onsubmit="event.preventDefault();adminSaveCourseDb(this,'${isNew?'':courseId}')">
+        <div class="form-row2">
+          <div class="fgrp"><label class="flbl">Title *</label>
+            <input name="title" class="finp" value="${course?.title||''}" required placeholder="e.g. CCNA Fundamentals"></div>
+          <div class="fgrp"><label class="flbl">Icon (emoji)</label>
+            <input name="icon" class="finp" value="${course?.icon||'🌐'}" placeholder="🌐"></div>
+        </div>
+        <div class="form-row2">
+          <div class="fgrp"><label class="flbl">Category</label>
+            <select name="category" class="finp">
+              ${['CCNA','CCNP','Security','Labs','Other'].map(v=>`<option ${course?.category===v?'selected':''}>${v}</option>`).join('')}
+            </select></div>
+          <div class="fgrp"><label class="flbl">Level</label>
+            <select name="level" class="finp">
+              ${['Beginner','Intermediate','Advanced'].map(v=>`<option ${course?.level===v?'selected':''}>${v}</option>`).join('')}
+            </select></div>
+        </div>
+        <div class="form-row2">
+          <div class="fgrp"><label class="flbl">Duration</label>
+            <input name="duration" class="finp" value="${course?.duration||''}" placeholder="e.g. 30 hrs"></div>
+          <div class="fgrp"><label class="flbl">Price</label>
+            <input name="price" class="finp" value="${course?.price||'Free'}" placeholder="Free or $149"></div>
+        </div>
+        <div class="fgrp"><label class="flbl">Description</label>
+          <textarea name="description" class="finp" style="min-height:80px" placeholder="Short course description…">${course?.description||''}</textarea></div>
+        <div style="display:flex;gap:.8rem;margin-top:.5rem;flex-wrap:wrap">
+          <button type="submit" class="btn btn-c"><i class="fas fa-save"></i> Save Course</button>
+          ${!isNew?`<button type="button" class="btn btn-ghost" onclick="Router.go('admin')"><i class="fas fa-times"></i> Cancel</button>`:''}
+        </div>
+      </form>
+    </div>
+
+    ${!isNew ? /* html */`
+    <!-- Lessons panel -->
+    <div class="profile-card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.6rem">
+        <div style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase">
+          Lessons (${lessons.length})
+        </div>
+        <button class="btn btn-c btn-sm" onclick="showLessonForm(null,'${courseId}')">
+          <i class="fas fa-plus"></i> Add Lesson
+        </button>
+      </div>
+
+      <!-- Lesson list -->
+      <div id="lesson-list" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.2rem">
+        ${lessons.length ? lessons.map(l => /* html */`
+        <div class="lesson-item adm-tbl-row" data-lesson-id="${l.id}"
+          style="grid-template-columns:auto 1fr auto;display:grid;gap:.8rem;align-items:center;padding:.65rem 1rem;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);cursor:default">
+          <div style="display:flex;flex-direction:column;gap:2px">
+            <button title="Move up" class="btn btn-ghost btn-sm" style="padding:2px 7px"
+              onclick="moveLessonUp(this)">▲</button>
+            <button title="Move down" class="btn btn-ghost btn-sm" style="padding:2px 7px"
+              onclick="moveLessonDown(this)">▼</button>
+          </div>
+          <div>
+            <div style="font-size:.84rem;font-weight:600;color:var(--tw)">${l.title}</div>
+            <div style="font-size:.68rem;color:var(--tm)">${l.duration||'—'}</div>
+          </div>
+          <div style="display:flex;gap:.4rem">
+            <button class="btn btn-ghost btn-sm" onclick="showLessonForm('${l.id}','${courseId}',${JSON.stringify(l).replace(/</g,'\\u003c')})">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-sm" style="background:rgba(255,68,85,.1);color:var(--red);border:1px solid rgba(255,68,85,.2)"
+              onclick="adminDeleteLessonDb('${l.id}','${courseId}')">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>`).join('')
+        : `<div style="text-align:center;padding:1.5rem;color:var(--tm);font-size:.82rem">No lessons yet — click "Add Lesson" to start.</div>`}
+      </div>
+
+      ${lessons.length > 1 ? `<button class="btn btn-ghost btn-sm" onclick="adminReorderLessons('${courseId}')">
+        <i class="fas fa-save"></i> Save Order
+      </button>` : ''}
+    </div>
+
+    <!-- Lesson form (shown inline) -->
+    <div id="lesson-form-wrap" style="display:none;margin-top:1rem">
+      <div class="profile-card">
+        <div style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--o);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem" id="lesson-form-title">ADD LESSON</div>
+        <form id="adm-lesson-form" onsubmit="event.preventDefault()">
+          <div class="form-row2">
+            <div class="fgrp"><label class="flbl">Title *</label>
+              <input name="title" class="finp" required placeholder="Lesson title"></div>
+            <div class="fgrp"><label class="flbl">Duration</label>
+              <input name="duration" class="finp" placeholder="e.g. 10 min"></div>
+          </div>
+          <div class="fgrp"><label class="flbl">Order Index</label>
+            <input name="order_index" class="finp" type="number" min="0" placeholder="0"></div>
+          <div class="fgrp"><label class="flbl">Content</label>
+            <textarea name="content" class="finp" style="min-height:120px" placeholder="Lesson content, notes, or embed code…"></textarea></div>
+          <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+            <button type="submit" class="btn btn-c btn-sm"><i class="fas fa-save"></i> Save Lesson</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('lesson-form-wrap').style.display='none'">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>` : ''}`;
+
+  /* Lesson form helpers (scoped to this render) */
+  window.showLessonForm = (lessonId, cId, lesson = null) => {
+    const wrap  = document.getElementById('lesson-form-wrap');
+    const form  = document.getElementById('adm-lesson-form');
+    const title = document.getElementById('lesson-form-title');
+    if (!wrap || !form) return;
+    title.textContent = lessonId ? 'EDIT LESSON' : 'ADD LESSON';
+    form.querySelector('[name=title]').value       = lesson?.title       || '';
+    form.querySelector('[name=content]').value     = lesson?.content     || '';
+    form.querySelector('[name=duration]').value    = lesson?.duration    || '';
+    form.querySelector('[name=order_index]').value = lesson?.order_index ?? '';
+    form.onsubmit = (e) => { e.preventDefault(); adminSaveLessonDb(form, cId, lessonId); };
+    wrap.style.display = 'block';
+    wrap.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  window.moveLessonUp = (btn) => {
+    const item = btn.closest('.lesson-item');
+    const prev = item.previousElementSibling;
+    if (prev?.classList.contains('lesson-item')) item.parentNode.insertBefore(item, prev);
+  };
+  window.moveLessonDown = (btn) => {
+    const item = btn.closest('.lesson-item');
+    const next = item.nextElementSibling;
+    if (next?.classList.contains('lesson-item')) item.parentNode.insertBefore(next, item);
+  };
+};
+
+/* ══════════════════════════════════════════════
    PUBLIC API — imported by app.js
    ══════════════════════════════════════════════ */
-const UI = { renderHome, renderCoursesPage, renderAbout, renderContact, PageHeader };
+const UI = {
+  renderHome, renderCoursesPage, renderAbout, renderContact, PageHeader,
+  renderAdminLogin, renderAdminDashboard, renderAdminCourseEditor,
+};
