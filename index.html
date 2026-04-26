@@ -1059,9 +1059,9 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 /* ── Tooltip ── */
 .lc-tip{position:absolute;right:calc(100% + 14px);top:50%;transform:translateY(-50%) translateX(6px);background:rgba(2,6,23,.97);border:1px solid rgba(0,212,255,.2);border-radius:8px;color:#c8ddf0;font-family:'Exo 2',sans-serif;font-size:.71rem;font-weight:600;padding:5px 12px;white-space:nowrap;letter-spacing:.3px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;}
 #lc-btn:hover .lc-tip{opacity:1;transform:translateY(-50%) translateX(0);}
-/* Panel fade-out before Tawk opens — uses existing transition */
+/* Panel fade-out animation */
 #lc-panel.lc-closing{opacity:0!important;transform:translateY(10px) scale(.97)!important;pointer-events:none!important;}
-/* Button disabled during Tawk load */
+/* Button disabled during load */
 #lc-btn:disabled{opacity:.5;cursor:not-allowed;animation:none!important;transform:none!important;}
 
 /* ── Light mode ── */
@@ -2060,30 +2060,31 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 
 <script src="app.js"></script>
 
-<!-- Tawk.to -->
+<!-- Tawk.to: loads ONLY when user clicks the chat button -->
 <script>
-var Tawk_API = Tawk_API || {};
-Tawk_API.onLoad = function() {
-  Tawk_API.hideWidget();
-};
+var tawkLoaded = false;
 
-(function(){
+function loadTawk() {
+  if (tawkLoaded) return;
+  tawkLoaded = true;
+
   var s1 = document.createElement("script");
   var s0 = document.getElementsByTagName("script")[0];
   s1.async = true;
-  s1.src = 'https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
-  s1.charset = 'UTF-8';
-  s1.setAttribute('crossorigin','*');
-  s0.parentNode.insertBefore(s1,s0);
-})();
-</script>
+  s1.src = "https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50";
+  s1.charset = "UTF-8";
+  s1.setAttribute("crossorigin", "*");
+  s0.parentNode.insertBefore(s1, s0);
 
-<script>
+  s1.onload = function() {
+    if (window.Tawk_API) {
+      Tawk_API.maximize();
+    }
+  };
+}
+
 function openChat() {
-  if (window.Tawk_API) {
-    Tawk_API.showWidget();
-    Tawk_API.maximize();
-  }
+  loadTawk();
 }
 </script>
 
