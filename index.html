@@ -2000,56 +2000,119 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 
 <script src="app.js"></script>
 
-<!-- Custom chat widget + Tawk on-demand -->
+<!-- Custom Live Chat (Formspree backend) -->
 <div id="custom-chat">
-  <button id="chat-btn" onclick="openChat()">
+
+  <!-- Floating trigger button -->
+  <button id="chat-btn" onclick="openChat()" aria-label="Open live chat">
     <i class="fas fa-headset"></i>
     <span class="chat-btn-tip">Chat with Instructor</span>
   </button>
-  <div id="chat-panel">
+
+  <!-- Chat panel -->
+  <div id="chat-panel" role="dialog" aria-label="Live Support">
+
     <div class="chat-header">
-      <span>Ahmed Hussein</span>
-      <button onclick="closePanel()">&#10005;</button>
+      <div class="chat-hdr-info">
+        <span class="chat-hdr-title">Live Support</span>
+        <span class="chat-hdr-status">
+          <span class="chat-sdot"></span>Ahmed Hussein
+        </span>
+      </div>
+      <button class="chat-close-btn" onclick="closePanel()" aria-label="Close">&#10005;</button>
     </div>
-    <div class="chat-body">
-      <p>Hi, how can I help you with CCNA, labs, or training?</p>
+
+    <!-- Step 1: form -->
+    <div id="chat-form-wrap">
+      <p class="chat-intro">Send a message and we'll get back to you quickly.</p>
+      <form id="chat-form"
+            action="https://formspree.io/f/YOUR_FORMSPREE_ID"
+            method="POST">
+        <input  type="hidden" name="_subject" value="Chat message via ahmedhussein.org">
+        <div class="chat-field">
+          <label class="chat-lbl">Name</label>
+          <input  class="chat-inp" type="text"  name="name"    placeholder="Ahmed Hassan"       required autocomplete="name">
+        </div>
+        <div class="chat-field">
+          <label class="chat-lbl">Email</label>
+          <input  class="chat-inp" type="email" name="email"   placeholder="you@example.com"    required autocomplete="email">
+        </div>
+        <div class="chat-field">
+          <label class="chat-lbl">Message</label>
+          <textarea class="chat-inp chat-area"  name="message" placeholder="How can I help you?" required rows="3"></textarea>
+        </div>
+        <div id="chat-err" class="chat-err" style="display:none"></div>
+        <button type="submit" id="chat-send" class="chat-send-btn">
+          <span class="csb-text">Send Message</span>
+          <span class="csb-spin" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" width="14" height="14" class="chat-spinner">
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5"
+                      stroke-dasharray="28" stroke-dashoffset="9"/>
+            </svg>
+            Sending&hellip;
+          </span>
+        </button>
+      </form>
     </div>
-    <button class="chat-start" onclick="startTawkChat()">Start Live Chat</button>
+
+    <!-- Step 2: success -->
+    <div id="chat-success" style="display:none" class="chat-success-wrap">
+      <div class="chat-success-ico">&#10003;</div>
+      <div class="chat-success-title">Message sent!</div>
+      <div class="chat-success-sub">We'll respond to <span id="chat-reply-email"></span> shortly.</div>
+    </div>
+
   </div>
 </div>
 
 <script>
-var tawkLoaded = false;
-
-function loadTawk(cb) {
-  if (tawkLoaded) { if (cb) cb(); return; }
-  tawkLoaded = true;
-  var s = document.createElement("script");
-  s.async = true;
-  s.src = "https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50";
-  s.charset = "UTF-8";
-  s.setAttribute("crossorigin", "*");
-  document.body.appendChild(s);
-  s.onload = function() { if (cb) cb(); };
-}
-
+/* ── Custom chat — Formspree ── */
 function openChat() {
-  var p = document.getElementById("chat-panel");
-  p.style.display = p.style.display === "block" ? "none" : "block";
+  document.getElementById('chat-panel').classList.toggle('open');
 }
-
 function closePanel() {
-  document.getElementById("chat-panel").style.display = "none";
+  document.getElementById('chat-panel').classList.remove('open');
 }
 
-function startTawkChat() {
-  closePanel();
-  loadTawk(function() {
-    if (window.Tawk_API && typeof Tawk_API.maximize === "function") {
-      Tawk_API.maximize();
+document.getElementById('chat-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var form  = this;
+  var send  = document.getElementById('chat-send');
+  var err   = document.getElementById('chat-err');
+  var text  = send.querySelector('.csb-text');
+  var spin  = send.querySelector('.csb-spin');
+
+  /* Disable + show spinner */
+  send.disabled = true;
+  text.style.display = 'none';
+  spin.style.display = 'inline-flex';
+  err.style.display  = 'none';
+
+  try {
+    var res = await fetch(form.action, {
+      method:  'POST',
+      body:    new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (res.ok) {
+      /* Show success step */
+      var email = form.querySelector('[name="email"]').value;
+      document.getElementById('chat-reply-email').textContent = email;
+      document.getElementById('chat-form-wrap').style.display  = 'none';
+      document.getElementById('chat-success').style.display    = 'block';
+    } else {
+      var data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Failed to send. Please try again.');
     }
-  });
-}
+  } catch (ex) {
+    err.textContent    = ex.message;
+    err.style.display  = 'block';
+    send.disabled      = false;
+    text.style.display = 'inline';
+    spin.style.display = 'none';
+  }
+});
 </script>
 
 <!--
