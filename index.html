@@ -1039,6 +1039,49 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 
 @media(max-width:480px){#live-chat{bottom:1.2rem;right:1.2rem;}#lc-panel{width:calc(100vw - 2.4rem);}}
 
+/* ── FORM ── */
+.lc-form{display:flex;flex-direction:column;gap:.7rem;width:100%;margin-top:.2rem;}
+.lc-field{display:flex;flex-direction:column;gap:.28rem;}
+.lc-lbl{font-size:.64rem;font-weight:700;color:#3a5a78;text-transform:uppercase;letter-spacing:1px;}
+.lc-inp{background:rgba(255,255,255,.04);border:1px solid rgba(0,212,255,.18);color:#fff;padding:.58rem .85rem;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:.84rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+.lc-inp::placeholder{color:#1f3a52;}
+.lc-inp:focus{border-color:#00d4ff;box-shadow:0 0 0 2px rgba(0,212,255,.1);}
+.lc-inp.lc-invalid{border-color:rgba(255,68,85,.45)!important;}
+.lc-err{font-size:.66rem;color:#ff6060;min-height:.85rem;margin-top:1px;}
+
+/* ── STEP TRANSITIONS ── */
+.lc-step{animation:lcStepIn .3s ease both;}
+@keyframes lcStepIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.lc-step.lc-hidden{display:none!important;}
+
+/* ── STEP 2: GREETING ── */
+.lc-body-ctr{align-items:center;text-align:center;padding:2rem 1.4rem;}
+.lc-greet-icon{width:52px;height:52px;border-radius:50%;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.18);display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem;}
+.lc-greet-msg{font-family:'Orbitron',monospace;font-size:.82rem;font-weight:700;color:#fff;line-height:1.55;margin-bottom:1.1rem;}
+.lc-connecting{display:flex;align-items:center;gap:7px;font-size:.71rem;color:#7a9ab5;justify-content:center;}
+
+/* ── AUTO-ENGAGEMENT TOOLTIP ── */
+#lc-auto-tip{position:absolute;bottom:calc(100% + 14px);right:0;width:232px;background:rgba(2,6,23,.97);backdrop-filter:blur(16px);border:1px solid rgba(0,212,255,.2);border-radius:12px;padding:.9rem 1rem .8rem;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;transform:translateY(8px) scale(.97);pointer-events:none;transition:opacity .25s,transform .25s;}
+#lc-auto-tip.show{opacity:1;transform:translateY(0) scale(1);pointer-events:all;}
+#lc-auto-tip::after{content:'';position:absolute;bottom:-6px;right:18px;width:11px;height:11px;background:rgba(2,6,23,.97);border-right:1px solid rgba(0,212,255,.2);border-bottom:1px solid rgba(0,212,255,.2);transform:rotate(45deg);}
+.lat-msg{font-size:.77rem;color:#c8ddf0;line-height:1.5;margin-bottom:.65rem;}
+.lat-cta{display:block;width:100%;padding:.45rem;background:linear-gradient(135deg,#00d4ff,#0099cc);color:#020617;border:none;border-radius:7px;font-family:'Exo 2',sans-serif;font-size:.74rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:box-shadow .2s;}
+.lat-cta:hover{box-shadow:0 0 16px rgba(0,212,255,.4);}
+.lat-close{position:absolute;top:.4rem;right:.4rem;background:none;border:none;color:#2a4a62;cursor:pointer;font-size:.68rem;padding:3px;line-height:1;transition:color .15s;}
+.lat-close:hover{color:#c8ddf0;}
+
+/* ── LIGHT MODE ADDITIONS ── */
+[data-theme="light"] .lc-inp{background:rgba(0,0,0,.03);border-color:rgba(0,98,204,.18);color:#1e293b;}
+[data-theme="light"] .lc-inp::placeholder{color:#94a3b8;}
+[data-theme="light"] .lc-inp:focus{border-color:#0062cc;box-shadow:0 0 0 2px rgba(0,98,204,.1);}
+[data-theme="light"] .lc-lbl{color:#64748b;}
+[data-theme="light"] .lc-greet-msg{color:#0f172a;}
+[data-theme="light"] .lc-connecting{color:#64748b;}
+[data-theme="light"] #lc-auto-tip{background:rgba(255,255,255,.97);border-color:rgba(0,98,204,.2);}
+[data-theme="light"] #lc-auto-tip::after{background:rgba(255,255,255,.97);border-color:rgba(0,98,204,.2);}
+[data-theme="light"] .lat-msg{color:#1e293b;}
+[data-theme="light"] .lat-cta{background:linear-gradient(135deg,#0062cc,#004fa3);color:#fff;}
+
 /* ── TAWK.TO HOST-PAGE OVERRIDES ─────────────────────────────────
    The chat PANEL is a cross-origin iframe — styled via dashboard CSS.
    Everything below targets elements Tawk injects into the host DOM:
@@ -1974,6 +2017,7 @@ div[id*="tawk"] svg polygon,
 <!-- LIVE CHAT SYSTEM -->
 <div id="live-chat">
 
+  <!-- Step panel -->
   <div id="lc-panel" role="dialog" aria-label="Live Support">
     <div class="lc-hdr">
       <div class="lc-hdr-left">
@@ -1983,31 +2027,74 @@ div[id*="tawk"] svg polygon,
           <div class="lc-status"><span class="lc-sdot"></span>Ahmed Hussein &middot; Online</div>
         </div>
       </div>
-      <button class="lc-x" onclick="closeLcPanel()"><i class="fas fa-times"></i></button>
+      <button class="lc-x" onclick="closeLcPanel()" aria-label="Close"><i class="fas fa-times"></i></button>
     </div>
-    <div class="lc-body">
-      <div class="lc-icon-wrap">
-        <svg viewBox="0 0 32 32" width="26" height="26" fill="none">
-          <path d="M4 9h24M4 16h16M4 23h10" stroke="#00d4ff" stroke-width="2.2" stroke-linecap="round"/>
-        </svg>
+
+    <!-- STEP 1: Lead capture form -->
+    <div id="lc-s1" class="lc-step">
+      <div class="lc-body">
+        <div class="lc-intro">Get expert help with<br>CCNA, labs, or training</div>
+        <div class="lc-sub">Enter your details and Ahmed responds directly.</div>
+        <div class="lc-form">
+          <div class="lc-field">
+            <label class="lc-lbl" for="lc-fname">Your Name</label>
+            <input class="lc-inp" id="lc-fname" type="text" placeholder="Ahmed Hassan" autocomplete="name">
+            <div class="lc-err" id="lc-fname-err"></div>
+          </div>
+          <div class="lc-field">
+            <label class="lc-lbl" for="lc-femail">Email Address</label>
+            <input class="lc-inp" id="lc-femail" type="email" placeholder="you@example.com" autocomplete="email">
+            <div class="lc-err" id="lc-femail-err"></div>
+          </div>
+          <button id="lc-start" onclick="startLiveChat()">
+            <span class="lst-text">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+              Start Chat
+            </span>
+            <span class="lst-loader">
+              <svg class="lst-spin" viewBox="0 0 24 24" fill="none" width="15" height="15"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-dasharray="28" stroke-dashoffset="9"/></svg>
+              Connecting&hellip;
+            </span>
+          </button>
+        </div>
       </div>
-      <div class="lc-intro">Ask about CCNA,<br>labs, or training</div>
-      <div class="lc-sub">Ahmed responds directly &mdash; usually within minutes.</div>
-      <button id="lc-start" onclick="startLiveChat()">
-        <span class="lst-text">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-          Start Chat
-        </span>
-        <span class="lst-loader">
-          <svg class="lst-spin" viewBox="0 0 24 24" fill="none" width="16" height="16">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-dasharray="28" stroke-dashoffset="9"/>
-          </svg>
-          Connecting&hellip;
-        </span>
-      </button>
+      <div class="lc-foot"><i class="fas fa-shield-alt"></i>&nbsp;Secure &middot; Private &middot; No spam</div>
     </div>
-    <div class="lc-foot"><i class="fas fa-shield-alt"></i>&nbsp;Secure &middot; Private &middot; No spam</div>
+
+    <!-- STEP 2: Greeting + loading -->
+    <div id="lc-s2" class="lc-step lc-hidden">
+      <div class="lc-body lc-body-ctr">
+        <div class="lc-greet-icon">
+          <svg viewBox="0 0 32 32" width="24" height="24" fill="none">
+            <path d="M4 9h24M4 16h16M4 23h10" stroke="#00d4ff" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="lc-greet-msg" id="lc-greet-text"></div>
+        <div class="lc-connecting">
+          <svg class="lst-spin" viewBox="0 0 24 24" fill="none" width="13" height="13"><circle cx="12" cy="12" r="9" stroke="#00d4ff" stroke-width="2.5" stroke-dasharray="28" stroke-dashoffset="9"/></svg>
+          Opening chat window&hellip;
+        </div>
+      </div>
+    </div>
   </div>
+
+  <!-- Auto-engagement tip (shows after 10s idle) -->
+  <div id="lc-auto-tip">
+    <button class="lat-close" onclick="dismissAutoTip()" aria-label="Dismiss">&#10005;</button>
+    <div class="lat-msg">Need help choosing a course?</div>
+    <button class="lat-cta" onclick="openLcFromTip()">Chat with Instructor</button>
+  </div>
+
+  <!-- Trigger button -->
+  <button id="lc-btn" onclick="toggleLcPanel()" aria-label="Chat with Instructor">
+    <span id="lc-badge">1</span>
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+      <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 12H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="#00d4ff"/>
+    </svg>
+    <span class="lc-tip">Chat with Instructor</span>
+  </button>
+
+</div>
 
   <button id="lc-btn" onclick="toggleLcPanel()">
     <span id="lc-badge">1</span>

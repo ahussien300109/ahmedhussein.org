@@ -348,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollProgress();
   initUrgency();
   initCliDemo();
+  initAutoEngagement();
   initCircuit(); // initChat() removed — Tawk.to is the sole chat system
   initCursor();
   initScroll();
@@ -1104,15 +1105,20 @@ function renderLabs() {
 /* ── LIVE CHAT SYSTEM ── */
 let lcOpen = false;
 let lcLoading = false;
+let _lcAutoTimer = null;
+let _lcAutoShown = false;
 
+/* ── Panel open/close ── */
 function toggleLcPanel() {
+  if (lcOpen) { closeLcPanel(); return; }
   const panel = document.getElementById('lc-panel');
   const badge = document.getElementById('lc-badge');
   if (!panel) return;
-  lcOpen = !lcOpen;
-  panel.classList.toggle('open', lcOpen);
-  if (lcOpen && badge) badge.style.display = 'none';
-  if (!lcOpen) _lcReset();
+  lcOpen = true;
+  panel.classList.add('open');
+  if (badge) badge.style.display = 'none';
+  dismissAutoTip();
+  setTimeout(() => { const f = document.getElementById('lc-fname'); if (f) f.focus(); }, 300);
 }
 
 function closeLcPanel() {
@@ -1123,26 +1129,101 @@ function closeLcPanel() {
   _lcReset();
 }
 
+/* ── Form validation ── */
+function _lcValidate() {
+  const name  = document.getElementById('lc-fname');
+  const email = document.getElementById('lc-femail');
+  const ne    = document.getElementById('lc-fname-err');
+  const ee    = document.getElementById('lc-femail-err');
+  if (ne) ne.textContent = '';
+  if (ee) ee.textContent = '';
+  let ok = true;
+  if (!name?.value.trim()) {
+    if (ne) ne.textContent = 'Name is required.';
+    name?.classList.add('lc-invalid'); ok = false;
+  }
+  if (!email?.value.trim()) {
+    if (ee) ee.textContent = 'Email is required.';
+    email?.classList.add('lc-invalid'); ok = false;
+  } else if (!/\S+@\S+\.\S+/.test(email.value.trim())) {
+    if (ee) ee.textContent = 'Enter a valid email address.';
+    email?.classList.add('lc-invalid'); ok = false;
+  }
+  return ok;
+}
+
+/* ── Multi-step chat flow ── */
 function startLiveChat() {
-  if (lcLoading) return;                         // prevent double-click
+  if (lcLoading) return;
+  if (!_lcValidate()) return;
+
   lcLoading = true;
-  const btn = document.getElementById('lc-start');
+  const btn  = document.getElementById('lc-start');
+  const name = document.getElementById('lc-fname')?.value.trim() || 'there';
   if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+
+  // Step 1 → Step 2: show greeting after 900ms
   setTimeout(() => {
-    closeLcPanel();
-    document.body.classList.add('tawk-open');           // lifts CSS cloak
-    if (window.Tawk_API) {
-      if (typeof Tawk_API.showWidget === 'function') Tawk_API.showWidget();
-      if (typeof Tawk_API.maximize  === 'function') Tawk_API.maximize();
-    }
-    lcLoading = false;
-  }, 1000);                                             // 1s loading feel
+    const s1   = document.getElementById('lc-s1');
+    const s2   = document.getElementById('lc-s2');
+    const greet = document.getElementById('lc-greet-text');
+    if (s1) s1.classList.add('lc-hidden');
+    if (s2) s2.classList.remove('lc-hidden');
+    if (greet) greet.textContent = `Hi ${name}, how can I help you with CCNA?`;
+
+    // Step 2 → Open Tawk after 1.2s
+    setTimeout(() => {
+      closeLcPanel();
+      document.body.classList.add('tawk-open');
+      if (window.Tawk_API) {
+        if (typeof Tawk_API.showWidget === 'function') Tawk_API.showWidget();
+        if (typeof Tawk_API.maximize  === 'function') Tawk_API.maximize();
+      }
+      lcLoading = false;
+    }, 1200);
+  }, 900);
 }
 
 function _lcReset() {
+  // Reset steps
+  const s1 = document.getElementById('lc-s1');
+  const s2 = document.getElementById('lc-s2');
+  if (s1) s1.classList.remove('lc-hidden');
+  if (s2) s2.classList.add('lc-hidden');
+  // Reset button + errors
   const btn = document.getElementById('lc-start');
   if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
+  ['lc-fname','lc-femail'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('lc-invalid');
+  });
+  ['lc-fname-err','lc-femail-err'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '';
+  });
   lcLoading = false;
+}
+
+/* ── Auto-engagement (10s idle) ── */
+function initAutoEngagement() {
+  if (_lcAutoShown) return;
+  _lcAutoTimer = setTimeout(() => {
+    if (!lcOpen && !_lcAutoShown) {
+      const tip = document.getElementById('lc-auto-tip');
+      if (tip) { tip.classList.add('show'); _lcAutoShown = true; }
+    }
+  }, 10000);
+}
+
+function dismissAutoTip() {
+  const tip = document.getElementById('lc-auto-tip');
+  if (tip) tip.classList.remove('show');
+  if (_lcAutoTimer) { clearTimeout(_lcAutoTimer); _lcAutoTimer = null; }
+}
+
+function openLcFromTip() {
+  dismissAutoTip();
+  if (!lcOpen) toggleLcPanel();
 }
 
 /* ── CONTACT & NEWSLETTER ── */
