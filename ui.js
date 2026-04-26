@@ -128,8 +128,8 @@ const renderHome = () => {
         <div class="demo-check"><i class="fas fa-check-circle"></i>Free Packet Tracer software</div>
       </div>
       <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.5rem">
-        <button class="hbtn hbtn-primary" onclick="enrollCourse(7)"><i class="fas fa-flask"></i> Start Free Lab</button>
-        <button class="hbtn hbtn-outline" onclick="openCourseDetail(7)"><i class="fas fa-eye"></i> Preview Labs</button>
+        <button class="hbtn hbtn-primary start-course" data-course="7"><i class="fas fa-flask"></i> Start Free Lab</button>
+        <button class="hbtn hbtn-outline start-course" data-course="7"><i class="fas fa-eye"></i> Preview Labs</button>
       </div>
     </div>
     <div class="demo-cli-wrap reveal d2">

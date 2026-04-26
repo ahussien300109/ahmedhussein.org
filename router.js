@@ -132,8 +132,15 @@ const Router = (() => {
     go(path) {
       const old = location.hash;
       location.hash = path;
-      /* Re-dispatch if hash didn't actually change */
       if (old === `#${path}`) _dispatch(path);
+    },
+
+    /**
+     * navigate(path) — same as go() but accepts leading slashes.
+     * router.navigate('/courses/1') === Router.go('courses/1')
+     */
+    navigate(path) {
+      this.go(String(path).replace(/^\/+/, ''));
     },
 
     /** Current route key. */

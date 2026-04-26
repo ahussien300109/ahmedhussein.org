@@ -409,10 +409,10 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('site-footer').style.display = 'none';
       renderDashboard();
     })
-    /* Dynamic course page: #course/1, #course/2 … */
-    .on('course/:id', ({ id }) => {
+    /* Dynamic course page: #courses/1, #courses/2 … */
+    .on('courses/:courseId', ({ courseId }) => {
       document.getElementById('site-footer').style.display = '';
-      renderCourseDetail(parseInt(id, 10));
+      renderCourseDetails(parseInt(courseId, 10));
     })
     /* Fallback — unknown hashes redirect to home */
     .on('*', () => Router.go('home'))
@@ -422,20 +422,21 @@ document.addEventListener('DOMContentLoaded', () => {
      Attached once; works on dynamically-rendered cards in #root.
      No inline onclick needed on the cards themselves.
      ─────────────────────────────────────────────────────────────── */
+  /* Event delegation — handles dynamically rendered cards in #root */
   document.addEventListener('click', e => {
-    /* ".start-course" button (enroll / start) */
+    /* ".start-course" button */
     const btn = e.target.closest('.start-course[data-course]');
     if (btn) {
       e.preventDefault();
       e.stopPropagation();
-      startCourse(parseInt(btn.dataset.course, 10));
+      Router.navigate('/courses/' + btn.dataset.course);
       return;
     }
-    /* Clicking anywhere else on a course card */
+    /* Course card body (anywhere except the button) */
     const card = e.target.closest('.ccard[data-course]');
-    if (card) {
+    if (card && !e.target.closest('.start-course')) {
       e.preventDefault();
-      startCourse(parseInt(card.dataset.course, 10));
+      Router.navigate('/courses/' + card.dataset.course);
     }
   });
 
@@ -1423,20 +1424,26 @@ function openLcFromTip() {
  * Courses with a dedicated SPA route (labs, bootcamp…) go there directly.
  * All others get their own course detail page at #course/{id}.
  */
+/**
+ * startCourse(id) — called by event delegation.
+ * Courses with a dedicated route (labs…) go there; all others → #courses/{id}.
+ */
 function startCourse(id) {
   const course = COURSES.find(x => x.id === id);
-  if (!course) { Router.go('courses'); return; }
-  /* Dedicated SPA section (e.g. labs) */
+  if (!course) { Router.navigate('/courses'); return; }
   if (course.pageLink) { Router.go(course.pageLink); return; }
-  /* Dynamic course detail page */
-  Router.go('course/' + id);
+  Router.navigate('/courses/' + id);
 }
 
 /** Full-page course detail renderer — injected into #root */
-function renderCourseDetail(id) {
+/* Alias kept so any legacy callers still work */
+const renderCourseDetail = (id) => renderCourseDetails(id);
+
+function renderCourseDetails(id) {
   const c = COURSES.find(x => x.id === id);
-  /* Unknown id → fall back to course list */
-  if (!c) { Router.go('courses'); return; }
+  if (!c) { Router.navigate('/courses'); return; }
+  /* Scroll to top after navigation */
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const root = document.getElementById('root');
   if (!root) return;
