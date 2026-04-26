@@ -8,9 +8,23 @@ function loadCourses() {
     const s = localStorage.getItem('ah_courses');
     if (s) {
       const saved = JSON.parse(s);
-      const ids = new Set(saved.map(c => c.id));
-      // Merge: any course added to DEFAULT_COURSES since last save is appended
-      return [...saved, ...DEFAULT_COURSES.filter(c => !ids.has(c.id))];
+      const defMap = Object.fromEntries(DEFAULT_COURSES.map(c => [c.id, c]));
+      // Merge saved (admin edits preserved) but always sync routing fields from DEFAULT_COURSES
+      // so deleted/renamed pages never cause 404s after a code update.
+      const ROUTING_KEYS = ['link', 'pageLink', 'btnLabel', 'type'];
+      const merged = saved.map(c => {
+        const def = defMap[c.id];
+        if (!def) return c;
+        const out = { ...c };
+        ROUTING_KEYS.forEach(k => {
+          if (k in def) out[k] = def[k];
+          else delete out[k]; // remove stale value if default no longer has it
+        });
+        return out;
+      });
+      // Append courses added to DEFAULT_COURSES since last save
+      const savedIds = new Set(saved.map(c => c.id));
+      return [...merged, ...DEFAULT_COURSES.filter(c => !savedIds.has(c.id))];
     }
   } catch(e) {}
   return DEFAULT_COURSES.map(c => Object.assign({}, c));
