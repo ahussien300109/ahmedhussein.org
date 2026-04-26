@@ -53,7 +53,7 @@ const DEFAULT_COURSES = [
     desc: 'Rapid exam prep with 5 full-length practice tests, time management strategies, and domain-by-domain review sessions.',
     level: 'Intermediate', duration: '30 hrs', students: '340', price: 'Free', rating: '4.8', reviews: '156',
     prereqs: 'Completed CCNA training or equivalent knowledge.',
-    link: 'ccna-domain1.html',
+    pageLink: 'labs',
     curriculum: ['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim'] },
 
   { id: 7, cat: 'CCNA', icon: '🔬', th: 'th1', badge: 'new',
