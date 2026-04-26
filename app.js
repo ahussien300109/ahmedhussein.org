@@ -357,148 +357,119 @@ function toggleMob() {
    INIT — wires Router + UI + Api + all subsystems
    ══════════════════════════════════════════════════════ */
 
-/** Race a promise against a ms timeout; resolves to fallback on timeout. */
+/* ── Global error fence — catches anything that escapes try/catch ── */
+window.onerror = (msg, src, line, col, err) => {
+  console.error('[app:uncaught]', msg, { src, line, col, err });
+  _dismissLoader(); // never leave the user on a blank loader
+};
+window.onunhandledrejection = (ev) => {
+  console.error('[app:unhandledrejection]', ev.reason);
+  _dismissLoader();
+};
+
+/** Race a promise against a timeout; resolves to fallback if too slow. */
 const _withTimeout = (promise, ms, fallback = null) =>
   Promise.race([
     promise,
     new Promise(resolve => setTimeout(() => resolve(fallback), ms)),
   ]);
 
-/** Always dismiss the loader, even if something throws. */
+/** Always dismiss the loader — safe to call multiple times. */
 const _dismissLoader = () => {
   const el = document.getElementById('loader');
   if (el) el.classList.add('gone');
 };
 
+/** Mount UI for the current route — the single render entry point. */
+const _renderApp = () => {
+  Router
+    .guard((path) => {
+      if ((path === 'admin' || path.startsWith('admin/')) && !Api.Auth.isAdmin) return 'admin/login';
+      if (path === 'dashboard' && !S.user) { openModal('login'); return 'home'; }
+    })
+    .on('home',    () => { document.getElementById('site-footer').style.display = ''; UI.renderHome(); })
+    .on('courses', () => { document.getElementById('site-footer').style.display = ''; UI.renderCoursesPage(); })
+    .on('about',   () => { document.getElementById('site-footer').style.display = ''; UI.renderAbout(); })
+    .on('contact', () => { document.getElementById('site-footer').style.display = ''; UI.renderContact(); })
+    .on('labs',    () => { document.getElementById('site-footer').style.display = ''; renderLabs(); })
+    .on('dashboard', () => { document.getElementById('site-footer').style.display = 'none'; renderDashboard(); })
+    .on('admin/login',    () => { document.getElementById('site-footer').style.display = 'none'; UI.renderAdminLogin(); })
+    .on('admin',          () => { document.getElementById('site-footer').style.display = 'none'; UI.renderAdminDashboard(); })
+    .on('admin/courses',  () => { document.getElementById('site-footer').style.display = 'none'; UI.renderAdminCourseList(); })
+    .on('admin/courses/:id', ({ id }) => { document.getElementById('site-footer').style.display = 'none'; UI.renderAdminCourseEditor(id); })
+    .on('courses/:courseId', ({ courseId }) => { document.getElementById('site-footer').style.display = ''; renderCourseDetails(parseInt(courseId, 10)); })
+    .on('*', () => Router.go('home'))
+    .init();
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
-  /* Theme icon sync */
-  if (document.documentElement.getAttribute('data-theme') === 'light') {
-    const ic = document.getElementById('theme-icon');
-    if (ic) ic.className = 'fas fa-moon';
-  }
-
-  /* Core subsystems — synchronous, always run first */
-  initCircuit();
-  initCursor();
-  initScroll();
-  initObserver();
-  initScrollProgress();
-  initAutoEngagement();
-
-  /* ── Restore Supabase admin session (sync) ── */
+  /* 1. Theme icon — sync, no API dependency */
   try {
-    const adminUser = Api.Auth.restore();
-    if (adminUser) S.isAdmin = true;
+    if (document.documentElement.getAttribute('data-theme') === 'light') {
+      const ic = document.getElementById('theme-icon');
+      if (ic) ic.className = 'fas fa-moon';
+    }
   } catch (_) {}
 
-  /* ── Load courses from Supabase with 4 s timeout ─────────────
-     If the network hangs (placeholder URL, no connectivity, etc.)
-     we fall back to DEFAULT_COURSES after 4 s — the app ALWAYS
-     continues and Router.init() ALWAYS runs.
-     ─────────────────────────────────────────────────────────── */
+  /* 2. Visual subsystems — each wrapped so one failure can't block render */
+  for (const fn of [initCircuit, initCursor, initScroll, initObserver, initScrollProgress, initAutoEngagement]) {
+    try { fn(); } catch (e) { console.warn('[init] subsystem failed:', fn.name, e.message); }
+  }
+
+  /* 3. Restore Supabase admin session */
+  try { if (Api.Auth.restore()) S.isAdmin = true; } catch (_) {}
+
+  /* 4. Load courses — 3 s timeout, fallback to DEFAULT_COURSES on any failure */
   try {
-    const remote = await _withTimeout(Api.Courses.list(), 4000, null);
-    if (remote?.length) {
+    const remote = await _withTimeout(Api.Courses.list(), 3000, null);
+    if (Array.isArray(remote) && remote.length) {
       COURSES = remote.map(mapDbCourse);
+      console.info('[init] Courses loaded from Supabase:', COURSES.length);
     } else {
-      console.info('[init] API returned empty or timed out — using DEFAULT_COURSES');
+      console.info('[init] API empty/timeout — using DEFAULT_COURSES');
     }
   } catch (e) {
     console.warn('[init] API error — using DEFAULT_COURSES:', e.message);
   }
 
-  /* Legacy localStorage session for non-admin users */
-  restoreSession();
+  /* 5. Legacy localStorage session */
+  try { restoreSession(); } catch (_) {}
 
-  /* Modal close-on-backdrop */
-  document.getElementById('auth-modal')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
-  document.getElementById('course-modal')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCourseModal(); } });
+  /* 6. Modal close-on-backdrop */
+  try {
+    document.getElementById('auth-modal')?.addEventListener('click',   e => { if (e.target === e.currentTarget) closeModal(); });
+    document.getElementById('course-modal')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCourseModal(); } });
+  } catch (_) {}
 
-  /* ── ROUTER SETUP ── */
-  Router
-    .guard((path) => {
-      /* Protect admin routes — require Supabase session */
-      if ((path === 'admin' || path.startsWith('admin/')) && !Api.Auth.isAdmin) {
-        return 'admin/login';
-      }
-      /* Protect student dashboard */
-      if (path === 'dashboard' && !S.user) { openModal('login'); return 'home'; }
-    })
-    .on('home', () => {
-      document.getElementById('site-footer').style.display = '';
-      UI.renderHome();
-    })
-    .on('courses', () => {
-      document.getElementById('site-footer').style.display = '';
-      UI.renderCoursesPage();
-    })
-    .on('about', () => {
-      document.getElementById('site-footer').style.display = '';
-      UI.renderAbout();
-    })
-    .on('contact', () => {
-      document.getElementById('site-footer').style.display = '';
-      UI.renderContact();
-    })
-    .on('labs', () => {
-      document.getElementById('site-footer').style.display = '';
-      renderLabs();
-    })
-    .on('dashboard', () => {
-      document.getElementById('site-footer').style.display = 'none';
-      renderDashboard();
-    })
-    /* ── Admin routes ── */
-    .on('admin/login', () => {
-      document.getElementById('site-footer').style.display = 'none';
-      UI.renderAdminLogin();
-    })
-    .on('admin', () => {
-      document.getElementById('site-footer').style.display = 'none';
-      UI.renderAdminDashboard();
-    })
-    .on('admin/courses', () => {
-      document.getElementById('site-footer').style.display = 'none';
-      UI.renderAdminCourseList();
-    })
-    .on('admin/courses/:id', ({ id }) => {
-      document.getElementById('site-footer').style.display = 'none';
-      UI.renderAdminCourseEditor(id);
-    })
-    /* Dynamic public course page */
-    .on('courses/:courseId', ({ courseId }) => {
-      document.getElementById('site-footer').style.display = '';
-      renderCourseDetails(parseInt(courseId, 10));
-    })
-    /* Fallback */
-    .on('*', () => Router.go('home'))
-    .init();
-
-  /* ── EVENT DELEGATION for course cards ──────────────────────────
-     Attached once; works on dynamically-rendered cards in #root.
-     No inline onclick needed on the cards themselves.
-     ─────────────────────────────────────────────────────────────── */
-  /* Event delegation — handles dynamically rendered cards in #root */
+  /* 7. Event delegation for course cards (attached once, works on dynamic #root) */
   document.addEventListener('click', e => {
-    /* ".start-course" button */
-    const btn = e.target.closest('.start-course[data-course]');
-    if (btn) {
-      e.preventDefault();
-      e.stopPropagation();
-      Router.navigate('/courses/' + btn.dataset.course);
-      return;
-    }
-    /* Course card body (anywhere except the button) */
-    const card = e.target.closest('.ccard[data-course]');
-    if (card && !e.target.closest('.start-course')) {
-      e.preventDefault();
-      Router.navigate('/courses/' + card.dataset.course);
-    }
+    try {
+      const btn = e.target.closest('.start-course[data-course]');
+      if (btn) { e.preventDefault(); e.stopPropagation(); Router.navigate('/courses/' + btn.dataset.course); return; }
+      const card = e.target.closest('.ccard[data-course]');
+      if (card && !e.target.closest('.start-course')) { e.preventDefault(); Router.navigate('/courses/' + card.dataset.course); }
+    } catch (_) {}
   });
 
-  /* ── Dismiss loader — runs even if Router.init() threw ── */
-  setTimeout(_dismissLoader, 1500);
+  /* 8. Mount app — ALWAYS runs, even if steps 3-6 threw.
+        _renderApp() calls Router.init() which dispatches the current
+        hash and injects HTML into #root. */
+  try {
+    _renderApp();
+  } catch (e) {
+    console.error('[init] _renderApp failed:', e);
+    /* Last-resort fallback: show something rather than blank screen */
+    const root = document.getElementById('root');
+    if (root) root.innerHTML = `<div style="padding:3rem;text-align:center;color:#7a9ab5">
+      <h2 style="font-family:monospace;color:#00d4ff;margin-bottom:1rem">Ahmed Hussein</h2>
+      <p>Could not load app. Check the console for details.</p>
+      <a href="#" onclick="location.reload()" style="color:#00d4ff">Reload</a>
+    </div>`;
+  } finally {
+    /* 9. ALWAYS dismiss loader — no more blank screens */
+    setTimeout(_dismissLoader, 800);
+  }
 });
 
 /* ── BACKWARDS-COMPAT shim (old inline onclick="showPage(...)") ── */

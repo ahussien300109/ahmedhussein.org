@@ -144,8 +144,9 @@
 </div>
 
 <!-- ── SCRIPTS ── -->
-<script src="router.js"></script>
+<!-- Load order matters: api → router → ui → app -->
 <script src="api.js"></script>
+<script src="router.js"></script>
 <script src="ui.js"></script>
 <script src="app.js"></script>
 
