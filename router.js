@@ -81,7 +81,7 @@ const Router = (() => {
       const params = {};
       route.keys.forEach((k, i) => { params[k] = m[i + 1]; });
 
-      route.handler(params, rawPath);
+      try { route.handler(params, rawPath); } catch (e) { console.error('[Router] handler error:', e); }
       matched = true;
       break;
     }

@@ -356,6 +356,20 @@ function toggleMob() {
 /* ══════════════════════════════════════════════════════
    INIT — wires Router + UI + Api + all subsystems
    ══════════════════════════════════════════════════════ */
+
+/** Race a promise against a ms timeout; resolves to fallback on timeout. */
+const _withTimeout = (promise, ms, fallback = null) =>
+  Promise.race([
+    promise,
+    new Promise(resolve => setTimeout(() => resolve(fallback), ms)),
+  ]);
+
+/** Always dismiss the loader, even if something throws. */
+const _dismissLoader = () => {
+  const el = document.getElementById('loader');
+  if (el) el.classList.add('gone');
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   /* Theme icon sync */
   if (document.documentElement.getAttribute('data-theme') === 'light') {
@@ -363,7 +377,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (ic) ic.className = 'fas fa-moon';
   }
 
-  /* Core subsystems */
+  /* Core subsystems — synchronous, always run first */
   initCircuit();
   initCursor();
   initScroll();
@@ -371,29 +385,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   initScrollProgress();
   initAutoEngagement();
 
-  /* ── Restore Supabase admin session ── */
-  const adminUser = Api.Auth.restore();
-  if (adminUser) {
-    S.isAdmin = true;
-  }
-
-  /* ── Load courses from Supabase (fallback to DEFAULT_COURSES) ── */
+  /* ── Restore Supabase admin session (sync) ── */
   try {
-    const remote = await Api.Courses.list();
+    const adminUser = Api.Auth.restore();
+    if (adminUser) S.isAdmin = true;
+  } catch (_) {}
+
+  /* ── Load courses from Supabase with 4 s timeout ─────────────
+     If the network hangs (placeholder URL, no connectivity, etc.)
+     we fall back to DEFAULT_COURSES after 4 s — the app ALWAYS
+     continues and Router.init() ALWAYS runs.
+     ─────────────────────────────────────────────────────────── */
+  try {
+    const remote = await _withTimeout(Api.Courses.list(), 4000, null);
     if (remote?.length) {
-      /* Map Supabase rows to the shape expected by renderCourses() */
       COURSES = remote.map(mapDbCourse);
+    } else {
+      console.info('[init] API returned empty or timed out — using DEFAULT_COURSES');
     }
   } catch (e) {
-    console.warn('[api] Using local course data:', e.message);
+    console.warn('[init] API error — using DEFAULT_COURSES:', e.message);
   }
 
   /* Legacy localStorage session for non-admin users */
   restoreSession();
 
   /* Modal close-on-backdrop */
-  document.getElementById('auth-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
-  document.getElementById('course-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
+  document.getElementById('auth-modal')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.getElementById('course-modal')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCourseModal(); } });
 
   /* ── ROUTER SETUP ── */
@@ -478,8 +497,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  /* Dismiss loader */
-  setTimeout(() => document.getElementById('loader').classList.add('gone'), 1700);
+  /* ── Dismiss loader — runs even if Router.init() threw ── */
+  setTimeout(_dismissLoader, 1500);
 });
 
 /* ── BACKWARDS-COMPAT shim (old inline onclick="showPage(...)") ── */
