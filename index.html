@@ -1006,6 +1006,42 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 
 @media(max-width:480px){#live-chat{bottom:1.2rem;right:1.2rem;}#lc-panel{width:calc(100vw - 2.4rem);}}
 
+/* ── LIVE CHAT: GLOW PULSE + CLICK + TOOLTIP ── */
+@keyframes lcGlow{
+  0%,100%{box-shadow:0 0 18px rgba(0,212,255,.22),0 4px 20px rgba(0,0,0,.5);}
+  50%{box-shadow:0 0 34px rgba(0,212,255,.58),0 0 14px rgba(0,212,255,.22),0 4px 24px rgba(0,0,0,.5);}
+}
+@keyframes lcClick{
+  0%{transform:scale(1)}
+  40%{transform:scale(.88)}
+  100%{transform:scale(1)}
+}
+/* Glow pulses every 4s; stops on hover so hover state takes over */
+#lc-btn{animation:lcGlow 4s ease-in-out infinite;}
+#lc-btn:hover{animation:none;}
+/* Press animation class added/removed by JS */
+.lc-clicking{animation:lcClick .25s cubic-bezier(.4,0,.2,1) forwards !important;}
+
+/* Tooltip */
+.lc-tip{
+  position:absolute;right:calc(100% + 14px);top:50%;
+  transform:translateY(-50%) translateX(6px);
+  background:rgba(2,6,23,.97);
+  border:1px solid rgba(0,212,255,.2);
+  border-radius:8px;
+  color:#c8ddf0;
+  font-family:'Exo 2',sans-serif;font-size:.71rem;font-weight:600;
+  padding:5px 12px;white-space:nowrap;letter-spacing:.3px;
+  opacity:0;pointer-events:none;
+  transition:opacity .18s,transform .18s;
+}
+#lc-btn:hover .lc-tip{opacity:1;transform:translateY(-50%) translateX(0);}
+[data-theme="light"] .lc-tip{
+  background:rgba(255,255,255,.97);
+  border-color:rgba(0,98,204,.2);
+  color:#1e293b;
+}
+
 /* ── TAWK.TO HOST-PAGE OVERRIDES ─────────────────────────────────
    The chat PANEL is a cross-origin iframe — styled via dashboard CSS.
    Everything below targets elements Tawk injects into the host DOM:
@@ -1199,24 +1235,25 @@ div[id*="tawk"] svg polygon,
      before any script has a chance to run. Removed in onLoad after
      hideWidget() has set its own display:none. -->
 <style id="tawk-cloak">
-  /* Hide Tawk widget from first paint — zero flash */
+  /* Zero-flash: hide from first CSS parse, before any script runs */
   #tawkchat-container,
   iframe[title="chat widget"],
   iframe[src*="tawk.to"],
   .tawk-min-container {
-    display:none !important;
     opacity:0 !important;
     visibility:hidden !important;
+    pointer-events:none !important;
+    display:none !important;
   }
-  /* Higher-specificity override — allows maximize() to show the chat
-     when the user explicitly clicks our custom button.
-     Specificity: body.tawk-open + iframe[...] = 0,2,2 > 0,1,1 */
+  /* body.tawk-open has higher specificity (0,2,2 vs 0,1,1) —
+     overrides the hide and lets maximize() show the chat window */
   body.tawk-open #tawkchat-container,
   body.tawk-open iframe[title="chat widget"],
   body.tawk-open iframe[src*="tawk.to"] {
-    display:block !important;
     opacity:1 !important;
     visibility:visible !important;
+    pointer-events:auto !important;
+    display:block !important;
   }
 </style>
 </head>
@@ -1962,11 +1999,12 @@ div[id*="tawk"] svg polygon,
       Start Chat
     </button>
   </div>
-  <button id="lc-btn" onclick="toggleLcPanel()" title="Live Support">
+  <button id="lc-btn" onclick="toggleLcPanel()">
     <span id="lc-badge">1</span>
     <svg viewBox="0 0 24 24" fill="none">
       <path d="M12 2C6.48 2 2 6.48 2 12v5c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1h-.93C3.54 7.68 7.42 4 12 4s8.46 3.68 8.93 8H20c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-5c0-5.52-4.48-10-10-10z" fill="#00d4ff"/>
     </svg>
+    <span class="lc-tip">Chat with Instructor</span>
   </button>
 </div>
 

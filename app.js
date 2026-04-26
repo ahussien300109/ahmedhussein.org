@@ -1117,10 +1117,15 @@ function closeLcPanel() {
 
 function startLiveChat() {
   closeLcPanel();
-  document.body.classList.add('tawk-open'); // lifts the CSS cloak for this session
-  if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
-    Tawk_API.maximize();
-  }
+  const btn = document.getElementById('lc-btn');
+  if (btn) btn.classList.add('lc-clicking');
+  setTimeout(() => {
+    if (btn) btn.classList.remove('lc-clicking');
+    document.body.classList.add('tawk-open');
+    if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
+      Tawk_API.maximize();
+    }
+  }, 180);
 }
 
 /* ── CONTACT & NEWSLETTER ── */
