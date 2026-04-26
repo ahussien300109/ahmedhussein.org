@@ -135,41 +135,12 @@
 <!-- TOAST -->
 <div id="toast-box"></div>
 
-<!-- LIVE SUPPORT WIDGET -->
+<!-- WHATSAPP CHAT BUTTON -->
 <div id="custom-chat">
-  <button id="chat-btn" onclick="openChat()" aria-label="Chat with Instructor">
-    <span id="lc-badge" style="display:none">0</span>
+  <button id="chat-btn" aria-label="Chat on WhatsApp">
     <span class="lc-gem"><i class="fas fa-headset"></i></span>
     <span class="lc-tip">Chat with Instructor</span>
   </button>
-  <div id="chat-panel">
-    <div class="chat-header">
-      <div class="chat-hdr-info">
-        <div class="chat-hdr-title">Live Support</div>
-        <div class="chat-hdr-status"><span class="chat-sdot"></span>Ahmed Hussein · Online</div>
-      </div>
-      <button class="chat-close-btn" onclick="closePanel()"><i class="fas fa-times"></i></button>
-    </div>
-    <div id="chat-form-wrap">
-      <p class="chat-intro">Send a message and we'll get back to you quickly.</p>
-      <form id="chat-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
-        <input type="hidden" name="_subject" value="Chat message via ahmedhussein.org">
-        <div class="chat-field"><label class="chat-lbl">Name</label><input class="chat-inp" type="text" name="name" placeholder="Ahmed Hassan" required autocomplete="name"></div>
-        <div class="chat-field"><label class="chat-lbl">Email</label><input class="chat-inp" type="email" name="email" placeholder="you@example.com" required autocomplete="email"></div>
-        <div class="chat-field"><label class="chat-lbl">Message</label><textarea class="chat-inp chat-area" name="message" placeholder="How can I help you?" required rows="3"></textarea></div>
-        <div id="chat-err" class="chat-err" style="display:none"></div>
-        <button type="submit" id="chat-send" class="chat-send-btn">
-          <span class="csb-text">Send Message</span>
-          <span class="csb-spin"><svg viewBox="0 0 24 24" fill="none" width="14" height="14" class="chat-spinner"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-dasharray="28" stroke-dashoffset="9"/></svg>Sending…</span>
-        </button>
-      </form>
-    </div>
-    <div id="chat-success" style="display:none" class="chat-success-wrap">
-      <div class="chat-success-ico">✓</div>
-      <div class="chat-success-title">Message sent!</div>
-      <div class="chat-success-sub">We'll respond to <span id="chat-reply-email"></span> shortly.</div>
-    </div>
-  </div>
 </div>
 
 <!-- ── SCRIPTS ── -->
@@ -177,13 +148,27 @@
 <script src="ui.js"></script>
 <script src="app.js"></script>
 
-<!-- Tawk.to: loads ONLY when user clicks the chat button -->
+<!-- WhatsApp chat integration -->
 <script>
-var tawkLoaded=false;
-function loadTawk(cb){if(tawkLoaded){if(cb)cb();return;}tawkLoaded=true;var s=document.createElement("script");s.async=true;s.src="https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50";s.charset="UTF-8";s.setAttribute("crossorigin","*");document.body.appendChild(s);s.onload=function(){if(cb)cb();};}
-function openChat(){var p=document.getElementById("chat-panel");p.classList.toggle("open");}
-function closePanel(){document.getElementById("chat-panel").classList.remove("open");}
-document.getElementById('chat-form').addEventListener('submit',async function(e){e.preventDefault();var form=this,send=document.getElementById('chat-send'),err=document.getElementById('chat-err'),text=send.querySelector('.csb-text'),spin=send.querySelector('.csb-spin');send.disabled=true;text.style.display='none';spin.style.display='inline-flex';err.style.display='none';try{var res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});if(res.ok){var email=form.querySelector('[name="email"]').value;document.getElementById('chat-reply-email').textContent=email;document.getElementById('chat-form-wrap').style.display='none';document.getElementById('chat-success').style.display='block';}else{throw new Error('Failed to send. Please try again.');}}catch(ex){err.textContent=ex.message;err.style.display='block';send.disabled=false;text.style.display='inline';spin.style.display='none';}});
+(function () {
+  var PHONE   = '97332198505';                   // +973 3219 8505 (Bahrain)
+  var MESSAGE = 'Hello, I need help';
+
+  function isMobile() {
+    return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+      .test(navigator.userAgent);
+  }
+
+  function openWhatsApp() {
+    var text = encodeURIComponent(MESSAGE);
+    var url  = isMobile()
+      ? 'https://wa.me/' + PHONE + '?text=' + text
+      : 'https://web.whatsapp.com/send?phone=' + PHONE + '&text=' + text;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  document.getElementById('chat-btn').addEventListener('click', openWhatsApp);
+})();
 </script>
 
 </body>
