@@ -1,114 +1,140 @@
 /* ─────────────────────────────────────────────
    router.js — Hash-based SPA router
+   Supports static routes ("home", "courses")
+   and dynamic routes ("course-:id", "lab-:slug")
    ───────────────────────────────────────────── */
 
 const Router = (() => {
-  const _routes  = {};
+  /* Routes stored as ordered array so dynamic patterns
+     are matched after exact strings */
+  const _routes  = [];   // [{ pattern, rx, keys, handler }]
   const _guards  = [];
   let   _current = null;
 
-  /* Page-level meta config */
+  /* ── META ── */
   const META = {
-    home:      { title: 'Ahmed Hussein | Cisco Certified Instructor',    desc: 'Expert CCNA, CCNP & Network Security training — 96% exam pass rate.' },
-    courses:   { title: 'Courses | Ahmed Hussein',                       desc: 'CCNA, CCNP and Security courses with lab-first teaching.' },
-    about:     { title: 'About | Ahmed Hussein',                         desc: 'Cisco Certified Instructor with 10+ years enterprise networking experience.' },
-    contact:   { title: 'Contact | Ahmed Hussein',                       desc: 'Get in touch for course inquiries or corporate training.' },
-    dashboard: { title: 'Dashboard | Ahmed Hussein',                     desc: 'Your student learning dashboard.' },
-    labs:      { title: 'Exam Labs | Ahmed Hussein',                     desc: 'Hands-on CCNA 200-301 Packet Tracer labs.' },
-    freecourse:{ title: 'Free CCNA Bootcamp | Ahmed Hussein',            desc: 'Free 10-day CCNA exam bootcamp — no signup needed.' },
+    home:      { title: 'Ahmed Hussein | Cisco Certified Instructor',  desc: 'Expert CCNA, CCNP & Network Security training — 96% exam pass rate.' },
+    courses:   { title: 'Courses | Ahmed Hussein',                     desc: 'CCNA, CCNP and Security courses with lab-first teaching.' },
+    about:     { title: 'About | Ahmed Hussein',                       desc: 'Cisco Certified Instructor with 10+ years enterprise networking experience.' },
+    contact:   { title: 'Contact | Ahmed Hussein',                     desc: 'Get in touch for course inquiries or corporate training.' },
+    dashboard: { title: 'Dashboard | Ahmed Hussein',                   desc: 'Your student learning dashboard.' },
+    labs:      { title: 'Exam Labs | Ahmed Hussein',                   desc: 'Hands-on CCNA 200-301 Packet Tracer labs.' },
   };
 
-  /* Derive route key from current hash */
-  const _pathFromHash = () => {
-    const h = location.hash.replace(/^#\/?/, '').split('?')[0].trim();
-    return h || 'home';
-  };
-
-  /* Apply meta for current route */
   const _applyMeta = (path) => {
-    const m = META[path] || META.home;
+    /* Dynamic pages: derive title from pattern prefix */
+    let m = META[path];
+    if (!m && path.startsWith('course-')) {
+      m = { title: 'Course | Ahmed Hussein', desc: 'CCNA, CCNP & Security course details.' };
+    }
+    m = m || META.home;
     document.title = m.title;
-    const descEl = document.querySelector('meta[name="description"]');
-    if (descEl) descEl.setAttribute('content', m.desc);
-    // og tags
+    const el = document.querySelector('meta[name="description"]');
+    if (el) el.setAttribute('content', m.desc);
     const og = (prop, val) => {
-      let el = document.querySelector(`meta[property="${prop}"]`);
-      if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
-      el.setAttribute('content', val);
+      let e = document.querySelector(`meta[property="${prop}"]`);
+      if (!e) { e = document.createElement('meta'); e.setAttribute('property', prop); document.head.appendChild(e); }
+      e.setAttribute('content', val);
     };
-    og('og:title',       m.title);
+    og('og:title', m.title);
     og('og:description', m.desc);
-    og('og:url',         location.href);
+    og('og:url', location.href);
   };
 
-  /* Run the matched handler */
-  const _dispatch = (path) => {
-    // Run guards first (e.g. auth check)
+  /* Compile a route pattern into a RegExp + param key list.
+     ":id"  → named capture group
+     "*"    → wildcard                                    */
+  const _compile = (pattern) => {
+    const keys = [];
+    const src  = pattern
+      .replace(/:([A-Za-z_][A-Za-z0-9_]*)/g, (_, k) => { keys.push(k); return '([^/]+)'; })
+      .replace(/\*/g, '(.*)');
+    return { rx: new RegExp('^' + src + '$'), keys };
+  };
+
+  /* Get clean path from current hash */
+  const _pathFromHash = () =>
+    (location.hash.replace(/^#\/?/, '').split('?')[0].trim()) || 'home';
+
+  /* Core dispatch */
+  const _dispatch = (rawPath) => {
+    /* Run guards */
     for (const guard of _guards) {
-      const redirect = guard(path);
-      if (redirect && redirect !== path) { Router.go(redirect); return; }
+      const redirect = guard(rawPath);
+      if (redirect && redirect !== rawPath) { Router.go(redirect); return; }
     }
 
-    const handler = _routes[path] || _routes['home'];
-    _current = path;
+    /* Find first matching route */
+    let matched = false;
+    for (const route of _routes) {
+      const m = rawPath.match(route.rx);
+      if (!m) continue;
 
-    if (handler) {
-      handler(path);
-    } else {
-      console.warn(`[Router] No handler for "${path}"`);
+      /* Build params object from named captures */
+      const params = {};
+      route.keys.forEach((k, i) => { params[k] = m[i + 1]; });
+
+      route.handler(params, rawPath);
+      matched = true;
+      break;
     }
 
-    _applyMeta(path);
+    if (!matched) {
+      /* Fall back to home */
+      const home = _routes.find(r => r.pattern === 'home');
+      if (home) home.handler({}, 'home');
+    }
+
+    _current = rawPath;
+    _applyMeta(rawPath);
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Sync nav active state
+    /* Sync nav active state — highlight parent section */
+    const section = rawPath.startsWith('course-') ? 'courses' : rawPath;
     document.querySelectorAll('.nav-links a[data-pg]').forEach(a => {
-      a.classList.toggle('act', a.dataset.pg === path);
+      a.classList.toggle('act', a.dataset.pg === section);
     });
   };
 
+  /* ── PUBLIC API ── */
   return {
     /**
-     * Register a route handler.
-     * @param {string}   path     — route key (matches hash value)
-     * @param {Function} handler  — called with (path) on match
+     * Register a route.
+     * Pattern may contain ":param" segments.
+     * Handler receives (params, rawPath).
      */
-    on(path, handler) {
-      _routes[path] = handler;
+    on(pattern, handler) {
+      const { rx, keys } = _compile(pattern);
+      _routes.push({ pattern, rx, keys, handler });
       return this;
     },
 
-    /**
-     * Register an array of paths with the same handler.
-     */
+    /** Register multiple static paths with the same handler. */
     many(paths, handler) {
       paths.forEach(p => this.on(p, handler));
       return this;
     },
 
-    /**
-     * Register a navigation guard. Return a redirect path to redirect, or falsy to continue.
-     */
+    /** Register a navigation guard. Return redirect path to abort, falsy to continue. */
     guard(fn) {
       _guards.push(fn);
       return this;
     },
 
-    /**
-     * Navigate to a route programmatically.
-     */
+    /** Navigate programmatically. */
     go(path) {
       const old = location.hash;
       location.hash = path;
-      // Force dispatch if hash didn't change (same path clicked again)
+      /* Re-dispatch if hash didn't actually change */
       if (old === `#${path}`) _dispatch(path);
     },
 
-    /** Current route key */
+    /** Current route key. */
     get current() { return _current || _pathFromHash(); },
 
-    /** Start the router — call once on DOMContentLoaded */
+    /** Start the router. */
     init() {
+      window.addEventListener('load',       () => _dispatch(_pathFromHash()));
       window.addEventListener('hashchange', () => _dispatch(_pathFromHash()));
       _dispatch(_pathFromHash());
     },

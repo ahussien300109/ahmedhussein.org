@@ -409,9 +409,10 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('site-footer').style.display = 'none';
       renderDashboard();
     })
-    .on('freecourse', () => {
+    /* Dynamic course page — matches #course-1, #course-6, etc. */
+    .on('course-:id', ({ id }) => {
       document.getElementById('site-footer').style.display = '';
-      renderFreeCourse();
+      renderCourseDetail(parseInt(id, 10));
     })
     .init();
 
@@ -498,7 +499,7 @@ function renderCourses(gridId, data) {
   const g = document.getElementById(gridId);
   if (!g) return;
   g.innerHTML = data.map(c => `
-    <div class="ccard reveal" onclick="openCourseDetail(${c.id})">
+    <div class="ccard reveal" onclick="startCourse(${c.id})">
       <div class="cc-thumb ${c.th}"><span class="cc-thumb-icon">${c.icon}</span><div class="cc-level-tag lvl-${c.level === 'Beginner' ? 'beg' : c.level === 'Advanced' ? 'adv' : 'int'}">${c.level}</div>${c.badge ? `<div class="cc-badge ccb-${c.badge}">${{hot:'🔥 Popular',free:'✓ Free',new:'New'}[c.badge]}</div>` : ''}</div>
       <div class="cc-body">
         <div class="cc-cat">${c.cat}</div>
@@ -511,7 +512,9 @@ function renderCourses(gridId, data) {
         </div>
         <div class="cc-footer">
           <span class="cc-price ${c.price === 'Free' ? 'free' : ''}">${c.price}</span>
-          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${(c.link||c.pageLink) ? (c.btnLabel||'▶ Start Course') : S.enrolled.includes(c.id) ? '✓ Enrolled' : 'Enroll Now'}</button>
+          <button class="cc-enroll" onclick="event.stopPropagation();startCourse(${c.id})">
+            ${c.price === 'Free' ? '▶ Start Free' : '▶ Start Course'}
+          </button>
         </div>
       </div>
     </div>`).join('');
@@ -1382,6 +1385,146 @@ function dismissAutoTip() {
 function openLcFromTip() {
   dismissAutoTip();
   if (!lcOpen) toggleLcPanel();
+}
+
+/* ── COURSE ROUTING ── */
+
+/** Navigate to a course's dedicated page (#course-{id}) */
+function startCourse(id) {
+  Router.go('course-' + id);
+}
+
+/** Full-page course detail renderer — injected into #root */
+function renderCourseDetail(id) {
+  const c = COURSES.find(x => x.id === id);
+  if (!c) { Router.go('courses'); return; }
+
+  /* If this course has a special labs/external route, go there */
+  if (c.pageLink && c.pageLink !== 'course-' + id) {
+    Router.go(c.pageLink); return;
+  }
+
+  const root = document.getElementById('root');
+  if (!root) return;
+
+  const isEnrolled = S.enrolled.includes(id);
+  const isFree     = c.price === 'Free';
+
+  root.innerHTML = /* html */`
+    <!-- Course header -->
+    <div class="pg-header">
+      <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
+      <div class="pg-header-inner">
+        <div class="breadcrumb">
+          <a href="#" onclick="Router.go('home');return false">Home</a>
+          <i class="fas fa-chevron-right"></i>
+          <a href="#" onclick="Router.go('courses');return false">Courses</a>
+          <i class="fas fa-chevron-right"></i>
+          ${c.title}
+        </div>
+      </div>
+    </div>
+
+    <!-- Course hero -->
+    <section style="padding:3.5rem 2.5rem;background:var(--bg1)">
+      <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:3rem;align-items:start">
+
+        <!-- Left: details -->
+        <div>
+          <div style="font-size:.65rem;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:3px;margin-bottom:.6rem">${c.cat}</div>
+          <h1 style="font-family:'Orbitron',monospace;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;color:var(--tw);line-height:1.2;margin-bottom:1rem">${c.title}</h1>
+          <p style="color:var(--tm);font-size:.95rem;line-height:1.8;margin-bottom:1.5rem">${c.desc}</p>
+
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--bdr)">
+            <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--tm)"><i class="fas fa-signal" style="color:var(--c)"></i>${c.level}</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--tm)"><i class="fas fa-clock" style="color:var(--c)"></i>${c.duration}</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--tm)"><i class="fas fa-users" style="color:var(--c)"></i>${c.students}+ students</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--tm)"><i class="fas fa-star" style="color:#ffd700"></i>${c.rating} (${c.reviews} reviews)</div>
+          </div>
+
+          ${c.prereqs ? `
+          <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:.9rem 1.1rem;margin-bottom:1.5rem">
+            <span style="font-size:.62rem;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:2px">Prerequisites: </span>
+            <span style="font-size:.85rem;color:var(--tm)">${c.prereqs}</span>
+          </div>` : ''}
+
+          <!-- Curriculum -->
+          ${c.curriculum?.length ? `
+          <div>
+            <div style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:.9rem">
+              Curriculum — ${c.curriculum.length} modules
+            </div>
+            <div style="display:flex;flex-direction:column;gap:.4rem">
+              ${c.curriculum.map((m, i) => `
+              <div style="display:flex;align-items:center;gap:.7rem;padding:.6rem .85rem;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);font-size:.82rem;color:var(--tm);transition:border-color .2s"
+                   onmouseenter="this.style.borderColor='var(--bdr2)'" onmouseleave="this.style.borderColor='var(--bdr)'">
+                <div style="width:22px;height:22px;border-radius:50%;background:rgba(0,212,255,.1);color:var(--c);font-size:.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Orbitron',monospace">${i + 1}</div>
+                ${m}
+              </div>`).join('')}
+            </div>
+          </div>` : ''}
+        </div>
+
+        <!-- Right: enrollment card -->
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:1.5rem;position:sticky;top:80px;box-shadow:0 8px 32px rgba(0,0,0,.3)">
+          <div style="font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:${isFree?'var(--g)':'var(--tw)'};margin-bottom:1.2rem">${c.price}</div>
+
+          ${isEnrolled
+            ? `<button class="btn btn-ghost btn-full" style="margin-bottom:.8rem" disabled><i class="fas fa-check"></i> Already Enrolled</button>`
+            : isFree
+              ? `<button class="btn btn-c btn-full" style="margin-bottom:.8rem" onclick="enrollAndStart(${c.id})"><i class="fas fa-play"></i> Start Free Course</button>`
+              : `<button class="btn btn-c btn-full" style="margin-bottom:.8rem" onclick="enrollAndStart(${c.id})"><i class="fas fa-graduation-cap"></i> Enroll Now</button>`
+          }
+          <button class="btn btn-ghost btn-full" onclick="Router.go('courses')" style="font-size:.75rem"><i class="fas fa-arrow-left"></i> Browse All Courses</button>
+
+          <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--bdr);display:flex;flex-direction:column;gap:.5rem">
+            <div style="font-size:.74rem;color:var(--tm);display:flex;align-items:center;gap:6px"><i class="fas fa-infinity" style="color:var(--c)"></i>Full lifetime access</div>
+            <div style="font-size:.74rem;color:var(--tm);display:flex;align-items:center;gap:6px"><i class="fas fa-certificate" style="color:var(--c)"></i>Certificate on completion</div>
+            <div style="font-size:.74rem;color:var(--tm);display:flex;align-items:center;gap:6px"><i class="fas fa-headset" style="color:var(--c)"></i>Live instructor support</div>
+          </div>
+
+          <!-- Instructor -->
+          <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--bdr);display:flex;align-items:center;gap:.75rem">
+            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c3));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:700;font-size:.72rem;color:var(--bg);flex-shrink:0">AH</div>
+            <div>
+              <div style="font-size:.78rem;font-weight:700;color:var(--tw)">Ahmed Hussein</div>
+              <div style="font-size:.65rem;color:var(--c)">Cisco Certified Professional</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>`;
+
+  reObserve();
+}
+
+/** Enroll + navigate to the appropriate course content */
+function enrollAndStart(id) {
+  const course = COURSES.find(x => x.id === id);
+  if (!course) return;
+
+  /* Free courses: no login required */
+  if (course.price === 'Free') {
+    if (S.user && !S.enrolled.includes(id)) {
+      S.enrolled.push(id);
+      S.user.enrolled = S.enrolled;
+      saveSession();
+    }
+    /* If the course has a dedicated route (labs, etc.), go there */
+    if (course.pageLink) { Router.go(course.pageLink); return; }
+    toast('Course started! Good luck.', 'suc');
+    return;
+  }
+
+  /* Paid courses: require login */
+  if (!S.user) { openModal('login'); toast('Sign in to enroll', 'inf'); return; }
+  if (S.enrolled.includes(id)) { toast('Already enrolled', 'inf'); return; }
+  S.enrolled.push(id);
+  S.user.enrolled = S.enrolled;
+  saveSession();
+  updateDash();
+  toast('Enrolled successfully!', 'suc');
 }
 
 /* ── CONTACT & NEWSLETTER ── */
