@@ -339,47 +339,144 @@ function toggleMob() {
   document.getElementById('ham').classList.toggle('open');
 }
 
-/* ── INIT ── */
+/* ══════════════════════════════════════════════════════
+   INIT — wires Router + UI + all subsystems
+   ══════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
+  /* Theme icon sync */
   if (document.documentElement.getAttribute('data-theme') === 'light') {
     const ic = document.getElementById('theme-icon');
     if (ic) ic.className = 'fas fa-moon';
   }
-  initScrollProgress();
-  initUrgency();
-  initCliDemo();
-  initAutoEngagement();
-  initCircuit(); // initChat() removed — Tawk.to is the sole chat system
+
+  /* Core subsystems */
+  initCircuit();
   initCursor();
   initScroll();
   initObserver();
-  initCounters();
-  renderCourses('home-courses-grid', COURSES.slice(0, 3));
+  initScrollProgress();
+  initAutoEngagement();
+
+  /* Auth / session */
   restoreSession();
-  initChat();
-  setTimeout(() => document.getElementById('loader').classList.add('gone'), 1700);
+
+  /* Modal close-on-backdrop */
   document.getElementById('auth-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   document.getElementById('course-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCourseModal(); } });
+
+  /* ── ROUTER SETUP ── */
+  Router
+    .guard((path) => {
+      /* Redirect dashboard to login if not authenticated */
+      if (path === 'dashboard' && !S.user) { openModal('login'); return 'home'; }
+    })
+    .on('home', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderHome();
+    })
+    .on('courses', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderCoursesPage();
+    })
+    .on('about', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderAbout();
+    })
+    .on('contact', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderContact();
+    })
+    .on('labs', () => {
+      document.getElementById('site-footer').style.display = '';
+      renderLabs();
+    })
+    .on('dashboard', () => {
+      document.getElementById('site-footer').style.display = 'none';
+      renderDashboard();
+    })
+    .on('freecourse', () => {
+      document.getElementById('site-footer').style.display = '';
+      renderFreeCourse();
+    })
+    .init();
+
+  /* Dismiss loader */
+  setTimeout(() => document.getElementById('loader').classList.add('gone'), 1700);
 });
 
-/* ── PAGE ROUTING ── */
-function showPage(pg) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('show'));
-  const target = document.getElementById('page-' + pg);
-  if (target) target.classList.add('show');
-  document.querySelectorAll('.nav-links a').forEach(a => a.classList.toggle('act', a.dataset.pg === pg));
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  const footer = document.getElementById('site-footer');
-  if (footer) footer.style.display = pg === 'dashboard' ? 'none' : '';
-  if (pg === 'courses') renderCourses('all-courses-grid', COURSES);
-  if (pg === 'about') setTimeout(initSkillBars, 50);
-  if (pg === 'labs') renderLabs();
-  if (pg === 'dashboard') {
-    if (!S.user) { openModal('login'); showPage('home'); return; }
-    updateDash();
-  }
-  reObserve();
+/* ── BACKWARDS-COMPAT shim (old inline onclick="showPage(...)") ── */
+function showPage(pg) { Router.go(pg); }
+
+/* ── DASHBOARD RENDER (complex — lives in app.js) ── */
+function renderDashboard() {
+  const root = document.getElementById('root');
+  if (!root) return;
+  root.innerHTML = `<div class="dash-layout">
+    <aside class="dash-sidebar" id="dash-sidebar">
+      <div class="ds-logo-area">
+        <div class="ds-logo" id="ds-logo-txt">DASHBOARD</div>
+        <div class="ds-role" id="ds-role-txt">Student Portal</div>
+      </div>
+      <nav class="ds-nav" id="ds-nav"></nav>
+    </aside>
+    <main class="dash-main">
+      <div class="dash-panel act" id="dash-overview">
+        <div class="dash-toprow">
+          <div><div class="dash-hello">WELCOME, <span id="dash-name">STUDENT</span></div><div class="dash-sub">Continue your certification journey</div></div>
+          <div class="dash-plan-chip"><div class="dpc-lbl">Your Plan</div><div class="dpc-val" id="dash-plan">FREE</div></div>
+        </div>
+        <div class="dash-stats">
+          <div class="dstat"><div class="dstat-ico ico-c"><i class="fas fa-book-open"></i></div><div class="dstat-num" id="dash-enrolled-n">0</div><div class="dstat-lbl">Enrolled</div></div>
+          <div class="dstat"><div class="dstat-ico ico-g"><i class="fas fa-check-circle"></i></div><div class="dstat-num">0</div><div class="dstat-lbl">Completed</div></div>
+          <div class="dstat"><div class="dstat-ico ico-o"><i class="fas fa-certificate"></i></div><div class="dstat-num">0</div><div class="dstat-lbl">Certificates</div></div>
+          <div class="dstat"><div class="dstat-ico ico-p"><i class="fas fa-clock"></i></div><div class="dstat-num">0h</div><div class="dstat-lbl">Study Time</div></div>
+        </div>
+        <div class="dash-sec-title">Your Courses</div>
+        <div class="enrolled-list" id="dash-enr-list"></div>
+        <div class="upgrade-banner" style="margin-top:1.5rem">
+          <div class="ub-text"><div class="ub-t">UPGRADE TO PREMIUM &#9889;</div><div class="ub-d">Full course access, downloadable labs, and certificates.</div></div>
+          <button class="btn btn-o" onclick="openModal('register')"><i class="fas fa-crown"></i> Upgrade Now</button>
+        </div>
+      </div>
+      <div class="dash-panel" id="dash-my-courses">
+        <div class="dash-toprow"><div><div class="dash-hello">MY COURSES</div></div><button class="btn btn-c" onclick="Router.go('courses')"><i class="fas fa-plus"></i> Browse More</button></div>
+        <div class="enrolled-list" id="dash-mc-list"></div>
+      </div>
+      <div class="dash-panel" id="dash-profile">
+        <div class="dash-toprow"><div><div class="dash-hello">MY PROFILE</div></div></div>
+        <div class="profile-card">
+          <div class="form-row2"><div class="fgrp"><label class="flbl">First Name</label><input id="pf-fname" class="finp"></div><div class="fgrp"><label class="flbl">Last Name</label><input id="pf-lname" class="finp"></div></div>
+          <div class="fgrp"><label class="flbl">Email (read-only)</label><input id="pf-email" class="finp" readonly style="opacity:.5;cursor:not-allowed"></div>
+          <div class="fgrp"><label class="flbl">Phone</label><input id="pf-phone" class="finp" placeholder="+973..."></div>
+          <button class="btn btn-c" onclick="saveProfile()"><i class="fas fa-save"></i> Save Changes</button>
+        </div>
+      </div>
+      <div class="dash-panel" id="dash-admin-overview"></div>
+      <div class="dash-panel" id="dash-admin-courses">
+        <div class="dash-toprow"><div><div class="dash-hello">COURSE <span>MANAGER</span></div></div><button class="btn btn-c" onclick="openEditCourse(null)"><i class="fas fa-plus"></i> Add Course</button></div>
+        <div id="dash-admin-courses-inner"></div>
+      </div>
+      <div class="dash-panel" id="dash-admin-edit">
+        <div class="dash-toprow"><div><div class="dash-hello" id="ace-heading">ADD COURSE</div><div class="dash-sub">Fill in the details and save</div></div><button class="btn btn-ghost" onclick="activatePanel('admin-courses');renderAdminCourses()"><i class="fas fa-arrow-left"></i> Back</button></div>
+        <div class="profile-card" style="max-width:780px">
+          <div class="form-row2"><div class="fgrp"><label class="flbl">Course Title *</label><input id="cf-title" class="finp" placeholder="e.g. CCNA Fundamentals"></div><div class="fgrp"><label class="flbl">Icon (emoji)</label><input id="cf-icon" class="finp" placeholder="🌐"></div></div>
+          <div class="form-row2"><div class="fgrp"><label class="flbl">Category</label><select id="cf-cat" class="finp"><option>CCNA</option><option>CCNP</option><option>Security</option><option>Labs</option><option>Other</option></select></div><div class="fgrp"><label class="flbl">Level</label><select id="cf-level" class="finp"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div></div>
+          <div class="form-row2"><div class="fgrp"><label class="flbl">Duration</label><input id="cf-dur" class="finp" placeholder="e.g. 30 hrs"></div><div class="fgrp"><label class="flbl">Price</label><input id="cf-price" class="finp" placeholder="e.g. $149 or Free"></div></div>
+          <div class="fgrp"><label class="flbl">Description</label><textarea id="cf-desc" class="finp" style="min-height:80px"></textarea></div>
+          <div class="fgrp"><label class="flbl">Prerequisites</label><input id="cf-prereqs" class="finp"></div>
+          <div class="fgrp"><label class="flbl">Direct Page Link <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">(optional)</span></label><input id="cf-link" class="finp"></div>
+          <div class="fgrp"><label class="flbl">Curriculum <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">(one module per line)</span></label><textarea id="cf-curr" class="finp" style="min-height:140px"></textarea></div>
+          <div style="display:flex;gap:1rem;margin-top:.5rem;flex-wrap:wrap"><button class="btn btn-c" onclick="adminSaveCourse()"><i class="fas fa-save"></i> Save Course</button><button class="btn btn-ghost" onclick="activatePanel('admin-courses');renderAdminCourses()"><i class="fas fa-times"></i> Cancel</button></div>
+        </div>
+      </div>
+      <div class="dash-panel" id="dash-admin-students">
+        <div class="dash-toprow"><div><div class="dash-hello">STUDENTS</div></div></div>
+        <div id="dash-admin-students-inner"></div>
+      </div>
+    </main>
+  </div>`;
+  updateDash();
 }
 
 /* ── COURSE RENDERING ── */
