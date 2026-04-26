@@ -1228,29 +1228,21 @@ div[id*="tawk"] svg polygon,
 #chat-send{width:34px;height:34px;flex-shrink:0;border-radius:8px;background:var(--c);border:none;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:background .2s,transform .15s;}
 #chat-send:hover{background:var(--o);transform:scale(1.1);}
 </style>
-<!-- Zero-flash cloak: hides Tawk iframe from the very first render,
-     before any script has a chance to run. Removed in onLoad after
-     hideWidget() has set its own display:none. -->
-<style id="tawk-cloak">
-  /* Zero-flash: hide from first CSS parse, before any script runs */
-  #tawkchat-container,
+<!-- Tawk cloak: blocks any iframe before scripts run -->
+<style>
+  iframe[src*="tawk"],
   iframe[title="chat widget"],
-  iframe[src*="tawk.to"],
   .tawk-min-container {
-    opacity:0 !important;
-    visibility:hidden !important;
-    pointer-events:none !important;
     display:none !important;
+    visibility:hidden !important;
+    opacity:0 !important;
   }
-  /* body.tawk-open has higher specificity (0,2,2 vs 0,1,1) —
-     overrides the hide and lets maximize() show the chat window */
-  body.tawk-open #tawkchat-container,
-  body.tawk-open iframe[title="chat widget"],
-  body.tawk-open iframe[src*="tawk.to"] {
-    opacity:1 !important;
-    visibility:visible !important;
-    pointer-events:auto !important;
+  /* Higher specificity (0,2,X) reveals chat when user opens it */
+  body.tawk-open iframe[src*="tawk"],
+  body.tawk-open iframe[title="chat widget"] {
     display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
   }
 </style>
 </head>
@@ -2032,34 +2024,38 @@ div[id*="tawk"] svg polygon,
 
 <script src="app.js"></script>
 
-<!-- Tawk.to: behaviour hooks must run BEFORE the embed -->
-<script type="text/javascript">
+<!-- Tawk.to: deferred load — no impact on page render, zero flash -->
+<script>
+/* Hooks defined BEFORE loadTawk() so they fire correctly */
 var Tawk_API = window.Tawk_API = Tawk_API || {};
+
 Tawk_API.onLoad = function() {
-  Tawk_API.hideWidget(); /* keep default bubble hidden — custom button only */
-  /* Cloak stays permanently. Class body.tawk-open controls maximize() */
+  Tawk_API.hideWidget();           /* default bubble always hidden */
 };
 Tawk_API.onChatMinimized = function() {
-  document.body.classList.remove('tawk-open'); /* re-apply hide on minimize */
+  document.body.classList.remove('tawk-open');
 };
 Tawk_API.onChatEnded = function() {
   document.body.classList.remove('tawk-open');
 };
-</script>
 
-<!--Start of Tawk.to Script-->
-<script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+function loadTawk() {
+  if (document.getElementById('tawk-js')) return;  /* prevent double load */
+  window.Tawk_LoadStart = new Date();
+  var s = document.createElement('script');
+  s.id       = 'tawk-js';
+  s.async    = true;
+  s.src      = 'https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
+  s.charset  = 'UTF-8';
+  s.setAttribute('crossorigin', '*');
+  document.head.appendChild(s);
+}
+
+/* Load Tawk 1.5 s after page fully loads — zero flash, zero perf cost */
+window.addEventListener('load', function() {
+  setTimeout(loadTawk, 1500);
+});
 </script>
-<!--End of Tawk.to Script-->
 
 <!--
   ════════════════════════════════════════════════════════════════════

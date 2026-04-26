@@ -1130,12 +1130,13 @@ function startLiveChat() {
   if (btn) { btn.classList.add('loading'); btn.disabled = true; }
   setTimeout(() => {
     closeLcPanel();
-    document.body.classList.add('tawk-open');    // lifts CSS cloak
-    if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
-      Tawk_API.maximize();
+    document.body.classList.add('tawk-open');           // lifts CSS cloak
+    if (window.Tawk_API) {
+      if (typeof Tawk_API.showWidget === 'function') Tawk_API.showWidget();
+      if (typeof Tawk_API.maximize  === 'function') Tawk_API.maximize();
     }
     lcLoading = false;
-  }, 1000);                                      // 1s loading feel
+  }, 1000);                                             // 1s loading feel
 }
 
 function _lcReset() {
