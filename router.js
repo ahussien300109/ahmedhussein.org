@@ -42,13 +42,20 @@ const Router = (() => {
   };
 
   /* Compile a route pattern into a RegExp + param key list.
-     ":id"  → named capture group
-     "*"    → wildcard                                    */
+     ":id"  → named capture group  (/([^/]+)/)
+     "*"    → greedy wildcard
+     All other regex-special chars (including "/") are escaped.  */
   const _compile = (pattern) => {
     const keys = [];
-    const src  = pattern
-      .replace(/:([A-Za-z_][A-Za-z0-9_]*)/g, (_, k) => { keys.push(k); return '([^/]+)'; })
-      .replace(/\*/g, '(.*)');
+    /* Use unique sentinel strings so replacements don't collide */
+    const src = pattern
+      .replace(/:([A-Za-z_][A-Za-z0-9_]*)/g, (_, k) => { keys.push(k); return '\x00P\x00'; })
+      .replace(/\*/g, '\x00W\x00')
+      /* Escape all remaining regex-special characters including "/" */
+      .replace(/[/\\^$.|?*+()[\]{}]/g, c => '\\' + c)
+      /* Restore capture groups */
+      .replace(/\x00P\x00/g, '([^/]+)')
+      .replace(/\x00W\x00/g, '(.*)');
     return { rx: new RegExp('^' + src + '$'), keys };
   };
 

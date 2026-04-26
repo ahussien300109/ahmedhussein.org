@@ -409,12 +409,35 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('site-footer').style.display = 'none';
       renderDashboard();
     })
-    /* Dynamic course page — matches #course-1, #course-6, etc. */
-    .on('course-:id', ({ id }) => {
+    /* Dynamic course page: #course/1, #course/2 … */
+    .on('course/:id', ({ id }) => {
       document.getElementById('site-footer').style.display = '';
       renderCourseDetail(parseInt(id, 10));
     })
+    /* Fallback — unknown hashes redirect to home */
+    .on('*', () => Router.go('home'))
     .init();
+
+  /* ── EVENT DELEGATION for course cards ──────────────────────────
+     Attached once; works on dynamically-rendered cards in #root.
+     No inline onclick needed on the cards themselves.
+     ─────────────────────────────────────────────────────────────── */
+  document.addEventListener('click', e => {
+    /* ".start-course" button (enroll / start) */
+    const btn = e.target.closest('.start-course[data-course]');
+    if (btn) {
+      e.preventDefault();
+      e.stopPropagation();
+      startCourse(parseInt(btn.dataset.course, 10));
+      return;
+    }
+    /* Clicking anywhere else on a course card */
+    const card = e.target.closest('.ccard[data-course]');
+    if (card) {
+      e.preventDefault();
+      startCourse(parseInt(card.dataset.course, 10));
+    }
+  });
 
   /* Dismiss loader */
   setTimeout(() => document.getElementById('loader').classList.add('gone'), 1700);
@@ -498,9 +521,14 @@ function renderDashboard() {
 function renderCourses(gridId, data) {
   const g = document.getElementById(gridId);
   if (!g) return;
+  /* data-course attribute drives event delegation — no inline onclick */
   g.innerHTML = data.map(c => `
-    <div class="ccard reveal" onclick="startCourse(${c.id})">
-      <div class="cc-thumb ${c.th}"><span class="cc-thumb-icon">${c.icon}</span><div class="cc-level-tag lvl-${c.level === 'Beginner' ? 'beg' : c.level === 'Advanced' ? 'adv' : 'int'}">${c.level}</div>${c.badge ? `<div class="cc-badge ccb-${c.badge}">${{hot:'🔥 Popular',free:'✓ Free',new:'New'}[c.badge]}</div>` : ''}</div>
+    <div class="ccard reveal" data-course="${c.id}">
+      <div class="cc-thumb ${c.th}">
+        <span class="cc-thumb-icon">${c.icon}</span>
+        <div class="cc-level-tag lvl-${c.level === 'Beginner' ? 'beg' : c.level === 'Advanced' ? 'adv' : 'int'}">${c.level}</div>
+        ${c.badge ? `<div class="cc-badge ccb-${c.badge}">${{hot:'🔥 Popular',free:'✓ Free',new:'New'}[c.badge]}</div>` : ''}
+      </div>
       <div class="cc-body">
         <div class="cc-cat">${c.cat}</div>
         <div class="cc-title">${c.title}</div>
@@ -512,7 +540,7 @@ function renderCourses(gridId, data) {
         </div>
         <div class="cc-footer">
           <span class="cc-price ${c.price === 'Free' ? 'free' : ''}">${c.price}</span>
-          <button class="cc-enroll" onclick="event.stopPropagation();startCourse(${c.id})">
+          <button class="cc-enroll start-course" data-course="${c.id}">
             ${c.price === 'Free' ? '▶ Start Free' : '▶ Start Course'}
           </button>
         </div>
@@ -1390,19 +1418,25 @@ function openLcFromTip() {
 /* ── COURSE ROUTING ── */
 
 /** Navigate to a course's dedicated page (#course-{id}) */
+/**
+ * startCourse(id) — single entry point for all "Start Course" interactions.
+ * Courses with a dedicated SPA route (labs, bootcamp…) go there directly.
+ * All others get their own course detail page at #course/{id}.
+ */
 function startCourse(id) {
-  Router.go('course-' + id);
+  const course = COURSES.find(x => x.id === id);
+  if (!course) { Router.go('courses'); return; }
+  /* Dedicated SPA section (e.g. labs) */
+  if (course.pageLink) { Router.go(course.pageLink); return; }
+  /* Dynamic course detail page */
+  Router.go('course/' + id);
 }
 
 /** Full-page course detail renderer — injected into #root */
 function renderCourseDetail(id) {
   const c = COURSES.find(x => x.id === id);
+  /* Unknown id → fall back to course list */
   if (!c) { Router.go('courses'); return; }
-
-  /* If this course has a special labs/external route, go there */
-  if (c.pageLink && c.pageLink !== 'course-' + id) {
-    Router.go(c.pageLink); return;
-  }
 
   const root = document.getElementById('root');
   if (!root) return;
