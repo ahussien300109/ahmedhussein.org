@@ -1078,6 +1078,51 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 [data-theme="light"] .chat-body{color:#64748b;}
 [data-theme="light"] .chat-start{background:linear-gradient(135deg,#0062cc,#004fa3);color:#fff;}
 @media(max-width:480px){#custom-chat{bottom:12px;right:12px;}#chat-panel{width:calc(100vw - 24px);}}
+
+/* ── CHAT PANEL HEADER (new form layout) ── */
+.chat-hdr-info{display:flex;flex-direction:column;gap:2px;}
+.chat-hdr-title{font-family:'Orbitron',monospace;font-size:.74rem;font-weight:700;color:#00d4ff;letter-spacing:.5px;}
+.chat-hdr-status{font-size:.62rem;color:var(--g);display:flex;align-items:center;gap:4px;}
+.chat-close-btn{background:none;border:none;color:#3a5a78;cursor:pointer;font-size:.8rem;padding:4px 6px;border-radius:4px;transition:color .15s;line-height:1;}
+.chat-close-btn:hover{color:#c8ddf0;}
+.chat-intro{font-size:.8rem;color:#7a9ab5;line-height:1.6;margin-bottom:.9rem;}
+
+/* ── CHAT FORM ── */
+.chat-field{display:flex;flex-direction:column;gap:.28rem;margin-bottom:.6rem;}
+.chat-lbl{font-size:.63rem;font-weight:700;color:#3a5a78;text-transform:uppercase;letter-spacing:1px;}
+.chat-inp{background:rgba(255,255,255,.04);border:1px solid rgba(0,212,255,.18);color:#fff;padding:.52rem .8rem;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:.82rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
+.chat-inp::placeholder{color:#1f3a52;}
+.chat-inp:focus{border-color:#00d4ff;box-shadow:0 0 0 2px rgba(0,212,255,.1);}
+.chat-area{resize:vertical;min-height:68px;}
+.chat-err{font-size:.68rem;color:#ff6060;margin-top:.3rem;padding:.4rem .6rem;background:rgba(255,60,60,.06);border:1px solid rgba(255,60,60,.18);border-radius:6px;}
+
+/* ── SEND BUTTON ── */
+.chat-send-btn{width:100%;padding:.68rem;background:linear-gradient(135deg,#00d4ff,#0099cc);color:#020617;border:none;border-radius:8px;font-family:'Exo 2',sans-serif;font-size:.83rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:box-shadow .2s,transform .15s;margin-top:.5rem;}
+.chat-send-btn:hover:not(:disabled){box-shadow:0 0 22px rgba(0,212,255,.45);transform:translateY(-1px);}
+.chat-send-btn:disabled{opacity:.65;cursor:not-allowed;}
+.csb-text{display:flex;align-items:center;gap:6px;}
+.csb-spin{display:none;align-items:center;gap:7px;}
+@keyframes chatSpin{to{transform:rotate(360deg)}}
+.chat-spinner{animation:chatSpin .8s linear infinite;}
+
+/* ── SUCCESS STATE ── */
+.chat-success-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;padding:1.8rem 1rem;}
+.chat-success-ico{width:44px;height:44px;border-radius:50%;background:rgba(0,255,136,.1);border:1.5px solid rgba(0,255,136,.35);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--g);margin-bottom:.9rem;}
+.chat-success-title{font-family:'Orbitron',monospace;font-size:.82rem;font-weight:700;color:#fff;margin-bottom:.35rem;}
+.chat-success-sub{font-size:.76rem;color:#7a9ab5;line-height:1.55;}
+.chat-success-sub span{color:#00d4ff;}
+
+/* ── LIGHT MODE: chat form ── */
+[data-theme="light"] .chat-inp{background:rgba(0,0,0,.03);border-color:rgba(0,98,204,.18);color:#1e293b;}
+[data-theme="light"] .chat-inp::placeholder{color:#94a3b8;}
+[data-theme="light"] .chat-inp:focus{border-color:#0062cc;box-shadow:0 0 0 2px rgba(0,98,204,.1);}
+[data-theme="light"] .chat-lbl{color:#64748b;}
+[data-theme="light"] .chat-hdr-title{color:#0062cc;}
+[data-theme="light"] .chat-intro{color:#64748b;}
+[data-theme="light"] .chat-send-btn{background:linear-gradient(135deg,#0062cc,#004fa3);color:#fff;}
+[data-theme="light"] .chat-success-title{color:#0f172a;}
+[data-theme="light"] .chat-success-sub{color:#64748b;}
+[data-theme="light"] .chat-success-ico{background:rgba(22,163,74,.1);border-color:rgba(22,163,74,.3);color:#16a34a;}
 /* Panel fade-out animation */
 #lc-panel.lc-closing{opacity:0!important;transform:translateY(10px) scale(.97)!important;pointer-events:none!important;}
 /* Button disabled during load */
