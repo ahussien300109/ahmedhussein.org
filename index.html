@@ -1016,6 +1016,10 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 /* ── Tooltip ── */
 .lc-tip{position:absolute;right:calc(100% + 14px);top:50%;transform:translateY(-50%) translateX(6px);background:rgba(2,6,23,.97);border:1px solid rgba(0,212,255,.2);border-radius:8px;color:#c8ddf0;font-family:'Exo 2',sans-serif;font-size:.71rem;font-weight:600;padding:5px 12px;white-space:nowrap;letter-spacing:.3px;opacity:0;pointer-events:none;transition:opacity .18s,transform .18s;}
 #lc-btn:hover .lc-tip{opacity:1;transform:translateY(-50%) translateX(0);}
+/* Panel fade-out before Tawk opens — uses existing transition */
+#lc-panel.lc-closing{opacity:0!important;transform:translateY(10px) scale(.97)!important;pointer-events:none!important;}
+/* Button disabled during Tawk load */
+#lc-btn:disabled{opacity:.5;cursor:not-allowed;animation:none!important;transform:none!important;}
 
 /* ── Light mode ── */
 [data-theme="light"] #lc-panel{background:rgba(255,255,255,.97);border-color:rgba(0,98,204,.2);box-shadow:0 12px 40px rgba(0,0,0,.15);}

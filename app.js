@@ -1110,6 +1110,14 @@ let _lcAutoShown = false;
 
 /* ── Panel open/close ── */
 function toggleLcPanel() {
+  // Button press animation + subtle haptic (mobile)
+  const lbtn = document.getElementById('lc-btn');
+  if (lbtn) {
+    lbtn.classList.add('lc-clicking');
+    setTimeout(() => lbtn.classList.remove('lc-clicking'), 260);
+  }
+  if (navigator.vibrate) navigator.vibrate(10);
+
   if (lcOpen) { closeLcPanel(); return; }
   const panel = document.getElementById('lc-panel');
   const badge = document.getElementById('lc-badge');
@@ -1197,11 +1205,13 @@ function startLiveChat() {
   if (!_lcValidate()) return;
 
   lcLoading = true;
-  const btn  = document.getElementById('lc-start');
-  const name = document.getElementById('lc-fname')?.value.trim() || 'there';
-  if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+  const btn   = document.getElementById('lc-start');
+  const lbtn  = document.getElementById('lc-btn');
+  const name  = document.getElementById('lc-fname')?.value.trim() || 'there';
+  if (btn)  { btn.classList.add('loading'); btn.disabled = true; }
+  if (lbtn) lbtn.disabled = true;                      // block re-open during load
 
-  // Step 1 → Step 2: show greeting after 400ms
+  // Step 1 → Step 2: greeting after 400ms
   setTimeout(() => {
     const s1    = document.getElementById('lc-s1');
     const s2    = document.getElementById('lc-s2');
@@ -1210,20 +1220,28 @@ function startLiveChat() {
     if (s2)    s2.classList.remove('lc-hidden');
     if (greet) greet.textContent = `Hi ${name}, how can I help you with CCNA?`;
 
-    // Load Tawk on-demand, then open when ready
+    // Load Tawk on-demand, open when ready
     loadTawk(() => {
+      // Fade-out panel (300ms) then open Tawk
+      const panel = document.getElementById('lc-panel');
+      if (panel) panel.classList.add('lc-closing');
       setTimeout(() => {
         closeLcPanel();
         document.body.classList.add('tawk-open');
         if (typeof Tawk_API.showWidget === 'function') Tawk_API.showWidget();
         if (typeof Tawk_API.maximize  === 'function') Tawk_API.maximize();
         lcLoading = false;
-      }, 400);                                          // brief pause after ready
+      }, 300);                                          // matches lc-closing transition
     });
-  }, 400);                                              // greeting animation
+  }, 400);
 }
 
 function _lcReset() {
+  // Re-enable chat button + clear closing animation
+  const lbtn  = document.getElementById('lc-btn');
+  const panel = document.getElementById('lc-panel');
+  if (lbtn)  lbtn.disabled = false;
+  if (panel) panel.classList.remove('lc-closing');
   // Reset steps
   const s1 = document.getElementById('lc-s1');
   const s2 = document.getElementById('lc-s2');
