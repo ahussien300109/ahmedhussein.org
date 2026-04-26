@@ -331,241 +331,384 @@ const renderContact = () => {
     </div>`;
 };
 
-/* ══════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════
+   ADMIN CMS
+   Layout: fixed left sidebar + scrollable main content area.
+   All renders inject into #root (SPA shell — no new HTML files).
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Shared admin chrome ─────────────────────────────────────── */
+const _adminShell = (activeRoute, contentHtml) => /* html */`
+<div style="display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 64px)">
+
+  <!-- Sidebar -->
+  <aside style="background:var(--bg2);border-right:1px solid var(--bdr);padding:1.4rem .8rem;display:flex;flex-direction:column;gap:.2rem;position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto">
+    <div style="font-family:'Orbitron',monospace;font-size:.6rem;font-weight:700;color:var(--c);letter-spacing:3px;text-transform:uppercase;padding:.3rem .8rem .8rem;border-bottom:1px solid var(--bdr);margin-bottom:.6rem">Admin CMS</div>
+    ${[
+      ['admin',                  'fa-chart-bar',   'Overview'],
+      ['admin/courses',          'fa-book',        'Courses'],
+      ['admin/courses/new',      'fa-plus-circle', 'Add Course'],
+    ].map(([r, ic, lbl]) => `
+    <button onclick="Router.go('${r}')"
+      style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid ${activeRoute===r?'rgba(0,212,255,.2)':'transparent'};background:${activeRoute===r?'rgba(0,212,255,.1)':'transparent'};color:${activeRoute===r?'var(--c)':'var(--tm)'};cursor:pointer;font-family:'Exo 2',sans-serif;font-size:.83rem;font-weight:600;width:100%;text-align:left;transition:all .15s"
+      onmouseenter="if('${activeRoute}'!=='${r}')this.style.background='rgba(0,212,255,.05)'"
+      onmouseleave="if('${activeRoute}'!=='${r}')this.style.background='transparent'">
+      <i class="fas ${ic}" style="width:16px;text-align:center"></i>${lbl}
+    </button>`).join('')}
+    <div style="flex:1"></div>
+    <button onclick="adminLogout()"
+      style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--tm);cursor:pointer;font-family:'Exo 2',sans-serif;font-size:.83rem;font-weight:600;width:100%;text-align:left"
+      onmouseenter="this.style.color='var(--o)'" onmouseleave="this.style.color='var(--tm)'">
+      <i class="fas fa-power-off" style="width:16px;text-align:center"></i>Logout
+    </button>
+    <button onclick="Router.go('home')"
+      style="display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;border:1px solid transparent;background:transparent;color:var(--tm);cursor:pointer;font-family:'Exo 2',sans-serif;font-size:.83rem;font-weight:600;width:100%;text-align:left;margin-top:.2rem"
+      onmouseenter="this.style.color='var(--c)'" onmouseleave="this.style.color='var(--tm)'">
+      <i class="fas fa-external-link-alt" style="width:16px;text-align:center"></i>View Site
+    </button>
+  </aside>
+
+  <!-- Main content -->
+  <main style="background:var(--bg1);overflow-y:auto;padding:2.2rem 2.5rem">
+    ${contentHtml}
+  </main>
+</div>`;
+
+/* ── Loading / error states ─────────────────────────────────── */
+const _loading = (msg = 'Loading…') =>
+  `<div style="padding:4rem;text-align:center;color:var(--tm);font-size:.9rem"><i class="fas fa-circle-notch fa-spin" style="color:var(--c);margin-right:8px"></i>${msg}</div>`;
+
+const _apiError = (e) =>
+  `<div style="padding:2rem;background:rgba(255,68,85,.07);border:1px solid rgba(255,68,85,.2);border-radius:var(--r);color:#ff6060;font-size:.84rem"><i class="fas fa-exclamation-triangle" style="margin-right:6px"></i>${e.message}</div>`;
+
+/* ── Field builder ───────────────────────────────────────────── */
+const _field = (label, inputHtml, hint = '') => /* html */`
+<div class="fgrp">
+  <label class="flbl">${label}</label>
+  ${inputHtml}
+  ${hint ? `<div style="font-size:.65rem;color:var(--tm);margin-top:3px">${hint}</div>` : ''}
+</div>`;
+
+/* ══════════════════════════════════════════════════════════════════
    ADMIN — LOGIN
-   ══════════════════════════════════════════════ */
+   ══════════════════════════════════════════════════════════════════ */
 const renderAdminLogin = () => {
   root().innerHTML = /* html */`
-    <div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:2rem">
-      <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2.5rem;width:100%;max-width:380px;position:relative">
-        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o));border-radius:var(--r2) var(--r2) 0 0"></div>
-        <div style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--tw);margin-bottom:.3rem">ADMIN PORTAL</div>
-        <div style="font-size:.8rem;color:var(--tm);margin-bottom:1.8rem">Sign in to manage courses and lessons</div>
-        <div class="fgrp"><label class="flbl">Email</label>
-          <input id="adm-email" class="finp" type="email" placeholder="admin@example.com" autocomplete="email"></div>
-        <div class="fgrp"><label class="flbl">Password</label>
-          <input id="adm-pass" class="finp" type="password" placeholder="••••••••"
-            onkeydown="if(event.key==='Enter')adminLogin(document.getElementById('adm-email').value,document.getElementById('adm-pass').value)"></div>
-        <div id="adm-login-err" class="form-err" style="display:none;margin-bottom:.8rem"></div>
-        <button id="adm-login-btn" class="btn btn-c btn-full"
-          onclick="adminLogin(document.getElementById('adm-email').value,document.getElementById('adm-pass').value)">
-          <i class="fas fa-sign-in-alt"></i> Sign In
-        </button>
-        <div style="text-align:center;margin-top:1.2rem">
-          <a href="#" onclick="Router.go('home');return false" style="font-size:.76rem;color:var(--tm)">← Back to site</a>
-        </div>
-      </div>
-    </div>`;
+  <div style="min-height:80vh;display:flex;align-items:center;justify-content:center;padding:2rem">
+    <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2.5rem;width:100%;max-width:380px;position:relative">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--o));border-radius:var(--r2) var(--r2) 0 0"></div>
+      <div style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--tw);margin-bottom:.3rem">ADMIN PORTAL</div>
+      <div style="font-size:.8rem;color:var(--tm);margin-bottom:1.8rem">Sign in to manage your courses</div>
+      ${_field('Email', `<input id="adm-email" class="finp" type="email" placeholder="admin@example.com" autocomplete="email">`)}
+      ${_field('Password', `<input id="adm-pass" class="finp" type="password" placeholder="••••••••"
+        onkeydown="if(event.key==='Enter')adminLogin(document.getElementById('adm-email').value,document.getElementById('adm-pass').value)">`)}
+      <div id="adm-login-err" class="form-err" style="display:none;margin-bottom:.8rem"></div>
+      <button id="adm-login-btn" class="btn btn-c btn-full"
+        onclick="adminLogin(document.getElementById('adm-email').value,document.getElementById('adm-pass').value)">
+        <i class="fas fa-sign-in-alt"></i> Sign In
+      </button>
+      <p style="text-align:center;margin-top:1.2rem">
+        <a href="#" onclick="Router.go('home');return false" style="font-size:.76rem;color:var(--tm)">← Back to site</a>
+      </p>
+    </div>
+  </div>`;
 };
 
-/* ══════════════════════════════════════════════
-   ADMIN — DASHBOARD (course list)
-   ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════════
+   ADMIN — OVERVIEW (#admin)
+   ══════════════════════════════════════════════════════════════════ */
 const renderAdminDashboard = async () => {
-  root().innerHTML = `<div style="padding:2rem;max-width:1200px;margin:0 auto">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
-      <div>
-        <div style="font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--tw)">ADMIN <span style="color:var(--c)">DASHBOARD</span></div>
-        <div style="font-size:.78rem;color:var(--tm);margin-top:3px">Manage courses and lessons</div>
+  root().innerHTML = _adminShell('admin', _loading('Fetching stats…'));
+
+  try {
+    const [courses] = await Promise.all([Api.Courses.list()]);
+    const main = root().querySelector('main');
+    main.innerHTML = /* html */`
+      <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:var(--tw);margin-bottom:.4rem">DASHBOARD</div>
+      <div style="font-size:.78rem;color:var(--tm);margin-bottom:2rem">Welcome back, Admin</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:2.5rem">
+        ${[
+          ['fa-book',           'var(--c)', courses.length,  'Courses'],
+          ['fa-graduation-cap', 'var(--o)', courses.filter(c=>c.price==='Free').length, 'Free Courses'],
+        ].map(([ic,col,val,lbl]) => `
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:1.2rem;transition:border-color .2s"
+          onmouseenter="this.style.borderColor='var(--bdr2)'" onmouseleave="this.style.borderColor='var(--bdr)'">
+          <div style="width:36px;height:36px;border-radius:9px;background:${col}18;display:flex;align-items:center;justify-content:center;color:${col};margin-bottom:.7rem"><i class="fas ${ic}"></i></div>
+          <div style="font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:900;color:var(--tw)">${val}</div>
+          <div style="font-size:.68rem;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-top:2px">${lbl}</div>
+        </div>`).join('')}
       </div>
-      <div style="display:flex;gap:.6rem">
-        <button class="btn btn-c btn-sm" onclick="Router.go('admin/courses/new')"><i class="fas fa-plus"></i> New Course</button>
-        <button class="btn btn-ghost btn-sm" onclick="adminLogout()"><i class="fas fa-power-off"></i> Logout</button>
-      </div>
-    </div>
-    <div id="adm-course-list"><div style="text-align:center;padding:3rem;color:var(--tm)">Loading…</div></div>
-  </div>`;
+      <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+        <button class="btn btn-c" onclick="Router.go('admin/courses')"><i class="fas fa-book"></i> Manage Courses</button>
+        <button class="btn btn-ghost" onclick="Router.go('admin/courses/new')"><i class="fas fa-plus"></i> Add Course</button>
+      </div>`;
+  } catch (e) {
+    root().querySelector('main').innerHTML = _apiError(e);
+  }
+};
+
+/* ══════════════════════════════════════════════════════════════════
+   ADMIN — COURSE LIST (#admin/courses)
+   ══════════════════════════════════════════════════════════════════ */
+const renderAdminCourseList = async () => {
+  root().innerHTML = _adminShell('admin/courses', _loading('Loading courses…'));
 
   try {
     const courses = await Api.Courses.list();
-    const el = document.getElementById('adm-course-list');
-    if (!el) return;
-    if (!courses?.length) {
-      el.innerHTML = `<div class="empty-state"><div class="es-ico">📚</div><div class="es-title">NO COURSES YET</div><div class="es-desc">Click "New Course" to add your first course.</div></div>`;
+    const main = root().querySelector('main');
+
+    const headerHtml = /* html */`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.8rem;flex-wrap:wrap;gap:.8rem">
+        <div>
+          <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:var(--tw)">COURSES</div>
+          <div style="font-size:.75rem;color:var(--tm);margin-top:2px">${courses.length} course${courses.length!==1?'s':''} total</div>
+        </div>
+        <button class="btn btn-c btn-sm" onclick="Router.go('admin/courses/new')"><i class="fas fa-plus"></i> New Course</button>
+      </div>`;
+
+    if (!courses.length) {
+      main.innerHTML = headerHtml + `
+        <div class="empty-state"><div class="es-ico">📚</div>
+          <div class="es-title">NO COURSES YET</div>
+          <div class="es-desc">Click "New Course" to create your first course.</div>
+          <button class="btn btn-c" onclick="Router.go('admin/courses/new')"><i class="fas fa-plus"></i> Create Course</button>
+        </div>`;
       return;
     }
-    el.innerHTML = `<div class="adm-tbl">
-      <div class="adm-tbl-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr 1.5fr">
-        <span>Course</span><span>Category</span><span>Level</span><span>Price</span><span>Actions</span>
-      </div>
-      ${courses.map(c => `
-      <div class="adm-tbl-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1.5fr">
-        <div class="adm-course-name" style="font-size:.84rem;font-weight:600;color:var(--tw)">${c.title}</div>
-        <span><span class="lvl-tag">${c.category || 'CCNA'}</span></span>
-        <span style="font-size:.74rem;color:var(--tm)">${c.level || 'Beginner'}</span>
-        <span class="${c.price==='Free'?'free-tag':'price-tag'}">${c.price || 'Free'}</span>
-        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-          <button class="btn btn-ghost btn-sm" onclick="Router.go('admin/courses/${c.id}')">
-            <i class="fas fa-edit"></i> Edit
-          </button>
-          <button class="btn btn-sm" style="background:rgba(255,68,85,.1);color:var(--red);border:1px solid rgba(255,68,85,.2)"
-            onclick="adminDeleteCourseDb('${c.id}')">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </div>`).join('')}
-    </div>`;
-  } catch (e) {
-    document.getElementById('adm-course-list').innerHTML =
-      `<div class="empty-state"><div class="es-ico">⚠️</div><div class="es-title">ERROR</div><div class="es-desc">${e.message}</div></div>`;
-  }
-};
 
-/* ══════════════════════════════════════════════
-   ADMIN — COURSE EDITOR (form + lessons)
-   ══════════════════════════════════════════════ */
-const renderAdminCourseEditor = async (courseId) => {
-  const isNew = !courseId || courseId === 'new';
-  root().innerHTML = `<div style="padding:2rem;max-width:900px;margin:0 auto">
-    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
-      <button class="btn btn-ghost btn-sm" onclick="Router.go('admin')"><i class="fas fa-arrow-left"></i> Back</button>
-      <div style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--tw)">${isNew ? 'NEW COURSE' : 'EDIT COURSE'}</div>
-    </div>
-    <div id="adm-editor-body"><div style="text-align:center;padding:3rem;color:var(--tm)">Loading…</div></div>
-  </div>`;
-
-  let course = null;
-  let lessons = [];
-  if (!isNew) {
-    try {
-      course = await Api.Courses.get(courseId);
-      lessons = await Api.Lessons.list(courseId);
-    } catch (e) { toast(e.message, 'err'); }
-  }
-
-  const body = document.getElementById('adm-editor-body');
-  if (!body) return;
-
-  body.innerHTML = /* html */`
-    <!-- Course form -->
-    <div class="profile-card" style="margin-bottom:1.5rem">
-      <div style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem">Course Details</div>
-      <form id="adm-course-form" onsubmit="event.preventDefault();adminSaveCourseDb(this,'${isNew?'':courseId}')">
-        <div class="form-row2">
-          <div class="fgrp"><label class="flbl">Title *</label>
-            <input name="title" class="finp" value="${course?.title||''}" required placeholder="e.g. CCNA Fundamentals"></div>
-          <div class="fgrp"><label class="flbl">Icon (emoji)</label>
-            <input name="icon" class="finp" value="${course?.icon||'🌐'}" placeholder="🌐"></div>
+    main.innerHTML = headerHtml + /* html */`
+      <div class="adm-tbl">
+        <div class="adm-tbl-hdr" style="grid-template-columns:2fr 1fr 1fr 1fr 1.8fr">
+          <span>Course</span><span>Category</span><span>Level</span><span>Price</span><span>Actions</span>
         </div>
-        <div class="form-row2">
-          <div class="fgrp"><label class="flbl">Category</label>
-            <select name="category" class="finp">
-              ${['CCNA','CCNP','Security','Labs','Other'].map(v=>`<option ${course?.category===v?'selected':''}>${v}</option>`).join('')}
-            </select></div>
-          <div class="fgrp"><label class="flbl">Level</label>
-            <select name="level" class="finp">
-              ${['Beginner','Intermediate','Advanced'].map(v=>`<option ${course?.level===v?'selected':''}>${v}</option>`).join('')}
-            </select></div>
-        </div>
-        <div class="form-row2">
-          <div class="fgrp"><label class="flbl">Duration</label>
-            <input name="duration" class="finp" value="${course?.duration||''}" placeholder="e.g. 30 hrs"></div>
-          <div class="fgrp"><label class="flbl">Price</label>
-            <input name="price" class="finp" value="${course?.price||'Free'}" placeholder="Free or $149"></div>
-        </div>
-        <div class="fgrp"><label class="flbl">Description</label>
-          <textarea name="description" class="finp" style="min-height:80px" placeholder="Short course description…">${course?.description||''}</textarea></div>
-        <div style="display:flex;gap:.8rem;margin-top:.5rem;flex-wrap:wrap">
-          <button type="submit" class="btn btn-c"><i class="fas fa-save"></i> Save Course</button>
-          ${!isNew?`<button type="button" class="btn btn-ghost" onclick="Router.go('admin')"><i class="fas fa-times"></i> Cancel</button>`:''}
-        </div>
-      </form>
-    </div>
-
-    ${!isNew ? /* html */`
-    <!-- Lessons panel -->
-    <div class="profile-card">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.6rem">
-        <div style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase">
-          Lessons (${lessons.length})
-        </div>
-        <button class="btn btn-c btn-sm" onclick="showLessonForm(null,'${courseId}')">
-          <i class="fas fa-plus"></i> Add Lesson
-        </button>
-      </div>
-
-      <!-- Lesson list -->
-      <div id="lesson-list" style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.2rem">
-        ${lessons.length ? lessons.map(l => /* html */`
-        <div class="lesson-item adm-tbl-row" data-lesson-id="${l.id}"
-          style="grid-template-columns:auto 1fr auto;display:grid;gap:.8rem;align-items:center;padding:.65rem 1rem;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);cursor:default">
-          <div style="display:flex;flex-direction:column;gap:2px">
-            <button title="Move up" class="btn btn-ghost btn-sm" style="padding:2px 7px"
-              onclick="moveLessonUp(this)">▲</button>
-            <button title="Move down" class="btn btn-ghost btn-sm" style="padding:2px 7px"
-              onclick="moveLessonDown(this)">▼</button>
+        ${courses.map(c => /* html */`
+        <div class="adm-tbl-row" style="grid-template-columns:2fr 1fr 1fr 1fr 1.8fr" id="course-row-${c.id}">
+          <div class="adm-course-name">
+            <span style="font-size:1.2rem">${c.icon||'🌐'}</span>
+            <span style="font-size:.82rem;font-weight:600;color:var(--tw)">${c.title}</span>
           </div>
-          <div>
-            <div style="font-size:.84rem;font-weight:600;color:var(--tw)">${l.title}</div>
-            <div style="font-size:.68rem;color:var(--tm)">${l.duration||'—'}</div>
-          </div>
-          <div style="display:flex;gap:.4rem">
-            <button class="btn btn-ghost btn-sm" onclick="showLessonForm('${l.id}','${courseId}',${JSON.stringify(l).replace(/</g,'\\u003c')})">
-              <i class="fas fa-edit"></i>
+          <span><span class="lvl-tag">${c.category||'CCNA'}</span></span>
+          <span style="font-size:.74rem;color:var(--tm)">${c.level||'Beginner'}</span>
+          <span class="${c.price==='Free'?'free-tag':'price-tag'}">${c.price||'Free'}</span>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="Router.go('admin/courses/${c.id}')">
+              <i class="fas fa-edit"></i> Edit
             </button>
-            <button class="btn btn-sm" style="background:rgba(255,68,85,.1);color:var(--red);border:1px solid rgba(255,68,85,.2)"
-              onclick="adminDeleteLessonDb('${l.id}','${courseId}')">
+            <button class="btn btn-ghost btn-sm" onclick="Router.go('admin/courses/${c.id}#lessons')" style="color:var(--o);border-color:rgba(255,106,0,.3)">
+              <i class="fas fa-list"></i> Lessons
+            </button>
+            <button class="btn btn-sm" style="background:rgba(255,68,85,.08);color:var(--red);border:1px solid rgba(255,68,85,.2)"
+              onclick="adminDeleteCourseDb('${c.id}')">
               <i class="fas fa-trash"></i>
             </button>
           </div>
-        </div>`).join('')
-        : `<div style="text-align:center;padding:1.5rem;color:var(--tm);font-size:.82rem">No lessons yet — click "Add Lesson" to start.</div>`}
-      </div>
+        </div>`).join('')}
+      </div>`;
+  } catch (e) {
+    root().querySelector('main').innerHTML = _apiError(e);
+  }
+};
 
-      ${lessons.length > 1 ? `<button class="btn btn-ghost btn-sm" onclick="adminReorderLessons('${courseId}')">
-        <i class="fas fa-save"></i> Save Order
-      </button>` : ''}
+/* ══════════════════════════════════════════════════════════════════
+   ADMIN — COURSE EDITOR (#admin/courses/:id  +  /new)
+   Two-column: left = course form, right = lessons panel
+   ══════════════════════════════════════════════════════════════════ */
+const renderAdminCourseEditor = async (courseId) => {
+  const isNew = !courseId || courseId === 'new';
+  root().innerHTML = _adminShell('admin/courses', _loading(isNew ? 'Preparing form…' : 'Loading course…'));
+
+  let course = null;
+  let lessons = [];
+
+  try {
+    if (!isNew) {
+      [course, lessons] = await Promise.all([
+        Api.Courses.get(courseId),
+        Api.Lessons.list(courseId),
+      ]);
+      if (!course) { toast('Course not found', 'err'); Router.go('admin/courses'); return; }
+    }
+  } catch (e) {
+    root().querySelector('main').innerHTML = _apiError(e);
+    return;
+  }
+
+  const main = root().querySelector('main');
+
+  main.innerHTML = /* html */`
+    <!-- breadcrumb + title -->
+    <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1.8rem;flex-wrap:wrap">
+      <button class="btn btn-ghost btn-sm" onclick="Router.go('admin/courses')"><i class="fas fa-arrow-left"></i></button>
+      <div>
+        <div style="font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--tw)">${isNew ? 'NEW COURSE' : 'EDIT COURSE'}</div>
+        ${!isNew ? `<div style="font-size:.7rem;color:var(--tm);margin-top:2px">${course.title}</div>` : ''}
+      </div>
     </div>
 
-    <!-- Lesson form (shown inline) -->
-    <div id="lesson-form-wrap" style="display:none;margin-top:1rem">
-      <div class="profile-card">
-        <div style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--o);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem" id="lesson-form-title">ADD LESSON</div>
-        <form id="adm-lesson-form" onsubmit="event.preventDefault()">
-          <div class="form-row2">
-            <div class="fgrp"><label class="flbl">Title *</label>
-              <input name="title" class="finp" required placeholder="Lesson title"></div>
-            <div class="fgrp"><label class="flbl">Duration</label>
-              <input name="duration" class="finp" placeholder="e.g. 10 min"></div>
-          </div>
-          <div class="fgrp"><label class="flbl">Order Index</label>
-            <input name="order_index" class="finp" type="number" min="0" placeholder="0"></div>
-          <div class="fgrp"><label class="flbl">Content</label>
-            <textarea name="content" class="finp" style="min-height:120px" placeholder="Lesson content, notes, or embed code…"></textarea></div>
-          <div style="display:flex;gap:.8rem;flex-wrap:wrap">
-            <button type="submit" class="btn btn-c btn-sm"><i class="fas fa-save"></i> Save Lesson</button>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('lesson-form-wrap').style.display='none'">Cancel</button>
-          </div>
-        </form>
+    <!-- two-column grid -->
+    <div style="display:grid;grid-template-columns:1fr 1.1fr;gap:1.8rem;align-items:start">
+
+      <!-- LEFT: course form -->
+      <div>
+        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:1.5rem">
+          <div style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase;margin-bottom:1.2rem">Course Details</div>
+          <form id="adm-course-form" onsubmit="event.preventDefault();adminSaveCourseDb(this,'${isNew?'':courseId}')">
+            ${_field('Title *', `<input name="title" class="finp" value="${course?.title||''}" required placeholder="e.g. CCNA Fundamentals">`)}
+            <div class="form-row2">
+              ${_field('Category', `<select name="category" class="finp">${['CCNA','CCNP','Security','Labs','Other'].map(v=>`<option${(course?.category||'CCNA')===v?' selected':''}>${v}</option>`).join('')}</select>`)}
+              ${_field('Level', `<select name="level" class="finp">${['Beginner','Intermediate','Advanced'].map(v=>`<option${(course?.level||'Beginner')===v?' selected':''}>${v}</option>`).join('')}</select>`)}
+            </div>
+            <div class="form-row2">
+              ${_field('Duration', `<input name="duration" class="finp" value="${course?.duration||''}" placeholder="e.g. 30 hrs">`)}
+              ${_field('Price', `<input name="price" class="finp" value="${course?.price||'Free'}" placeholder="Free or $149">`)}
+            </div>
+            ${_field('Icon (emoji)', `<input name="icon" class="finp" value="${course?.icon||'🌐'}" placeholder="🌐">`)}
+            ${_field('Description', `<textarea name="description" class="finp" style="min-height:90px" placeholder="Short course description…">${course?.description||''}</textarea>`)}
+            <div style="display:flex;gap:.8rem;margin-top:.8rem;flex-wrap:wrap">
+              <button type="submit" class="btn btn-c btn-sm" id="adm-course-save-btn"><i class="fas fa-save"></i> Save Course</button>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="Router.go('admin/courses')"><i class="fas fa-times"></i> Cancel</button>
+              ${!isNew ? `<button type="button" class="btn btn-sm" style="background:rgba(255,68,85,.08);color:var(--red);border:1px solid rgba(255,68,85,.2);margin-left:auto"
+                onclick="adminDeleteCourseDb('${courseId}')"><i class="fas fa-trash"></i> Delete</button>` : ''}
+            </div>
+          </form>
+        </div>
       </div>
-    </div>` : ''}`;
 
-  /* Lesson form helpers (scoped to this render) */
-  window.showLessonForm = (lessonId, cId, lesson = null) => {
-    const wrap  = document.getElementById('lesson-form-wrap');
-    const form  = document.getElementById('adm-lesson-form');
-    const title = document.getElementById('lesson-form-title');
-    if (!wrap || !form) return;
-    title.textContent = lessonId ? 'EDIT LESSON' : 'ADD LESSON';
-    form.querySelector('[name=title]').value       = lesson?.title       || '';
-    form.querySelector('[name=content]').value     = lesson?.content     || '';
-    form.querySelector('[name=duration]').value    = lesson?.duration    || '';
-    form.querySelector('[name=order_index]').value = lesson?.order_index ?? '';
-    form.onsubmit = (e) => { e.preventDefault(); adminSaveLessonDb(form, cId, lessonId); };
-    wrap.style.display = 'block';
-    wrap.scrollIntoView({ behavior: 'smooth' });
-  };
+      <!-- RIGHT: lessons panel (only for existing courses) -->
+      <div id="lessons-panel">
+        ${isNew
+          ? `<div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:2rem;text-align:center;color:var(--tm)">
+              <i class="fas fa-info-circle" style="font-size:1.5rem;color:var(--c);display:block;margin-bottom:.8rem"></i>
+              Save the course first, then you can add lessons.
+            </div>`
+          : _renderLessonsPanel(courseId, lessons)
+        }
+      </div>
+    </div>`;
+};
 
-  window.moveLessonUp = (btn) => {
-    const item = btn.closest('.lesson-item');
-    const prev = item.previousElementSibling;
-    if (prev?.classList.contains('lesson-item')) item.parentNode.insertBefore(item, prev);
-  };
-  window.moveLessonDown = (btn) => {
-    const item = btn.closest('.lesson-item');
-    const next = item.nextElementSibling;
-    if (next?.classList.contains('lesson-item')) item.parentNode.insertBefore(next, item);
-  };
+/* ── Lessons panel HTML builder ──────────────────────────────── */
+const _renderLessonsPanel = (courseId, lessons) => /* html */`
+<div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);overflow:hidden">
+  <!-- Panel header -->
+  <div style="background:var(--bg3);border-bottom:1px solid var(--bdr);padding:.9rem 1.2rem;display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:var(--c);letter-spacing:2px;text-transform:uppercase">Lessons</div>
+      <div style="font-size:.68rem;color:var(--tm);margin-top:1px">${lessons.length} lesson${lessons.length!==1?'s':''}</div>
+    </div>
+    <button class="btn btn-c btn-sm" onclick="adminOpenLessonForm(null,'${courseId}')"><i class="fas fa-plus"></i> Add Lesson</button>
+  </div>
+
+  <!-- Lesson list -->
+  <div id="lesson-list-${courseId}" style="padding:.8rem;display:flex;flex-direction:column;gap:.5rem;min-height:80px">
+    ${lessons.length
+      ? lessons.map((l, i) => _lessonRow(l, courseId, i, lessons.length)).join('')
+      : `<div style="text-align:center;padding:2rem;color:var(--tm);font-size:.82rem"><i class="fas fa-layer-group" style="display:block;font-size:1.5rem;color:var(--bdr2);margin-bottom:.6rem"></i>No lessons yet</div>`}
+  </div>
+
+  <!-- Reorder save (shown when > 1 lesson) -->
+  ${lessons.length > 1 ? `
+  <div style="padding:.75rem 1.2rem;border-top:1px solid var(--bdr);display:flex;justify-content:flex-end">
+    <button class="btn btn-ghost btn-sm" onclick="adminReorderLessons('${courseId}')"><i class="fas fa-save"></i> Save Order</button>
+  </div>` : ''}
+
+  <!-- Inline lesson form (hidden initially) -->
+  <div id="lesson-form-wrap-${courseId}" style="display:none;border-top:1px solid var(--bdr)">
+    ${_lessonFormHtml(courseId)}
+  </div>
+</div>`;
+
+/* ── Single lesson row ───────────────────────────────────────── */
+const _lessonRow = (l, courseId, idx, total) => /* html */`
+<div class="lesson-item" data-lesson-id="${l.id}"
+  style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:.65rem .9rem;display:grid;grid-template-columns:auto 1fr auto;gap:.8rem;align-items:center;transition:border-color .2s"
+  onmouseenter="this.style.borderColor='var(--bdr2)'" onmouseleave="this.style.borderColor='var(--bdr)'">
+  <!-- Order buttons -->
+  <div style="display:flex;flex-direction:column;gap:2px">
+    <button title="Move up" onclick="moveLessonUp(this,'${courseId}')" ${idx===0?'disabled':''} class="btn btn-ghost btn-sm" style="padding:2px 7px;font-size:.65rem;${idx===0?'opacity:.3':''}" >▲</button>
+    <button title="Move down" onclick="moveLessonDown(this,'${courseId}')" ${idx===total-1?'disabled':''} class="btn btn-ghost btn-sm" style="padding:2px 7px;font-size:.65rem;${idx===total-1?'opacity:.3':''}">▼</button>
+  </div>
+  <!-- Info -->
+  <div>
+    <div style="font-size:.83rem;font-weight:600;color:var(--tw)">${l.title}</div>
+    <div style="font-size:.67rem;color:var(--tm);margin-top:1px">${l.duration||'—'} · Order ${l.order_index??idx}</div>
+  </div>
+  <!-- Actions -->
+  <div style="display:flex;gap:.4rem">
+    <button class="btn btn-ghost btn-sm" onclick="adminOpenLessonForm('${l.id}','${courseId}',${JSON.stringify({id:l.id,title:l.title,content:l.content||'',duration:l.duration||'',order_index:l.order_index??idx}).replace(/"/g,'&quot;')})">
+      <i class="fas fa-edit"></i>
+    </button>
+    <button class="btn btn-sm" style="background:rgba(255,68,85,.08);color:var(--red);border:1px solid rgba(255,68,85,.2)"
+      onclick="adminDeleteLessonDb('${l.id}','${courseId}')">
+      <i class="fas fa-trash"></i>
+    </button>
+  </div>
+</div>`;
+
+/* ── Inline lesson form HTML ─────────────────────────────────── */
+const _lessonFormHtml = (courseId) => /* html */`
+<div style="padding:1.2rem">
+  <div id="lesson-form-heading-${courseId}" style="font-family:'Orbitron',monospace;font-size:.62rem;font-weight:700;color:var(--o);letter-spacing:2px;text-transform:uppercase;margin-bottom:1rem">ADD LESSON</div>
+  <form id="adm-lesson-form-${courseId}" onsubmit="event.preventDefault()">
+    <div class="form-row2">
+      ${_field('Title *', `<input name="title" class="finp" required placeholder="Lesson title">`)}
+      ${_field('Duration', `<input name="duration" class="finp" placeholder="e.g. 10 min">`)}
+    </div>
+    ${_field('Content', `<textarea name="content" class="finp" style="min-height:110px" placeholder="Lesson notes, embed code, or markdown…"></textarea>`)}
+    ${_field('Order Index', `<input name="order_index" class="finp" type="number" min="0" placeholder="0">`)}
+    <div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-top:.5rem">
+      <button type="submit" class="btn btn-c btn-sm" id="lesson-save-btn-${courseId}"><i class="fas fa-save"></i> Save Lesson</button>
+      <button type="button" class="btn btn-ghost btn-sm" onclick="adminCloseLessonForm('${courseId}')"><i class="fas fa-times"></i> Cancel</button>
+    </div>
+  </form>
+</div>`;
+
+/* ── Lesson form open/close helpers (called from onclick) ─────── */
+window.adminOpenLessonForm = (lessonId, courseId, lesson = null) => {
+  const wrap    = document.getElementById(`lesson-form-wrap-${courseId}`);
+  const form    = document.getElementById(`adm-lesson-form-${courseId}`);
+  const heading = document.getElementById(`lesson-form-heading-${courseId}`);
+  if (!wrap || !form) return;
+  heading.textContent           = lessonId ? 'EDIT LESSON' : 'ADD LESSON';
+  form.querySelector('[name=title]').value       = lesson?.title       || '';
+  form.querySelector('[name=content]').value     = lesson?.content     || '';
+  form.querySelector('[name=duration]').value    = lesson?.duration    || '';
+  form.querySelector('[name=order_index]').value = lesson?.order_index ?? '';
+  form.onsubmit = (e) => { e.preventDefault(); adminSaveLessonDb(form, courseId, lessonId || null); };
+  wrap.style.display = 'block';
+  wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+};
+
+window.adminCloseLessonForm = (courseId) => {
+  const wrap = document.getElementById(`lesson-form-wrap-${courseId}`);
+  if (wrap) wrap.style.display = 'none';
+};
+
+/* ── Move lesson up/down (DOM reorder only — save on button click) */
+window.moveLessonUp = (btn, courseId) => {
+  const item = btn.closest('.lesson-item');
+  const prev = item.previousElementSibling;
+  if (prev?.classList.contains('lesson-item')) {
+    item.parentNode.insertBefore(item, prev);
+    _updateMoveButtons(courseId);
+  }
+};
+window.moveLessonDown = (btn, courseId) => {
+  const item = btn.closest('.lesson-item');
+  const next = item.nextElementSibling;
+  if (next?.classList.contains('lesson-item')) {
+    item.parentNode.insertBefore(next, item);
+    _updateMoveButtons(courseId);
+  }
+};
+const _updateMoveButtons = (courseId) => {
+  const list  = document.querySelectorAll(`#lesson-list-${courseId} .lesson-item`);
+  const total = list.length;
+  list.forEach((item, i) => {
+    const [up, dn] = item.querySelectorAll('button');
+    up.disabled    = i === 0;          up.style.opacity = i === 0 ? '.3' : '1';
+    dn.disabled    = i === total - 1;  dn.style.opacity = i === total - 1 ? '.3' : '1';
+  });
 };
 
 /* ══════════════════════════════════════════════
@@ -573,5 +716,11 @@ const renderAdminCourseEditor = async (courseId) => {
    ══════════════════════════════════════════════ */
 const UI = {
   renderHome, renderCoursesPage, renderAbout, renderContact, PageHeader,
-  renderAdminLogin, renderAdminDashboard, renderAdminCourseEditor,
+  renderAdminLogin,
+  renderAdminDashboard,
+  renderAdminCourseList,
+  renderAdminCourseEditor,
+  /* Used by app.js _refreshLessonsPanel for in-place panel update */
+  _renderLessonsPanel,
+};
 };

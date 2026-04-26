@@ -439,7 +439,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('site-footer').style.display = 'none';
       UI.renderAdminDashboard();
     })
-    .on('admin/courses/:id', async ({ id }) => {
+    .on('admin/courses', () => {
+      document.getElementById('site-footer').style.display = 'none';
+      UI.renderAdminCourseList();
+    })
+    .on('admin/courses/:id', ({ id }) => {
       document.getElementById('site-footer').style.display = 'none';
       UI.renderAdminCourseEditor(id);
     })
@@ -1663,7 +1667,7 @@ async function adminLogout() {
 
 async function adminSaveCourseDb(formEl, courseId) {
   const btn = formEl.querySelector('[type=submit]');
-  if (btn) btn.disabled = true;
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…'; }
   const data = {
     title:       formEl.querySelector('[name=title]')?.value.trim(),
     description: formEl.querySelector('[name=description]')?.value.trim(),
@@ -1673,24 +1677,27 @@ async function adminSaveCourseDb(formEl, courseId) {
     duration:    formEl.querySelector('[name=duration]')?.value.trim() || '0 hrs',
     icon:        formEl.querySelector('[name=icon]')?.value.trim()     || '🌐',
   };
-  if (!data.title) { toast('Title is required.', 'err'); if (btn) btn.disabled = false; return; }
+  if (!data.title) { toast('Title is required.', 'err'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Course'; } return; }
   try {
     let row;
     if (courseId) {
       row = await Api.Courses.update(courseId, data);
       toast('Course updated!', 'suc');
+      /* Stay on editor — just show success */
     } else {
       row = await Api.Courses.create(data);
       toast('Course created!', 'suc');
+      /* Navigate to editor so lessons can be added */
+      Router.go('admin/courses/' + row.id);
+      return;
     }
-    /* Refresh local COURSES */
+    /* Refresh in-memory COURSES list */
     const remote = await Api.Courses.list();
     if (remote) COURSES = remote.map(mapDbCourse);
-    Router.go('admin');
   } catch (e) {
     toast(e.message, 'err');
   } finally {
-    if (btn) btn.disabled = false;
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Course'; }
   }
 }
 
@@ -1710,7 +1717,7 @@ async function adminDeleteCourseDb(courseId) {
 
 async function adminSaveLessonDb(formEl, courseId, lessonId) {
   const btn = formEl.querySelector('[type=submit]');
-  if (btn) btn.disabled = true;
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…'; }
   const data = {
     course_id:   courseId,
     title:       formEl.querySelector('[name=title]')?.value.trim(),
@@ -1718,7 +1725,7 @@ async function adminSaveLessonDb(formEl, courseId, lessonId) {
     duration:    formEl.querySelector('[name=duration]')?.value.trim() || '5 min',
     order_index: parseInt(formEl.querySelector('[name=order_index]')?.value || '0', 10),
   };
-  if (!data.title) { toast('Lesson title required.', 'err'); if (btn) btn.disabled = false; return; }
+  if (!data.title) { toast('Lesson title required.', 'err'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Lesson'; } return; }
   try {
     if (lessonId) {
       await Api.Lessons.update(lessonId, data);
@@ -1727,12 +1734,13 @@ async function adminSaveLessonDb(formEl, courseId, lessonId) {
       await Api.Lessons.create(data);
       toast('Lesson added!', 'suc');
     }
-    /* Re-render the editor for this course */
-    UI.renderAdminCourseEditor(courseId);
+    adminCloseLessonForm(courseId);
+    /* Refresh only the lessons panel — no full page re-render */
+    await _refreshLessonsPanel(courseId);
   } catch (e) {
     toast(e.message, 'err');
   } finally {
-    if (btn) btn.disabled = false;
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Lesson'; }
   }
 }
 
@@ -1741,16 +1749,27 @@ async function adminDeleteLessonDb(lessonId, courseId) {
   try {
     await Api.Lessons.delete(lessonId);
     toast('Lesson deleted.', 'inf');
-    UI.renderAdminCourseEditor(courseId);
+    await _refreshLessonsPanel(courseId);
   } catch (e) { toast(e.message, 'err'); }
 }
 
 async function adminReorderLessons(courseId) {
-  const items = document.querySelectorAll('.lesson-item[data-lesson-id]');
+  const items = document.querySelectorAll(`#lesson-list-${courseId} .lesson-item[data-lesson-id]`);
   const orderedIds = [...items].map(el => el.dataset.lessonId);
   try {
     await Api.Lessons.reorder(orderedIds);
     toast('Order saved.', 'suc');
+  } catch (e) { toast(e.message, 'err'); }
+}
+
+/** Refresh only the lessons panel without re-rendering the whole editor. */
+async function _refreshLessonsPanel(courseId) {
+  const panel = document.getElementById('lessons-panel');
+  if (!panel) return;
+  try {
+    const lessons = await Api.Lessons.list(courseId);
+    /* Use the UI helper that builds the lesson panel HTML */
+    panel.innerHTML = UI._renderLessonsPanel(courseId, lessons);
   } catch (e) { toast(e.message, 'err'); }
 }
 
