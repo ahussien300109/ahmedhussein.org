@@ -1152,6 +1152,45 @@ function _lcValidate() {
   return ok;
 }
 
+/* ── On-demand Tawk loader ─────────────────────────────────────
+   Tawk is NOT present in HTML. This function injects the script
+   only when the user actually clicks "Start Chat". No iframe
+   exists on the page before that moment — zero possible flash.
+   ─────────────────────────────────────────────────────────── */
+function loadTawk(onReady) {
+  // Already fully loaded — call onReady immediately
+  if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
+    onReady(); return;
+  }
+
+  // Set hooks on Tawk_API stub BEFORE injecting script
+  window.Tawk_API = window.Tawk_API || {};
+  const prev = Tawk_API.onLoad;
+  Tawk_API.onLoad = function() {
+    Tawk_API.hideWidget();                              // never show default bubble
+    if (typeof prev === 'function') prev();
+    onReady();
+  };
+  Tawk_API.onChatMinimized = function() {
+    document.body.classList.remove('tawk-open');
+  };
+  Tawk_API.onChatEnded = function() {
+    document.body.classList.remove('tawk-open');
+  };
+
+  // Inject script only once
+  if (!document.getElementById('tawk-js')) {
+    window.Tawk_LoadStart = new Date();
+    const s = document.createElement('script');
+    s.id        = 'tawk-js';
+    s.async     = true;
+    s.src       = 'https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
+    s.charset   = 'UTF-8';
+    s.setAttribute('crossorigin', '*');
+    document.body.appendChild(s);
+  }
+}
+
 /* ── Multi-step chat flow ── */
 function startLiveChat() {
   if (lcLoading) return;
@@ -1162,26 +1201,26 @@ function startLiveChat() {
   const name = document.getElementById('lc-fname')?.value.trim() || 'there';
   if (btn) { btn.classList.add('loading'); btn.disabled = true; }
 
-  // Step 1 → Step 2: show greeting after 900ms
+  // Step 1 → Step 2: show greeting after 400ms
   setTimeout(() => {
-    const s1   = document.getElementById('lc-s1');
-    const s2   = document.getElementById('lc-s2');
+    const s1    = document.getElementById('lc-s1');
+    const s2    = document.getElementById('lc-s2');
     const greet = document.getElementById('lc-greet-text');
-    if (s1) s1.classList.add('lc-hidden');
-    if (s2) s2.classList.remove('lc-hidden');
+    if (s1)    s1.classList.add('lc-hidden');
+    if (s2)    s2.classList.remove('lc-hidden');
     if (greet) greet.textContent = `Hi ${name}, how can I help you with CCNA?`;
 
-    // Step 2 → Open Tawk after 1.2s
-    setTimeout(() => {
-      closeLcPanel();
-      document.body.classList.add('tawk-open');
-      if (window.Tawk_API) {
+    // Load Tawk on-demand, then open when ready
+    loadTawk(() => {
+      setTimeout(() => {
+        closeLcPanel();
+        document.body.classList.add('tawk-open');
         if (typeof Tawk_API.showWidget === 'function') Tawk_API.showWidget();
         if (typeof Tawk_API.maximize  === 'function') Tawk_API.maximize();
-      }
-      lcLoading = false;
-    }, 1200);
-  }, 900);
+        lcLoading = false;
+      }, 400);                                          // brief pause after ready
+    });
+  }, 400);                                              // greeting animation
 }
 
 function _lcReset() {

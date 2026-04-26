@@ -2111,38 +2111,7 @@ div[id*="tawk"] svg polygon,
 
 <script src="app.js"></script>
 
-<!-- Tawk.to: deferred load — no impact on page render, zero flash -->
-<script>
-/* Hooks defined BEFORE loadTawk() so they fire correctly */
-var Tawk_API = window.Tawk_API = Tawk_API || {};
-
-Tawk_API.onLoad = function() {
-  Tawk_API.hideWidget();           /* default bubble always hidden */
-};
-Tawk_API.onChatMinimized = function() {
-  document.body.classList.remove('tawk-open');
-};
-Tawk_API.onChatEnded = function() {
-  document.body.classList.remove('tawk-open');
-};
-
-function loadTawk() {
-  if (document.getElementById('tawk-js')) return;  /* prevent double load */
-  window.Tawk_LoadStart = new Date();
-  var s = document.createElement('script');
-  s.id       = 'tawk-js';
-  s.async    = true;
-  s.src      = 'https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
-  s.charset  = 'UTF-8';
-  s.setAttribute('crossorigin', '*');
-  document.head.appendChild(s);
-}
-
-/* Load Tawk 1.5 s after page fully loads — zero flash, zero perf cost */
-window.addEventListener('load', function() {
-  setTimeout(loadTawk, 1500);
-});
-</script>
+<!-- Tawk.to loads on-demand in app.js — no script here -->
 
 <!--
   ════════════════════════════════════════════════════════════════════
