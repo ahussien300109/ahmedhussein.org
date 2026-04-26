@@ -1166,35 +1166,27 @@ function _lcValidate() {
    exists on the page before that moment — zero possible flash.
    ─────────────────────────────────────────────────────────── */
 function loadTawk(onReady) {
-  // Already fully loaded — call onReady immediately
+  /* Case A: Tawk already fully loaded (pre-load via 3s timer fired first) */
   if (window.Tawk_API && typeof Tawk_API.maximize === 'function') {
     onReady(); return;
   }
 
-  // Set hooks on Tawk_API stub BEFORE injecting script
+  /* Case B: Script injected but not ready yet — queue onto existing onLoad */
   window.Tawk_API = window.Tawk_API || {};
   const prev = Tawk_API.onLoad;
   Tawk_API.onLoad = function() {
-    Tawk_API.hideWidget();                              // never show default bubble
+    Tawk_API.hideWidget();
     if (typeof prev === 'function') prev();
     onReady();
   };
-  Tawk_API.onChatMinimized = function() {
-    document.body.classList.remove('tawk-open');
-  };
-  Tawk_API.onChatEnded = function() {
-    document.body.classList.remove('tawk-open');
-  };
 
-  // Inject script only once
+  /* Case C: Script not injected at all (user clicked before 3s timer) */
   if (!document.getElementById('tawk-js')) {
-    window.Tawk_LoadStart = new Date();
+    window.Tawk_LoadStart = window.Tawk_LoadStart || new Date();
     const s = document.createElement('script');
-    s.id        = 'tawk-js';
-    s.async     = true;
-    s.src       = 'https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
-    s.charset   = 'UTF-8';
-    s.setAttribute('crossorigin', '*');
+    s.id = 'tawk-js'; s.async = true;
+    s.src = 'https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
+    s.charset = 'UTF-8'; s.setAttribute('crossorigin', '*');
     document.body.appendChild(s);
   }
 }

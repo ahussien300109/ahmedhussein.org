@@ -1021,10 +1021,10 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 /* Gem: gradient circle holds the icon */
 .lc-gem{
   width:38px;height:38px;border-radius:50%;
-  background:linear-gradient(135deg,#00d4ff,#0099cc);
+  background:linear-gradient(135deg,#00eaff,#0077ff);
   display:flex;align-items:center;justify-content:center;
   font-size:1rem;color:#020617;
-  box-shadow:0 0 10px rgba(0,212,255,.35);
+  box-shadow:0 0 12px rgba(0,212,255,.4);
   transition:box-shadow .2s;
   pointer-events:none;
 }
@@ -2134,7 +2134,7 @@ div[id*="tawk"] svg polygon,
 
   <!-- Trigger button -->
   <button id="lc-btn" onclick="toggleLcPanel()" aria-label="Chat with Instructor">
-    <span id="lc-badge">1</span>
+    <span id="lc-badge" style="display:none">0</span>
     <span class="lc-gem"><i class="fas fa-headset"></i></span>
     <span class="lc-tip">Chat with Instructor</span>
   </button>
@@ -2145,7 +2145,37 @@ div[id*="tawk"] svg polygon,
 
 <script src="app.js"></script>
 
-<!-- Tawk.to loads on-demand in app.js — no script here -->
+<!-- Tawk.to: hooks defined here so they fire regardless of load path -->
+<script>
+window.Tawk_API = window.Tawk_API || {};
+
+Tawk_API.onLoad = function() {
+  Tawk_API.hideWidget();           /* default bubble always hidden */
+};
+Tawk_API.onChatMinimized = Tawk_API.onChatEnded = function() {
+  document.body.classList.remove('tawk-open');
+};
+/* Unread message badge — fires whenever agent sends a message */
+Tawk_API.onUnreadCountChanged = function(n) {
+  var b = document.getElementById('lc-badge');
+  if (!b) return;
+  if (n > 0) { b.textContent = n > 9 ? '9+' : n; b.style.display = 'flex'; }
+  else b.style.display = 'none';
+};
+
+/* Pre-load Tawk 3s after page load for instant response + badge support.
+   CSS cloak + hideWidget() guarantee zero flash. */
+function _tawkInject() {
+  if (document.getElementById('tawk-js')) return;
+  window.Tawk_LoadStart = new Date();
+  var s = document.createElement('script');
+  s.id = 'tawk-js'; s.async = true;
+  s.src = 'https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50';
+  s.charset = 'UTF-8'; s.setAttribute('crossorigin', '*');
+  document.body.appendChild(s);
+}
+window.addEventListener('load', function() { setTimeout(_tawkInject, 3000); });
+</script>
 
 <!--
   ════════════════════════════════════════════════════════════════════
