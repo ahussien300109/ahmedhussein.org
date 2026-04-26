@@ -1002,13 +1002,56 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .lc-foot i{font-size:.6rem;}
 
 /* ── Trigger button ── */
-#lc-btn{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#020617,#0a0f1c);border:1.5px solid rgba(0,212,255,.45);cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:border-color .25s,transform .2s;}
-#lc-btn:hover{border-color:#00d4ff;transform:scale(1.07);}
-@keyframes lcGlow{0%,100%{box-shadow:0 0 18px rgba(0,212,255,.22),0 4px 20px rgba(0,0,0,.5);}50%{box-shadow:0 0 34px rgba(0,212,255,.58),0 0 14px rgba(0,212,255,.22),0 4px 24px rgba(0,0,0,.5);}}
-@keyframes lcClick{0%{transform:scale(1)}40%{transform:scale(.88)}100%{transform:scale(1)}}
-#lc-btn{animation:lcGlow 4s ease-in-out infinite;}
-#lc-btn:hover{animation:none;}
-.lc-clicking{animation:lcClick .25s cubic-bezier(.4,0,.2,1) forwards !important;}
+/* ── Trigger button ── */
+#lc-btn{
+  width:56px;height:56px;border-radius:50%;
+  background:linear-gradient(145deg,#020c1e,#091220);
+  border:1.5px solid rgba(0,212,255,.48);
+  box-shadow:0 6px 28px rgba(0,0,0,.55),0 0 16px rgba(0,212,255,.15);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  position:relative;
+  transition:border-color .22s ease,transform .18s ease,box-shadow .22s ease;
+}
+#lc-btn:hover{
+  border-color:#00d4ff;
+  transform:scale(1.05);
+  box-shadow:0 6px 32px rgba(0,0,0,.6),0 0 28px rgba(0,212,255,.5);
+  animation:none;
+}
+/* Gem: gradient circle holds the icon */
+.lc-gem{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,#00d4ff,#0099cc);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:#020617;
+  box-shadow:0 0 10px rgba(0,212,255,.35);
+  transition:box-shadow .2s;
+  pointer-events:none;
+}
+#lc-btn:hover .lc-gem{box-shadow:0 0 20px rgba(0,212,255,.65);}
+
+/* Idle pulse every 5s */
+@keyframes lcGlow{
+  0%,100%{box-shadow:0 6px 28px rgba(0,0,0,.55),0 0 14px rgba(0,212,255,.15);}
+  50%    {box-shadow:0 6px 32px rgba(0,0,0,.6), 0 0 30px rgba(0,212,255,.52),0 0 10px rgba(0,212,255,.2);}
+}
+#lc-btn{animation:lcGlow 5s ease-in-out infinite;}
+
+/* Click press: 150ms scale-down */
+@keyframes lcClick{0%{transform:scale(1)}50%{transform:scale(.95)}100%{transform:scale(1)}}
+.lc-clicking{animation:lcClick .15s ease-in-out forwards !important;}
+
+/* Light mode */
+[data-theme="light"] #lc-btn{background:linear-gradient(145deg,#0062cc,#004fa3);border-color:rgba(0,98,204,.5);box-shadow:0 6px 24px rgba(0,0,0,.12),0 0 14px rgba(0,98,204,.2);}
+[data-theme="light"] #lc-btn:hover{border-color:#0062cc;box-shadow:0 6px 28px rgba(0,0,0,.15),0 0 26px rgba(0,98,204,.45);}
+[data-theme="light"] .lc-gem{background:linear-gradient(135deg,#fff,#e0f0ff);color:#0062cc;box-shadow:0 0 8px rgba(0,98,204,.25);}
+[data-theme="light"] #lc-btn:hover .lc-gem{box-shadow:0 0 18px rgba(0,98,204,.5);}
+
+/* Mobile: slightly larger */
+@media(max-width:480px){
+  #lc-btn{width:62px;height:62px;}
+  .lc-gem{width:44px;height:44px;font-size:1.1rem;}
+}
 
 /* ── Badge ── */
 #lc-badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;background:var(--o);border-radius:9px;font-size:.56rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 4px;font-family:'Orbitron',monospace;}
@@ -2092,23 +2135,10 @@ div[id*="tawk"] svg polygon,
   <!-- Trigger button -->
   <button id="lc-btn" onclick="toggleLcPanel()" aria-label="Chat with Instructor">
     <span id="lc-badge">1</span>
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
-      <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 12H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="#00d4ff"/>
-    </svg>
+    <span class="lc-gem"><i class="fas fa-headset"></i></span>
     <span class="lc-tip">Chat with Instructor</span>
   </button>
 
-</div>
-
-  <button id="lc-btn" onclick="toggleLcPanel()">
-    <span id="lc-badge">1</span>
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
-      <path d="M20 2H4C2.9 2 2 2.9 2 4v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 12H6v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z" fill="#00d4ff"/>
-    </svg>
-    <span class="lc-tip">Chat with Instructor</span>
-  </button>
-
-</div>
 </div>
 
 <div id="toast-box"></div>
