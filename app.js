@@ -8,23 +8,9 @@ function loadCourses() {
     const s = localStorage.getItem('ah_courses');
     if (s) {
       const saved = JSON.parse(s);
-      const defMap = Object.fromEntries(DEFAULT_COURSES.map(c => [c.id, c]));
-      // Merge saved (admin edits preserved) but always sync routing fields from DEFAULT_COURSES
-      // so deleted/renamed pages never cause 404s after a code update.
-      const ROUTING_KEYS = ['link', 'pageLink', 'btnLabel', 'type'];
-      const merged = saved.map(c => {
-        const def = defMap[c.id];
-        if (!def) return c;
-        const out = { ...c };
-        ROUTING_KEYS.forEach(k => {
-          if (k in def) out[k] = def[k];
-          else delete out[k]; // remove stale value if default no longer has it
-        });
-        return out;
-      });
-      // Append courses added to DEFAULT_COURSES since last save
-      const savedIds = new Set(saved.map(c => c.id));
-      return [...merged, ...DEFAULT_COURSES.filter(c => !savedIds.has(c.id))];
+      const ids = new Set(saved.map(c => c.id));
+      // Merge: any course added to DEFAULT_COURSES since last save is appended
+      return [...saved, ...DEFAULT_COURSES.filter(c => !ids.has(c.id))];
     }
   } catch(e) {}
   return DEFAULT_COURSES.map(c => Object.assign({}, c));
@@ -67,7 +53,7 @@ const DEFAULT_COURSES = [
     desc: 'Rapid exam prep with 5 full-length practice tests, time management strategies, and domain-by-domain review sessions.',
     level: 'Intermediate', duration: '30 hrs', students: '340', price: 'Free', rating: '4.8', reviews: '156',
     prereqs: 'Completed CCNA training or equivalent knowledge.',
-    pageLink: 'labs',
+    link: 'ccna-domain1.html',
     curriculum: ['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim'] },
 
   { id: 7, cat: 'CCNA', icon: '🔬', th: 'th1', badge: 'new',
@@ -78,7 +64,8 @@ const DEFAULT_COURSES = [
     type: 'course', pageLink: 'labs', btnLabel: '▶ Start Lab',
     curriculum: ['Layer 2: 802.1Q Trunking & LACP (Labs 1–2)','Layer 2: Voice VLAN & LLDP (Lab 3)','Layer 2: VLAN & Neighbor Discovery (Labs 8–10)','Layer 2: EtherChannel Series (Labs 13–18)','Routing: Dual-Stack Addressing (Lab 4)','Routing: Static Routing & Failover (Lab 5)','Routing: OSPF Single-Area (Labs 6–7)','Routing: IPv6 Static (Lab 19)','Security: ACLs & DHCP Snooping (Lab 11)','Security: NAT, DHCP, NTP & SSH (Lab 14)','Security: Port Security (Labs 16–17)'] }
 ];
-let COURSES = (() => { try { return loadCourses(); } catch(e) { console.warn('[init] loadCourses failed:', e); return DEFAULT_COURSES.map(c => Object.assign({}, c)); } })();
+let COURSES = loadCourses();
+console.log('[COURSES]', COURSES.map(c => c.id + ' ' + c.title + ' cat:' + c.cat + ' price:' + c.price));
 
 /* ── INJECT LAB CONTENT INTO CCNA EXAM LABS COURSE ──────────────
    Labs are defined here and written directly onto the course object
@@ -353,104 +340,70 @@ function toggleMob() {
 }
 
 /* ══════════════════════════════════════════════════════
-   INIT HELPERS + MAIN INIT
+   INIT — wires Router + UI + all subsystems
    ══════════════════════════════════════════════════════ */
-
-function _withTimeout(p, ms, fb) {
-  return Promise.race([p, new Promise(function(r){setTimeout(function(){r(fb);},ms);})]);
-}
-function _dismissLoader() {
-  var el = document.getElementById('loader');
-  if (el) { el.classList.add('gone'); el.style.display = 'none'; }
-}
-function _renderFallback(msg) {
-  var root = document.getElementById('root');
-  if (!root) return;
-  root.innerHTML = '<div style="padding:4rem;text-align:center;color:#7a9ab5"><h2 style="font-family:Orbitron,monospace;color:#00d4ff;margin-bottom:1rem">Ahmed Hussein</h2><p style="margin-bottom:1.5rem">' + (msg||'Loading failed — check the console.') + '</p><a href="#" onclick="location.reload()" style="color:#00d4ff;font-weight:700">↺ Reload</a></div>';
-}
-window.onerror = function(msg,src,line){ console.error('[app:error]',msg,src+':'+line); _dismissLoader(); };
-window.onunhandledrejection = function(ev){ console.error('[app:rejection]',ev.reason); _dismissLoader(); };
-
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('APP START');
-  _init();
-});
-
-async function _init() {
-  try {
-    /* 1. Theme icon */
-    if (document.documentElement.getAttribute('data-theme') === 'light') {
-      var ic = document.getElementById('theme-icon'); if (ic) ic.className = 'fas fa-moon';
-    }
-    /* 2. Visual subsystems — each isolated so one crash cannot block render */
-    [initCircuit,initCursor,initScroll,initObserver,initScrollProgress,initAutoEngagement]
-      .forEach(function(fn){try{fn();}catch(e){console.warn('[subsystem]',fn.name,e.message);}});
-    /* 3. Supabase admin session */
-    try{if(typeof Api!=='undefined'&&Api.Auth&&Api.Auth.restore())S.isAdmin=true;}catch(_){}
-    /* 4. Load courses — 3 s timeout, fallback to local data on any failure */
-    try {
-      var remote = await _withTimeout(Api.Courses.list(), 3000, null);
-      if (Array.isArray(remote) && remote.length) {
-        COURSES = remote.map(mapDbCourse);
-        console.log('[init] Supabase courses:', COURSES.length);
-      } else { console.log('[init] API unavailable — local courses:', COURSES.length); }
-    } catch(e) { console.warn('[init] API error:', e.message); }
-    /* 5. Student session */
-    try{restoreSession();}catch(_){}
-    /* 6. Modal listeners */
-    try {
-      document.getElementById('auth-modal')
-        ?.addEventListener('click',function(e){if(e.target===e.currentTarget)closeModal();});
-      document.getElementById('course-modal')
-        ?.addEventListener('click',function(e){if(e.target===e.currentTarget)closeCourseModal();});
-      document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal();closeCourseModal();}});
-    } catch(_) {}
-    /* 7. Course card event delegation */
-    document.addEventListener('click', function(e) {
-      try {
-        var btn = e.target.closest('.start-course[data-course]');
-        if(btn){e.preventDefault();e.stopPropagation();Router.navigate('/courses/'+btn.dataset.course);return;}
-        var card = e.target.closest('.ccard[data-course]');
-        if(card&&!e.target.closest('.start-course')){e.preventDefault();Router.navigate('/courses/'+card.dataset.course);}
-      } catch(_) {}
-    });
-    /* 8. Wire routes and start router */
-    try {
-      Router
-        .guard(function(path){
-          if((path==='admin'||path.startsWith('admin/'))&&!Api.Auth.isAdmin)return 'admin/login';
-          if(path==='dashboard'&&!S.user){openModal('login');return 'home';}
-        })
-        .on('home',      function(){document.getElementById('site-footer').style.display='';UI.renderHome();})
-        .on('courses',   function(){document.getElementById('site-footer').style.display='';UI.renderCoursesPage();})
-        .on('about',     function(){document.getElementById('site-footer').style.display='';UI.renderAbout();})
-        .on('contact',   function(){document.getElementById('site-footer').style.display='';UI.renderContact();})
-        .on('labs',      function(){document.getElementById('site-footer').style.display='';renderLabs();})
-        .on('dashboard', function(){document.getElementById('site-footer').style.display='none';renderDashboard();})
-        .on('admin/login',      function(){document.getElementById('site-footer').style.display='none';UI.renderAdminLogin();})
-        .on('admin',            function(){document.getElementById('site-footer').style.display='none';UI.renderAdminDashboard();})
-        .on('admin/courses',    function(){document.getElementById('site-footer').style.display='none';UI.renderAdminCourseList();})
-        .on('admin/courses/:id',function(p){document.getElementById('site-footer').style.display='none';UI.renderAdminCourseEditor(p.id);})
-        .on('courses/:courseId',function(p){document.getElementById('site-footer').style.display='';renderCourseDetails(parseInt(p.courseId,10));})
-        .on('*', function(){Router.go('home');})
-        .init();
-    } catch(routerErr) {
-      console.error('[init] Router failed:', routerErr);
-      try{UI.renderHome();}catch(e){_renderFallback('Router error: '+routerErr.message);}
-    }
-    /* 9. Safety net — if #root still empty, force renderHome */
-    var root = document.getElementById('root');
-    if (root && !root.innerHTML.trim()) {
-      console.warn('[init] #root empty — forcing renderHome');
-      try{UI.renderHome();}catch(e){_renderFallback();}
-    }
-  } catch(e) {
-    console.error('[init] Fatal:', e);
-    _renderFallback('Fatal: '+e.message);
-  } finally {
-    _dismissLoader(); /* ALWAYS runs */
+document.addEventListener('DOMContentLoaded', () => {
+  /* Theme icon sync */
+  if (document.documentElement.getAttribute('data-theme') === 'light') {
+    const ic = document.getElementById('theme-icon');
+    if (ic) ic.className = 'fas fa-moon';
   }
-}
+
+  /* Core subsystems */
+  initCircuit();
+  initCursor();
+  initScroll();
+  initObserver();
+  initScrollProgress();
+  initAutoEngagement();
+
+  /* Auth / session */
+  restoreSession();
+
+  /* Modal close-on-backdrop */
+  document.getElementById('auth-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.getElementById('course-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCourseModal(); } });
+
+  /* ── ROUTER SETUP ── */
+  Router
+    .guard((path) => {
+      /* Redirect dashboard to login if not authenticated */
+      if (path === 'dashboard' && !S.user) { openModal('login'); return 'home'; }
+    })
+    .on('home', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderHome();
+    })
+    .on('courses', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderCoursesPage();
+    })
+    .on('about', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderAbout();
+    })
+    .on('contact', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderContact();
+    })
+    .on('labs', () => {
+      document.getElementById('site-footer').style.display = '';
+      renderLabs();
+    })
+    .on('dashboard', () => {
+      document.getElementById('site-footer').style.display = 'none';
+      renderDashboard();
+    })
+    .on('freecourse', () => {
+      document.getElementById('site-footer').style.display = '';
+      renderFreeCourse();
+    })
+    .init();
+
+  /* Dismiss loader */
+  setTimeout(() => document.getElementById('loader').classList.add('gone'), 1700);
+});
 
 /* ── BACKWARDS-COMPAT shim (old inline onclick="showPage(...)") ── */
 function showPage(pg) { Router.go(pg); }
@@ -530,14 +483,9 @@ function renderDashboard() {
 function renderCourses(gridId, data) {
   const g = document.getElementById(gridId);
   if (!g) return;
-  /* data-course attribute drives event delegation — no inline onclick */
   g.innerHTML = data.map(c => `
-    <div class="ccard reveal" data-course="${c.id}">
-      <div class="cc-thumb ${c.th}">
-        <span class="cc-thumb-icon">${c.icon}</span>
-        <div class="cc-level-tag lvl-${c.level === 'Beginner' ? 'beg' : c.level === 'Advanced' ? 'adv' : 'int'}">${c.level}</div>
-        ${c.badge ? `<div class="cc-badge ccb-${c.badge}">${{hot:'🔥 Popular',free:'✓ Free',new:'New'}[c.badge]}</div>` : ''}
-      </div>
+    <div class="ccard reveal" onclick="openCourseDetail(${c.id})">
+      <div class="cc-thumb ${c.th}"><span class="cc-thumb-icon">${c.icon}</span><div class="cc-level-tag lvl-${c.level === 'Beginner' ? 'beg' : c.level === 'Advanced' ? 'adv' : 'int'}">${c.level}</div>${c.badge ? `<div class="cc-badge ccb-${c.badge}">${{hot:'🔥 Popular',free:'✓ Free',new:'New'}[c.badge]}</div>` : ''}</div>
       <div class="cc-body">
         <div class="cc-cat">${c.cat}</div>
         <div class="cc-title">${c.title}</div>
@@ -549,9 +497,7 @@ function renderCourses(gridId, data) {
         </div>
         <div class="cc-footer">
           <span class="cc-price ${c.price === 'Free' ? 'free' : ''}">${c.price}</span>
-          <button class="cc-enroll start-course" data-course="${c.id}">
-            ${c.price === 'Free' ? '▶ Start Free' : '▶ Start Course'}
-          </button>
+          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${(c.link||c.pageLink) ? (c.btnLabel||'▶ Start Course') : S.enrolled.includes(c.id) ? '✓ Enrolled' : 'Enroll Now'}</button>
         </div>
       </div>
     </div>`).join('');
@@ -1172,9 +1118,11 @@ function _chatAppend(text, side) {
 /* ── LABS PAGE DATA ── */
 
 function renderLabs() {
-  // Target #root (SPA shell) — #page-labs no longer exists
-  const pg = document.getElementById('root');
+  const pg = document.getElementById('page-labs');
   if (!pg) return;
+  if (pg.dataset.built) { reObserve(); return; }
+  pg.dataset.built = '1';
+  // Source labs from the course object — data lives in the course, not a separate const
   const labCourse = COURSES.find(c => c.id === 7) || DEFAULT_COURSES.find(c => c.id === 7);
   const LABS_DATA = labCourse?.labs || [];
 
@@ -1422,325 +1370,6 @@ function dismissAutoTip() {
 function openLcFromTip() {
   dismissAutoTip();
   if (!lcOpen) toggleLcPanel();
-}
-
-/* ── COURSE ROUTING ── */
-
-/** Navigate to a course's dedicated page (#course-{id}) */
-/**
- * startCourse(id) — single entry point for all "Start Course" interactions.
- * Courses with a dedicated SPA route (labs, bootcamp…) go there directly.
- * All others get their own course detail page at #course/{id}.
- */
-/**
- * startCourse(id) — called by event delegation.
- * Courses with a dedicated route (labs…) go there; all others → #courses/{id}.
- */
-function startCourse(id) {
-  const course = COURSES.find(x => x.id === id);
-  if (!course) { Router.navigate('/courses'); return; }
-  if (course.pageLink) { Router.go(course.pageLink); return; }
-  Router.navigate('/courses/' + id);
-}
-
-/** Full-page course detail renderer — injected into #root */
-/* Alias kept so any legacy callers still work */
-const renderCourseDetail = (id) => renderCourseDetails(id);
-
-function renderCourseDetails(id) {
-  const c = COURSES.find(x => x.id === id);
-  if (!c) { Router.navigate('/courses'); return; }
-  /* Scroll to top after navigation */
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  const root = document.getElementById('root');
-  if (!root) return;
-
-  const isEnrolled = S.enrolled.includes(id);
-  const isFree     = c.price === 'Free';
-
-  root.innerHTML = /* html */`
-    <!-- Course header -->
-    <div class="pg-header">
-      <div class="pg-header-bg"></div><div class="pg-header-glow"></div>
-      <div class="pg-header-inner">
-        <div class="breadcrumb">
-          <a href="#" onclick="Router.go('home');return false">Home</a>
-          <i class="fas fa-chevron-right"></i>
-          <a href="#" onclick="Router.go('courses');return false">Courses</a>
-          <i class="fas fa-chevron-right"></i>
-          ${c.title}
-        </div>
-      </div>
-    </div>
-
-    <!-- Course hero -->
-    <section style="padding:3.5rem 2.5rem;background:var(--bg1)">
-      <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 320px;gap:3rem;align-items:start">
-
-        <!-- Left: details -->
-        <div>
-          <div style="font-size:.65rem;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:3px;margin-bottom:.6rem">${c.cat}</div>
-          <h1 style="font-family:'Orbitron',monospace;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;color:var(--tw);line-height:1.2;margin-bottom:1rem">${c.title}</h1>
-          <p style="color:var(--tm);font-size:.95rem;line-height:1.8;margin-bottom:1.5rem">${c.desc}</p>
-
-          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--bdr)">
-            <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--tm)"><i class="fas fa-signal" style="color:var(--c)"></i>${c.level}</div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--tm)"><i class="fas fa-clock" style="color:var(--c)"></i>${c.duration}</div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--tm)"><i class="fas fa-users" style="color:var(--c)"></i>${c.students}+ students</div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--tm)"><i class="fas fa-star" style="color:#ffd700"></i>${c.rating} (${c.reviews} reviews)</div>
-          </div>
-
-          ${c.prereqs ? `
-          <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);padding:.9rem 1.1rem;margin-bottom:1.5rem">
-            <span style="font-size:.62rem;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:2px">Prerequisites: </span>
-            <span style="font-size:.85rem;color:var(--tm)">${c.prereqs}</span>
-          </div>` : ''}
-
-          <!-- Curriculum -->
-          ${c.curriculum?.length ? `
-          <div>
-            <div style="font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:var(--tw);letter-spacing:1px;text-transform:uppercase;margin-bottom:.9rem">
-              Curriculum — ${c.curriculum.length} modules
-            </div>
-            <div style="display:flex;flex-direction:column;gap:.4rem">
-              ${c.curriculum.map((m, i) => `
-              <div style="display:flex;align-items:center;gap:.7rem;padding:.6rem .85rem;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);font-size:.82rem;color:var(--tm);transition:border-color .2s"
-                   onmouseenter="this.style.borderColor='var(--bdr2)'" onmouseleave="this.style.borderColor='var(--bdr)'">
-                <div style="width:22px;height:22px;border-radius:50%;background:rgba(0,212,255,.1);color:var(--c);font-size:.6rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Orbitron',monospace">${i + 1}</div>
-                ${m}
-              </div>`).join('')}
-            </div>
-          </div>` : ''}
-        </div>
-
-        <!-- Right: enrollment card -->
-        <div style="background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);padding:1.5rem;position:sticky;top:80px;box-shadow:0 8px 32px rgba(0,0,0,.3)">
-          <div style="font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:${isFree?'var(--g)':'var(--tw)'};margin-bottom:1.2rem">${c.price}</div>
-
-          ${isEnrolled
-            ? `<button class="btn btn-ghost btn-full" style="margin-bottom:.8rem" disabled><i class="fas fa-check"></i> Already Enrolled</button>`
-            : isFree
-              ? `<button class="btn btn-c btn-full" style="margin-bottom:.8rem" onclick="enrollAndStart(${c.id})"><i class="fas fa-play"></i> Start Free Course</button>`
-              : `<button class="btn btn-c btn-full" style="margin-bottom:.8rem" onclick="enrollAndStart(${c.id})"><i class="fas fa-graduation-cap"></i> Enroll Now</button>`
-          }
-          <button class="btn btn-ghost btn-full" onclick="Router.go('courses')" style="font-size:.75rem"><i class="fas fa-arrow-left"></i> Browse All Courses</button>
-
-          <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--bdr);display:flex;flex-direction:column;gap:.5rem">
-            <div style="font-size:.74rem;color:var(--tm);display:flex;align-items:center;gap:6px"><i class="fas fa-infinity" style="color:var(--c)"></i>Full lifetime access</div>
-            <div style="font-size:.74rem;color:var(--tm);display:flex;align-items:center;gap:6px"><i class="fas fa-certificate" style="color:var(--c)"></i>Certificate on completion</div>
-            <div style="font-size:.74rem;color:var(--tm);display:flex;align-items:center;gap:6px"><i class="fas fa-headset" style="color:var(--c)"></i>Live instructor support</div>
-          </div>
-
-          <!-- Instructor -->
-          <div style="margin-top:1.2rem;padding-top:1.2rem;border-top:1px solid var(--bdr);display:flex;align-items:center;gap:.75rem">
-            <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--c3));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:700;font-size:.72rem;color:var(--bg);flex-shrink:0">AH</div>
-            <div>
-              <div style="font-size:.78rem;font-weight:700;color:var(--tw)">Ahmed Hussein</div>
-              <div style="font-size:.65rem;color:var(--c)">Cisco Certified Professional</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </section>`;
-
-  reObserve();
-}
-
-/** Enroll + navigate to the appropriate course content */
-function enrollAndStart(id) {
-  const course = COURSES.find(x => x.id === id);
-  if (!course) return;
-
-  /* Free courses: no login required */
-  if (course.price === 'Free') {
-    if (S.user && !S.enrolled.includes(id)) {
-      S.enrolled.push(id);
-      S.user.enrolled = S.enrolled;
-      saveSession();
-    }
-    /* If the course has a dedicated route (labs, etc.), go there */
-    if (course.pageLink) { Router.go(course.pageLink); return; }
-    toast('Course started! Good luck.', 'suc');
-    return;
-  }
-
-  /* Paid courses: require login */
-  if (!S.user) { openModal('login'); toast('Sign in to enroll', 'inf'); return; }
-  if (S.enrolled.includes(id)) { toast('Already enrolled', 'inf'); return; }
-  S.enrolled.push(id);
-  S.user.enrolled = S.enrolled;
-  saveSession();
-  updateDash();
-  toast('Enrolled successfully!', 'suc');
-}
-
-/* ══════════════════════════════════════════════════════
-   SUPABASE ↔ LOCAL SHAPE MAPPER
-   ══════════════════════════════════════════════════════ */
-
-/** Map a Supabase courses row to the shape used by renderCourses(). */
-function mapDbCourse(row) {
-  const thMap = { CCNA:'th1', CCNP:'th2', Security:'th3', Labs:'th4' };
-  return {
-    id:        row.id,         /* uuid */
-    dbId:      row.id,         /* keep uuid for API calls */
-    cat:       row.category || 'CCNA',
-    icon:      row.icon    || '🌐',
-    th:        thMap[row.category] || 'th5',
-    title:     row.title,
-    desc:      row.description || '',
-    level:     row.level    || 'Beginner',
-    duration:  row.duration || '0 hrs',
-    students:  String(row.students || 0),
-    price:     row.price    || 'Free',
-    rating:    String(row.rating   || '5.0'),
-    reviews:   '0',
-    prereqs:   '',
-    curriculum:[],
-    lessons:   row.lessons  || [],
-  };
-}
-
-/* ══════════════════════════════════════════════════════
-   ADMIN AUTH ACTIONS (called from UI forms)
-   ══════════════════════════════════════════════════════ */
-
-async function adminLogin(email, password) {
-  const btn = document.getElementById('adm-login-btn');
-  const err = document.getElementById('adm-login-err');
-  if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
-  if (err) err.style.display = 'none';
-  try {
-    await Api.Auth.signIn(email, password);
-    S.isAdmin = true;
-    Router.go('admin');
-    toast('Welcome, Admin!', 'suc');
-  } catch (e) {
-    if (err) { err.textContent = e.message; err.style.display = 'block'; }
-  } finally {
-    if (btn) { btn.disabled = false; btn.textContent = 'Sign In'; }
-  }
-}
-
-async function adminLogout() {
-  await Api.Auth.signOut();
-  S.isAdmin = false;
-  Router.go('home');
-  toast('Logged out.', 'inf');
-}
-
-/* ══════════════════════════════════════════════════════
-   ADMIN COURSE CRUD (called from admin UI forms)
-   ══════════════════════════════════════════════════════ */
-
-async function adminSaveCourseDb(formEl, courseId) {
-  const btn = formEl.querySelector('[type=submit]');
-  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…'; }
-  const data = {
-    title:       formEl.querySelector('[name=title]')?.value.trim(),
-    description: formEl.querySelector('[name=description]')?.value.trim(),
-    price:       formEl.querySelector('[name=price]')?.value.trim()    || 'Free',
-    level:       formEl.querySelector('[name=level]')?.value           || 'Beginner',
-    category:    formEl.querySelector('[name=category]')?.value        || 'CCNA',
-    duration:    formEl.querySelector('[name=duration]')?.value.trim() || '0 hrs',
-    icon:        formEl.querySelector('[name=icon]')?.value.trim()     || '🌐',
-  };
-  if (!data.title) { toast('Title is required.', 'err'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Course'; } return; }
-  try {
-    let row;
-    if (courseId) {
-      row = await Api.Courses.update(courseId, data);
-      toast('Course updated!', 'suc');
-      /* Stay on editor — just show success */
-    } else {
-      row = await Api.Courses.create(data);
-      toast('Course created!', 'suc');
-      /* Navigate to editor so lessons can be added */
-      Router.go('admin/courses/' + row.id);
-      return;
-    }
-    /* Refresh in-memory COURSES list */
-    const remote = await Api.Courses.list();
-    if (remote) COURSES = remote.map(mapDbCourse);
-  } catch (e) {
-    toast(e.message, 'err');
-  } finally {
-    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Course'; }
-  }
-}
-
-async function adminDeleteCourseDb(courseId) {
-  if (!confirm('Delete this course and all its lessons?')) return;
-  try {
-    await Api.Courses.delete(courseId);
-    COURSES = COURSES.filter(c => c.dbId !== courseId);
-    toast('Course deleted.', 'inf');
-    Router.go('admin');
-  } catch (e) { toast(e.message, 'err'); }
-}
-
-/* ══════════════════════════════════════════════════════
-   ADMIN LESSON CRUD
-   ══════════════════════════════════════════════════════ */
-
-async function adminSaveLessonDb(formEl, courseId, lessonId) {
-  const btn = formEl.querySelector('[type=submit]');
-  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving…'; }
-  const data = {
-    course_id:   courseId,
-    title:       formEl.querySelector('[name=title]')?.value.trim(),
-    content:     formEl.querySelector('[name=content]')?.value.trim(),
-    duration:    formEl.querySelector('[name=duration]')?.value.trim() || '5 min',
-    order_index: parseInt(formEl.querySelector('[name=order_index]')?.value || '0', 10),
-  };
-  if (!data.title) { toast('Lesson title required.', 'err'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Lesson'; } return; }
-  try {
-    if (lessonId) {
-      await Api.Lessons.update(lessonId, data);
-      toast('Lesson updated!', 'suc');
-    } else {
-      await Api.Lessons.create(data);
-      toast('Lesson added!', 'suc');
-    }
-    adminCloseLessonForm(courseId);
-    /* Refresh only the lessons panel — no full page re-render */
-    await _refreshLessonsPanel(courseId);
-  } catch (e) {
-    toast(e.message, 'err');
-  } finally {
-    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Lesson'; }
-  }
-}
-
-async function adminDeleteLessonDb(lessonId, courseId) {
-  if (!confirm('Delete this lesson?')) return;
-  try {
-    await Api.Lessons.delete(lessonId);
-    toast('Lesson deleted.', 'inf');
-    await _refreshLessonsPanel(courseId);
-  } catch (e) { toast(e.message, 'err'); }
-}
-
-async function adminReorderLessons(courseId) {
-  const items = document.querySelectorAll(`#lesson-list-${courseId} .lesson-item[data-lesson-id]`);
-  const orderedIds = [...items].map(el => el.dataset.lessonId);
-  try {
-    await Api.Lessons.reorder(orderedIds);
-    toast('Order saved.', 'suc');
-  } catch (e) { toast(e.message, 'err'); }
-}
-
-/** Refresh only the lessons panel without re-rendering the whole editor. */
-async function _refreshLessonsPanel(courseId) {
-  const panel = document.getElementById('lessons-panel');
-  if (!panel) return;
-  try {
-    const lessons = await Api.Lessons.list(courseId);
-    /* Use the UI helper that builds the lesson panel HTML */
-    panel.innerHTML = UI._renderLessonsPanel(courseId, lessons);
-  } catch (e) { toast(e.message, 'err'); }
 }
 
 /* ── CONTACT & NEWSLETTER ── */
