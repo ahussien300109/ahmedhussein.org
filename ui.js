@@ -19,28 +19,34 @@ window.UI = {
       </div>
     `;
   },
+
   renderCourses: () => {
     console.log('[UI] Rendering Courses');
     const root = document.getElementById('root');
     if (!root) return;
+    
     const courses = window.COURSES || [];
     if (!courses.length) {
       root.innerHTML = `<div class="container"><h2>Courses</h2><p>No courses found.</p></div>`;
       return;
     }
+    
     const html = courses.map(c => `
       <div class="course-card">
-        <h3>${c.title}</h3>
+        <h3>${c.title || 'Untitled'}</h3>
         <p>${c.description || ''}</p>
       </div>
     `).join('');
+    
     root.innerHTML = `<div class="container"><h2>Available Courses</h2><div class="courses-grid">${html}</div></div>`;
   },
+
   renderAbout: () => {
     const root = document.getElementById('root');
     if (!root) return;
     root.innerHTML = `<div class="container"><h2>About</h2><p>Senior Network Engineer.</p></div>`;
   },
+
   renderContact: () => {
     const root = document.getElementById('root');
     if (!root) return;
