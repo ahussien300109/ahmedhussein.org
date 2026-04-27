@@ -1,5 +1,6 @@
+// ui.js - Clean version with no syntax errors
 window.UI = {
-  renderHome: () => {
+  renderHome: function() {
     console.log('[UI] Rendering Home');
     const root = document.getElementById('root');
     if (!root) return;
@@ -20,7 +21,7 @@ window.UI = {
     `;
   },
 
-  renderCourses: () => {
+  renderCourses: function() {
     console.log('[UI] Rendering Courses');
     const root = document.getElementById('root');
     if (!root) return;
@@ -41,15 +42,17 @@ window.UI = {
     root.innerHTML = `<div class="container"><h2>Available Courses</h2><div class="courses-grid">${html}</div></div>`;
   },
 
-  renderAbout: () => {
+  renderAbout: function() {
     const root = document.getElementById('root');
     if (!root) return;
     root.innerHTML = `<div class="container"><h2>About</h2><p>Senior Network Engineer.</p></div>`;
   },
 
-  renderContact: () => {
+  renderContact: function() {
     const root = document.getElementById('root');
     if (!root) return;
     root.innerHTML = `<div class="container"><h2>Contact</h2><p>Get in touch.</p></div>`;
   }
 };
+
+console.log('[UI] Module loaded successfully');
