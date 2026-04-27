@@ -1,6 +1,6 @@
+// api.js - Fixed Supabase URL
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-// Correct Project URL
 const SUPABASE_URL = 'https://zkjeldpnhvdxwpemofao.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpramVsZHBuaHZkeHdwZW1vZmFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNzI1NzcsImV4cCI6MjA5Mjg0ODU3N30.HVFMjm26hcscz2Vm2iVTIqp9AFagjTthRnRciXDx7nk';
 
@@ -8,7 +8,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 window.Api = {
   Courses: {
-    list: async () => {
+    list: async function() {
       console.log('[API] Fetching from Supabase...');
       try {
         const { data, error } = await supabase
@@ -26,6 +26,22 @@ window.Api = {
         console.error('[API] Critical:', e);
         return [];
       }
+    },
+    get: async function(id) {
+      try {
+        const { data, error } = await supabase
+          .from('courses')
+          .select('*')
+          .eq('id', id)
+          .single();
+        if (error) throw error;
+        return data;
+      } catch (e) {
+        console.error('[API] Get error:', e);
+        return null;
+      }
     }
   }
 };
+
+console.log('[API] API module loaded');

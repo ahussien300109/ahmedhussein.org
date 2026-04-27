@@ -2,57 +2,41 @@
 window.UI = {
   renderHome: function() {
     console.log('[UI] Rendering Home');
-    const root = document.getElementById('root');
+    var root = document.getElementById('root');
     if (!root) return;
-    root.innerHTML = `
-      <div class="hero-section">
-        <h1>Welcome to Ahmed Hussein's Lab</h1>
-        <p>Network Engineering & Virtualization Expert</p>
-        <div class="cta-buttons">
-          <a href="#courses" class="btn btn-primary">View Courses</a>
-          <a href="#about" class="btn btn-secondary">About Me</a>
-        </div>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card"><i class="fas fa-network-wired"></i><h3>Network Design</h3></div>
-        <div class="feature-card"><i class="fas fa-server"></i><h3>Virtualization</h3></div>
-        <div class="feature-card"><i class="fas fa-shield-alt"></i><h3>Security</h3></div>
-      </div>
-    `;
+    root.innerHTML = '<div class="hero-section"><h1>Welcome to Ahmed Hussein\'s Lab</h1><p>Network Engineering Expert</p><div class="cta-buttons"><a href="#courses" class="btn btn-primary">View Courses</a><a href="#about" class="btn btn-secondary">About Me</a></div></div>';
   },
 
   renderCourses: function() {
     console.log('[UI] Rendering Courses');
-    const root = document.getElementById('root');
+    var root = document.getElementById('root');
     if (!root) return;
-    
-    const courses = window.COURSES || [];
-    if (!courses.length) {
-      root.innerHTML = `<div class="container"><h2>Courses</h2><p>No courses found.</p></div>`;
+    var courses = window.COURSES || [];
+    if (!courses || courses.length === 0) {
+      root.innerHTML = '<div class="container"><h2>Courses</h2><p>No courses available.</p></div>';
       return;
     }
-    
-    const html = courses.map(c => `
-      <div class="course-card">
-        <h3>${c.title || 'Untitled'}</h3>
-        <p>${c.description || ''}</p>
-      </div>
-    `).join('');
-    
-    root.innerHTML = `<div class="container"><h2>Available Courses</h2><div class="courses-grid">${html}</div></div>`;
+    var html = '';
+    for (var i = 0; i < courses.length; i++) {
+      var c = courses[i];
+      html += '<div class="course-card"><h3>' + (c.title || 'Untitled') + '</h3><p>' + (c.description || '') + '</p></div>';
+    }
+    root.innerHTML = '<div class="container"><h2>Available Courses</h2><div class="courses-grid">' + html + '</div></div>';
   },
 
   renderAbout: function() {
-    const root = document.getElementById('root');
+    console.log('[UI] Rendering About');
+    var root = document.getElementById('root');
     if (!root) return;
-    root.innerHTML = `<div class="container"><h2>About</h2><p>Senior Network Engineer.</p></div>`;
+    root.innerHTML = '<div class="container"><h2>About</h2><p>Senior Network Engineer specializing in enterprise infrastructure.</p></div>';
   },
 
   renderContact: function() {
-    const root = document.getElementById('root');
+    console.log('[UI] Rendering Contact');
+    var root = document.getElementById('root');
     if (!root) return;
-    root.innerHTML = `<div class="container"><h2>Contact</h2><p>Get in touch.</p></div>`;
+    root.innerHTML = '<div class="container"><h2>Contact</h2><p>Get in touch for consulting opportunities.</p></div>';
   }
 };
 
-console.log('[UI] Module loaded successfully');
+console.log('[UI] UI module loaded successfully');
