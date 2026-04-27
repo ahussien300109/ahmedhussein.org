@@ -1,6 +1,6 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const SUPABASE_URL = 'https://zkjeldpnhvdwxwpemofao.supabase.co';
+const SUPABASE_URL = 'https://zkjeldpnhvdwxwpemofa.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpramVsZHBuaHZkeHdwZW1vZmFvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNzI1NzcsImV4cCI6MjA5Mjg0ODU3N30.HVFMjm26hcscz2Vm2iVTIqp9AFagjTthRnRciXDx7nk';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -8,18 +8,21 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 window.Api = {
   Courses: {
     list: async () => {
-      console.log('[API] Fetching from Supabase...');
+      console.log('[API] Fetching courses from Supabase...');
       try {
         const { data, error } = await supabase
           .from('courses')
           .select('*')
           .order('created_at', { ascending: false });
         
-        if (error) throw error;
+        if (error) {
+          console.error('[API] Supabase error:', error);
+          return [];
+        }
         console.log('[API] Success:', data);
         return data || [];
       } catch (e) {
-        console.error('[API] Error:', e);
+        console.error('[API] Critical error:', e);
         return [];
       }
     },
@@ -33,7 +36,7 @@ window.Api = {
         if (error) throw error;
         return data;
       } catch (e) {
-        console.error('[API] Error:', e);
+        console.error('[API] Get error:', e);
         return null;
       }
     }
