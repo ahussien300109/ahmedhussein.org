@@ -1055,6 +1055,7 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 .chat-btn-tip{position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%);background:rgba(2,6,23,.97);border:1px solid rgba(0,212,255,.2);color:#c8ddf0;font-size:.7rem;font-weight:600;padding:5px 11px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .18s;letter-spacing:.3px;}
 #chat-btn:hover .chat-btn-tip{opacity:1;}
 #chat-panel{width:280px;background:#020617;border:1px solid rgba(0,212,255,.2);border-radius:12px;padding:15px;position:absolute;bottom:74px;right:0;display:none;box-shadow:0 12px 40px rgba(0,0,0,.65);backdrop-filter:blur(12px);}
+#chat-panel.open{display:block;animation:fadeIn .18s ease-out;}
 .chat-header{display:flex;justify-content:space-between;align-items:center;color:#00d4ff;font-family:'Orbitron',monospace;font-size:.78rem;font-weight:700;letter-spacing:.5px;margin-bottom:12px;}
 .chat-header button{background:none;border:none;color:#3a5a78;cursor:pointer;font-size:.8rem;padding:2px 6px;border-radius:4px;transition:color .15s;}
 .chat-header button:hover{color:#c8ddf0;}

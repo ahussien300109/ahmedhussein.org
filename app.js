@@ -8,9 +8,23 @@ function loadCourses() {
     const s = localStorage.getItem('ah_courses');
     if (s) {
       const saved = JSON.parse(s);
-      const ids = new Set(saved.map(c => c.id));
-      // Merge: any course added to DEFAULT_COURSES since last save is appended
-      return [...saved, ...DEFAULT_COURSES.filter(c => !ids.has(c.id))];
+      const defMap = Object.fromEntries(DEFAULT_COURSES.map(c => [c.id, c]));
+      // Merge saved (admin edits preserved) but always sync routing fields from DEFAULT_COURSES
+      // so deleted/renamed pages never cause 404s after a code update.
+      const ROUTING_KEYS = ['link', 'pageLink', 'btnLabel', 'type'];
+      const merged = saved.map(c => {
+        const def = defMap[c.id];
+        if (!def) return c;
+        const out = { ...c };
+        ROUTING_KEYS.forEach(k => {
+          if (k in def) out[k] = def[k];
+          else delete out[k]; // remove stale value if default no longer has it
+        });
+        return out;
+      });
+      // Append courses added to DEFAULT_COURSES since last save
+      const savedIds = new Set(saved.map(c => c.id));
+      return [...merged, ...DEFAULT_COURSES.filter(c => !savedIds.has(c.id))];
     }
   } catch(e) {}
   return DEFAULT_COURSES.map(c => Object.assign({}, c));
@@ -53,7 +67,7 @@ const DEFAULT_COURSES = [
     desc: 'Rapid exam prep with 5 full-length practice tests, time management strategies, and domain-by-domain review sessions.',
     level: 'Intermediate', duration: '30 hrs', students: '340', price: 'Free', rating: '4.8', reviews: '156',
     prereqs: 'Completed CCNA training or equivalent knowledge.',
-    link: 'ccna-domain1.html',
+    pageLink: 'labs',
     curriculum: ['Exam Structure & Scoring','Domain 1: Network Fundamentals','Domain 2: Network Access','Domain 3: IP Connectivity','Domain 4: IP Services','Domain 5: Security Fundamentals','Domain 6: Automation','Practice Test 1 + Review','Practice Test 2 + Final Sim'] },
 
   { id: 7, cat: 'CCNA', icon: '🔬', th: 'th1', badge: 'new',
@@ -1118,10 +1132,11 @@ function _chatAppend(text, side) {
 /* ── LABS PAGE DATA ── */
 
 function renderLabs() {
+  const rootEl = root();
+  if (!rootEl) return;
+  rootEl.innerHTML = '<div id="page-labs"></div>';
   const pg = document.getElementById('page-labs');
   if (!pg) return;
-  if (pg.dataset.built) { reObserve(); return; }
-  pg.dataset.built = '1';
   // Source labs from the course object — data lives in the course, not a separate const
   const labCourse = COURSES.find(c => c.id === 7) || DEFAULT_COURSES.find(c => c.id === 7);
   const LABS_DATA = labCourse?.labs || [];
@@ -1153,7 +1168,7 @@ function renderLabs() {
         <div class="sec-eyebrow" style="color:${cat.color}"><i class="fas ${cat.icon}"></i> ${cat.category}</div>
         <h2 class="sec-h2" style="margin-bottom:1.8rem">${cat.category} <span style="color:${cat.color}">Labs</span></h2>
         <div class="faq-list">
-          ${cat.labs.map(lab => `
+          ${cat.items.map(lab => `
           <div class="faq-item">
             <div class="faq-q" onclick="toggleFAQ(this)">
               <span><span style="font-family:'Orbitron',monospace;font-weight:700;color:${cat.color};margin-right:.6rem">LAB ${lab.num}</span>${lab.title}</span>
