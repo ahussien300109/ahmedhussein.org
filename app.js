@@ -78,8 +78,7 @@ const DEFAULT_COURSES = [
     type: 'course', pageLink: 'labs', btnLabel: '▶ Start Lab',
     curriculum: ['Layer 2: 802.1Q Trunking & LACP (Labs 1–2)','Layer 2: Voice VLAN & LLDP (Lab 3)','Layer 2: VLAN & Neighbor Discovery (Labs 8–10)','Layer 2: EtherChannel Series (Labs 13–18)','Routing: Dual-Stack Addressing (Lab 4)','Routing: Static Routing & Failover (Lab 5)','Routing: OSPF Single-Area (Labs 6–7)','Routing: IPv6 Static (Lab 19)','Security: ACLs & DHCP Snooping (Lab 11)','Security: NAT, DHCP, NTP & SSH (Lab 14)','Security: Port Security (Labs 16–17)'] }
 ];
-let COURSES = loadCourses();
-console.log('[COURSES]', COURSES.map(c => c.id + ' ' + c.title + ' cat:' + c.cat + ' price:' + c.price));
+let COURSES = (() => { try { return loadCourses(); } catch(e) { console.warn('[init] loadCourses failed:', e); return DEFAULT_COURSES.map(c => Object.assign({}, c)); } })();
 
 /* ── INJECT LAB CONTENT INTO CCNA EXAM LABS COURSE ──────────────
    Labs are defined here and written directly onto the course object
@@ -354,123 +353,104 @@ function toggleMob() {
 }
 
 /* ══════════════════════════════════════════════════════
-   INIT — wires Router + UI + Api + all subsystems
+   INIT HELPERS + MAIN INIT
    ══════════════════════════════════════════════════════ */
 
-/* ── Global error fence — catches anything that escapes try/catch ── */
-window.onerror = (msg, src, line, col, err) => {
-  console.error('[app:uncaught]', msg, { src, line, col, err });
-  _dismissLoader(); // never leave the user on a blank loader
-};
-window.onunhandledrejection = (ev) => {
-  console.error('[app:unhandledrejection]', ev.reason);
-  _dismissLoader();
-};
+function _withTimeout(p, ms, fb) {
+  return Promise.race([p, new Promise(function(r){setTimeout(function(){r(fb);},ms);})]);
+}
+function _dismissLoader() {
+  var el = document.getElementById('loader');
+  if (el) { el.classList.add('gone'); el.style.display = 'none'; }
+}
+function _renderFallback(msg) {
+  var root = document.getElementById('root');
+  if (!root) return;
+  root.innerHTML = '<div style="padding:4rem;text-align:center;color:#7a9ab5"><h2 style="font-family:Orbitron,monospace;color:#00d4ff;margin-bottom:1rem">Ahmed Hussein</h2><p style="margin-bottom:1.5rem">' + (msg||'Loading failed — check the console.') + '</p><a href="#" onclick="location.reload()" style="color:#00d4ff;font-weight:700">↺ Reload</a></div>';
+}
+window.onerror = function(msg,src,line){ console.error('[app:error]',msg,src+':'+line); _dismissLoader(); };
+window.onunhandledrejection = function(ev){ console.error('[app:rejection]',ev.reason); _dismissLoader(); };
 
-/** Race a promise against a timeout; resolves to fallback if too slow. */
-const _withTimeout = (promise, ms, fallback = null) =>
-  Promise.race([
-    promise,
-    new Promise(resolve => setTimeout(() => resolve(fallback), ms)),
-  ]);
-
-/** Always dismiss the loader — safe to call multiple times. */
-const _dismissLoader = () => {
-  const el = document.getElementById('loader');
-  if (el) el.classList.add('gone');
-};
-
-/** Mount UI for the current route — the single render entry point. */
-const _renderApp = () => {
-  Router
-    .guard((path) => {
-      if ((path === 'admin' || path.startsWith('admin/')) && !Api.Auth.isAdmin) return 'admin/login';
-      if (path === 'dashboard' && !S.user) { openModal('login'); return 'home'; }
-    })
-    .on('home',    () => { document.getElementById('site-footer').style.display = ''; UI.renderHome(); })
-    .on('courses', () => { document.getElementById('site-footer').style.display = ''; UI.renderCoursesPage(); })
-    .on('about',   () => { document.getElementById('site-footer').style.display = ''; UI.renderAbout(); })
-    .on('contact', () => { document.getElementById('site-footer').style.display = ''; UI.renderContact(); })
-    .on('labs',    () => { document.getElementById('site-footer').style.display = ''; renderLabs(); })
-    .on('dashboard', () => { document.getElementById('site-footer').style.display = 'none'; renderDashboard(); })
-    .on('admin/login',    () => { document.getElementById('site-footer').style.display = 'none'; UI.renderAdminLogin(); })
-    .on('admin',          () => { document.getElementById('site-footer').style.display = 'none'; UI.renderAdminDashboard(); })
-    .on('admin/courses',  () => { document.getElementById('site-footer').style.display = 'none'; UI.renderAdminCourseList(); })
-    .on('admin/courses/:id', ({ id }) => { document.getElementById('site-footer').style.display = 'none'; UI.renderAdminCourseEditor(id); })
-    .on('courses/:courseId', ({ courseId }) => { document.getElementById('site-footer').style.display = ''; renderCourseDetails(parseInt(courseId, 10)); })
-    .on('*', () => Router.go('home'))
-    .init();
-};
-
-document.addEventListener('DOMContentLoaded', async () => {
-  /* 1. Theme icon — sync, no API dependency */
-  try {
-    if (document.documentElement.getAttribute('data-theme') === 'light') {
-      const ic = document.getElementById('theme-icon');
-      if (ic) ic.className = 'fas fa-moon';
-    }
-  } catch (_) {}
-
-  /* 2. Visual subsystems — each wrapped so one failure can't block render */
-  for (const fn of [initCircuit, initCursor, initScroll, initObserver, initScrollProgress, initAutoEngagement]) {
-    try { fn(); } catch (e) { console.warn('[init] subsystem failed:', fn.name, e.message); }
-  }
-
-  /* 3. Restore Supabase admin session */
-  try { if (Api.Auth.restore()) S.isAdmin = true; } catch (_) {}
-
-  /* 4. Load courses — 3 s timeout, fallback to DEFAULT_COURSES on any failure */
-  try {
-    const remote = await _withTimeout(Api.Courses.list(), 3000, null);
-    if (Array.isArray(remote) && remote.length) {
-      COURSES = remote.map(mapDbCourse);
-      console.info('[init] Courses loaded from Supabase:', COURSES.length);
-    } else {
-      console.info('[init] API empty/timeout — using DEFAULT_COURSES');
-    }
-  } catch (e) {
-    console.warn('[init] API error — using DEFAULT_COURSES:', e.message);
-  }
-
-  /* 5. Legacy localStorage session */
-  try { restoreSession(); } catch (_) {}
-
-  /* 6. Modal close-on-backdrop */
-  try {
-    document.getElementById('auth-modal')?.addEventListener('click',   e => { if (e.target === e.currentTarget) closeModal(); });
-    document.getElementById('course-modal')?.addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeCourseModal(); } });
-  } catch (_) {}
-
-  /* 7. Event delegation for course cards (attached once, works on dynamic #root) */
-  document.addEventListener('click', e => {
-    try {
-      const btn = e.target.closest('.start-course[data-course]');
-      if (btn) { e.preventDefault(); e.stopPropagation(); Router.navigate('/courses/' + btn.dataset.course); return; }
-      const card = e.target.closest('.ccard[data-course]');
-      if (card && !e.target.closest('.start-course')) { e.preventDefault(); Router.navigate('/courses/' + card.dataset.course); }
-    } catch (_) {}
-  });
-
-  /* 8. Mount app — ALWAYS runs, even if steps 3-6 threw.
-        _renderApp() calls Router.init() which dispatches the current
-        hash and injects HTML into #root. */
-  try {
-    _renderApp();
-  } catch (e) {
-    console.error('[init] _renderApp failed:', e);
-    /* Last-resort fallback: show something rather than blank screen */
-    const root = document.getElementById('root');
-    if (root) root.innerHTML = `<div style="padding:3rem;text-align:center;color:#7a9ab5">
-      <h2 style="font-family:monospace;color:#00d4ff;margin-bottom:1rem">Ahmed Hussein</h2>
-      <p>Could not load app. Check the console for details.</p>
-      <a href="#" onclick="location.reload()" style="color:#00d4ff">Reload</a>
-    </div>`;
-  } finally {
-    /* 9. ALWAYS dismiss loader — no more blank screens */
-    setTimeout(_dismissLoader, 800);
-  }
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('APP START');
+  _init();
 });
+
+async function _init() {
+  try {
+    /* 1. Theme icon */
+    if (document.documentElement.getAttribute('data-theme') === 'light') {
+      var ic = document.getElementById('theme-icon'); if (ic) ic.className = 'fas fa-moon';
+    }
+    /* 2. Visual subsystems — each isolated so one crash cannot block render */
+    [initCircuit,initCursor,initScroll,initObserver,initScrollProgress,initAutoEngagement]
+      .forEach(function(fn){try{fn();}catch(e){console.warn('[subsystem]',fn.name,e.message);}});
+    /* 3. Supabase admin session */
+    try{if(typeof Api!=='undefined'&&Api.Auth&&Api.Auth.restore())S.isAdmin=true;}catch(_){}
+    /* 4. Load courses — 3 s timeout, fallback to local data on any failure */
+    try {
+      var remote = await _withTimeout(Api.Courses.list(), 3000, null);
+      if (Array.isArray(remote) && remote.length) {
+        COURSES = remote.map(mapDbCourse);
+        console.log('[init] Supabase courses:', COURSES.length);
+      } else { console.log('[init] API unavailable — local courses:', COURSES.length); }
+    } catch(e) { console.warn('[init] API error:', e.message); }
+    /* 5. Student session */
+    try{restoreSession();}catch(_){}
+    /* 6. Modal listeners */
+    try {
+      document.getElementById('auth-modal')
+        ?.addEventListener('click',function(e){if(e.target===e.currentTarget)closeModal();});
+      document.getElementById('course-modal')
+        ?.addEventListener('click',function(e){if(e.target===e.currentTarget)closeCourseModal();});
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal();closeCourseModal();}});
+    } catch(_) {}
+    /* 7. Course card event delegation */
+    document.addEventListener('click', function(e) {
+      try {
+        var btn = e.target.closest('.start-course[data-course]');
+        if(btn){e.preventDefault();e.stopPropagation();Router.navigate('/courses/'+btn.dataset.course);return;}
+        var card = e.target.closest('.ccard[data-course]');
+        if(card&&!e.target.closest('.start-course')){e.preventDefault();Router.navigate('/courses/'+card.dataset.course);}
+      } catch(_) {}
+    });
+    /* 8. Wire routes and start router */
+    try {
+      Router
+        .guard(function(path){
+          if((path==='admin'||path.startsWith('admin/'))&&!Api.Auth.isAdmin)return 'admin/login';
+          if(path==='dashboard'&&!S.user){openModal('login');return 'home';}
+        })
+        .on('home',      function(){document.getElementById('site-footer').style.display='';UI.renderHome();})
+        .on('courses',   function(){document.getElementById('site-footer').style.display='';UI.renderCoursesPage();})
+        .on('about',     function(){document.getElementById('site-footer').style.display='';UI.renderAbout();})
+        .on('contact',   function(){document.getElementById('site-footer').style.display='';UI.renderContact();})
+        .on('labs',      function(){document.getElementById('site-footer').style.display='';renderLabs();})
+        .on('dashboard', function(){document.getElementById('site-footer').style.display='none';renderDashboard();})
+        .on('admin/login',      function(){document.getElementById('site-footer').style.display='none';UI.renderAdminLogin();})
+        .on('admin',            function(){document.getElementById('site-footer').style.display='none';UI.renderAdminDashboard();})
+        .on('admin/courses',    function(){document.getElementById('site-footer').style.display='none';UI.renderAdminCourseList();})
+        .on('admin/courses/:id',function(p){document.getElementById('site-footer').style.display='none';UI.renderAdminCourseEditor(p.id);})
+        .on('courses/:courseId',function(p){document.getElementById('site-footer').style.display='';renderCourseDetails(parseInt(p.courseId,10));})
+        .on('*', function(){Router.go('home');})
+        .init();
+    } catch(routerErr) {
+      console.error('[init] Router failed:', routerErr);
+      try{UI.renderHome();}catch(e){_renderFallback('Router error: '+routerErr.message);}
+    }
+    /* 9. Safety net — if #root still empty, force renderHome */
+    var root = document.getElementById('root');
+    if (root && !root.innerHTML.trim()) {
+      console.warn('[init] #root empty — forcing renderHome');
+      try{UI.renderHome();}catch(e){_renderFallback();}
+    }
+  } catch(e) {
+    console.error('[init] Fatal:', e);
+    _renderFallback('Fatal: '+e.message);
+  } finally {
+    _dismissLoader(); /* ALWAYS runs */
+  }
+}
 
 /* ── BACKWARDS-COMPAT shim (old inline onclick="showPage(...)") ── */
 function showPage(pg) { Router.go(pg); }
