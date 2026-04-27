@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Expert CCNA, CCNP and Network Security training with 96% exam pass rate.">
+<title>Ahmed Hussein | Cisco Certified Instructor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<!-- Theme: set before first paint to prevent flash -->
+<script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');if(t==='light')document.documentElement.setAttribute('data-theme','light');})();</script>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- CIRCUIT CANVAS -->
+<canvas id="circuit-canvas"></canvas>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-hex">
+    <svg viewBox="0 0 80 80"><polygon points="40,4 74,22 74,58 40,76 6,58 6,22" fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="200" stroke-dashoffset="200" style="animation:drawHex 1.4s ease forwards"><animate attributeName="stroke-dashoffset" from="200" to="0" dur="1.4s" fill="freeze"/></polygon><polygon points="40,14 66,28 66,52 40,66 14,52 14,28" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="1"/><circle cx="40" cy="40" r="4" fill="#00d4ff" opacity="0.8"/></svg>
+  </div>
+  <div class="loader-title"><span>AHMED</span> HUSSEIN</div>
+  <div class="loader-bar-wrap"><div class="loader-bar-inner"></div></div>
+</div>
+
+<!-- NAVIGATION -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#home" class="nav-logo" onclick="Router.go('home');return false">
+      <svg class="logo-hex" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="rgba(0,212,255,.45)" stroke-width=".8" stroke-dasharray="5 3" class="lr1"/>
+        <circle cx="20" cy="20" r="13.5" fill="none" stroke="rgba(0,212,255,.2)" stroke-width=".6" stroke-dasharray="2 4" class="lr2"/>
+        <polygon points="20,4 34,12 34,28 20,36 6,28 6,12" fill="rgba(0,212,255,.06)" stroke="#00d4ff" stroke-width="1.5"/>
+        <text x="20" y="24.5" text-anchor="middle" font-family="Orbitron,monospace" font-size="9" fill="#00d4ff" font-weight="700">AH</text>
+      </svg>
+      <div><div class="logo-text"><span>AHMED</span> HUSSEIN</div><div class="logo-sub">Cisco Certified Instructor</div></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home"       onclick="Router.go('home');return false"       data-pg="home"       class="act">Home</a></li>
+      <li><a href="#courses"    onclick="Router.go('courses');return false"    data-pg="courses">Courses</a></li>
+      <li><a href="#about"      onclick="Router.go('about');return false"       data-pg="about">About</a></li>
+      <li><a href="#contact"    onclick="Router.go('contact');return false"    data-pg="contact">Contact</a></li>
+      <li><a href="#dashboard"  onclick="Router.go('dashboard');return false"  data-pg="dashboard" id="nav-dash-lnk" style="display:none">Dashboard</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nbtn" id="nav-login-btn"  onclick="openModal('login')">Sign In</button>
+      <button class="nbtn solid" id="nav-reg-btn" onclick="openModal('register')">Register</button>
+      <button class="nbtn" id="nav-logout-btn" style="display:none" onclick="doLogout()"><i class="fas fa-power-off"></i> Logout</button>
+    </div>
+    <button class="nbtn" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle theme" style="padding:7px 11px;font-size:.95rem"><i class="fas fa-sun" id="theme-icon"></i></button>
+    <button class="ham" id="ham" onclick="toggleMob()"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mob-nav" id="mob-nav">
+  <a href="#home"    onclick="Router.go('home');toggleMob();return false">Home</a>
+  <a href="#courses" onclick="Router.go('courses');toggleMob();return false">Courses</a>
+  <a href="#about"   onclick="Router.go('about');toggleMob();return false">About</a>
+  <a href="#contact" onclick="Router.go('contact');toggleMob();return false">Contact</a>
+  <a href="#"        onclick="openModal('login');toggleMob();return false">Sign In</a>
+  <a href="#"        onclick="openModal('register');toggleMob();return false">Register Free</a>
+</div>
+
+<!-- ██ SPA ROOT — sections rendered here by ui.js ██ -->
+<main id="root" aria-live="polite"></main>
+
+<!-- SITE FOOTER (static — always visible) -->
+<footer id="site-footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <div class="f-brand"><span>AHMED</span> HUSSEIN</div>
+        <p class="f-desc">Cisco Certified Instructor offering expert CCNA, CCNP, and Network Security training across the GCC and Middle East.</p>
+        <div class="social-links"><a href="#" class="soc-btn"><i class="fab fa-linkedin-in"></i></a><a href="#" class="soc-btn"><i class="fab fa-youtube"></i></a><a href="#" class="soc-btn"><i class="fab fa-twitter"></i></a><a href="#" class="soc-btn"><i class="fab fa-telegram"></i></a></div>
+      </div>
+      <div><div class="f-col-title">Courses</div><div class="f-links"><a href="#" onclick="Router.go('courses');return false">CCNA 200-301</a><a href="#" onclick="Router.go('courses');return false">CCNP Enterprise</a><a href="#" onclick="Router.go('courses');return false">Network Security</a><a href="#" onclick="Router.go('courses');return false">Exam Bootcamp</a></div></div>
+      <div><div class="f-col-title">Navigate</div><div class="f-links"><a href="#" onclick="Router.go('home');return false">Home</a><a href="#" onclick="Router.go('about');return false">About</a><a href="#" onclick="Router.go('contact');return false">Contact</a><a href="#" onclick="openModal('register');return false">Register</a></div></div>
+      <div><div class="f-col-title">Contact</div><div class="f-links"><span style="color:var(--tm);font-size:0.78rem">info@ahmedhussein.org</span><span style="color:var(--tm);font-size:0.78rem">+973 3219 8505</span><span style="color:var(--tm);font-size:0.78rem">Manama, Bahrain</span><span style="color:var(--tm);font-size:0.78rem">Sat–Thu: 9AM–9PM</span></div></div>
+    </div>
+    <div class="footer-bot"><span>© 2025 Ahmed Hussein. All rights reserved.</span><div style="display:flex;gap:1rem"><a href="#">Privacy</a><a href="#">Terms</a></div></div>
+  </div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-ov" id="auth-modal">
+  <div class="modal-box">
+    <button class="mclose" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    <div class="m-title">ACCESS PORTAL</div>
+    <div class="m-sub">Sign in or create your free account</div>
+    <div class="m-tabs"><button class="m-tab on" data-tab="login" onclick="switchTab('login')">Sign In</button><button class="m-tab" data-tab="register" onclick="switchTab('register')">Register</button></div>
+    <div class="m-panel on" id="mp-login">
+      <div class="form-msg" id="login-ok"><i class="fas fa-check-circle"></i> Logged in!</div>
+      <div class="fgrp"><label class="flbl">Email</label><input id="l-email" class="finp" type="email" placeholder="you@example.com"></div>
+      <div class="fgrp"><label class="flbl">Password <a href="#" class="forgot">Forgot?</a></label><input id="l-pass" class="finp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <div class="form-err" id="login-err"></div>
+      <button class="btn btn-c btn-full" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+      <p style="text-align:center;font-size:0.78rem;color:var(--tm);margin-top:1rem">No account? <a href="#" onclick="switchTab('register')" style="color:var(--c)">Register free</a></p>
+    </div>
+    <div class="m-panel" id="mp-register">
+      <div class="form-msg" id="reg-ok"><i class="fas fa-check-circle"></i> Account created! Sign in now.</div>
+      <p style="font-size:0.68rem;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem">Choose Plan</p>
+      <div class="tier-row">
+        <div class="tier-opt on" data-tier="free" onclick="pickTier('free')"><div class="tier-name">FREE</div><div class="tier-price">$0</div><div class="tier-feat">Course previews &amp; free courses</div></div>
+        <div class="tier-opt" data-tier="premium" onclick="pickTier('premium')"><div class="tier-name">PREMIUM ⚡</div><div class="tier-price">$29/mo</div><div class="tier-feat">Full access + labs + certificates</div></div>
+      </div>
+      <div class="form-row2">
+        <div class="fgrp"><label class="flbl">First Name *</label><input id="r-fname" class="finp" placeholder="Ahmed"></div>
+        <div class="fgrp"><label class="flbl">Last Name</label><input id="r-lname" class="finp" placeholder="Hassan"></div>
+      </div>
+      <div class="fgrp"><label class="flbl">Email *</label><input id="r-email" class="finp" type="email" placeholder="you@example.com"></div>
+      <div class="fgrp"><label class="flbl">Phone</label><input id="r-phone" class="finp" placeholder="+973..."></div>
+      <div class="fgrp"><label class="flbl">Password * (min 8 chars)</label><input id="r-pass" class="finp" type="password" placeholder="Min 8 characters" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="form-err" id="reg-err"></div>
+      <button class="btn btn-c btn-full" onclick="doRegister()"><i class="fas fa-user-plus"></i> Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- COURSE DETAIL MODAL -->
+<div class="modal-ov" id="course-modal">
+  <div class="modal-box" style="max-width:700px"><button class="mclose" onclick="closeCourseModal()"><i class="fas fa-times"></i></button><div id="course-detail-inner"></div></div>
+</div>
+
+<!-- TOAST -->
+<div id="toast-box"></div>
+
+<!-- LIVE SUPPORT WIDGET -->
+<div id="custom-chat">
+  <button id="chat-btn" onclick="openChat()" aria-label="Chat with Instructor">
+    <span id="lc-badge" style="display:none">0</span>
+    <span class="lc-gem"><i class="fas fa-headset"></i></span>
+    <span class="lc-tip">Chat with Instructor</span>
+  </button>
+  <div id="chat-panel">
+    <div class="chat-header">
+      <div class="chat-hdr-info">
+        <div class="chat-hdr-title">Live Support</div>
+        <div class="chat-hdr-status"><span class="chat-sdot"></span>Ahmed Hussein · Online</div>
+      </div>
+      <button class="chat-close-btn" onclick="closePanel()"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="chat-form-wrap">
+      <p class="chat-intro">Send a message and we'll get back to you quickly.</p>
+      <form id="chat-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+        <input type="hidden" name="_subject" value="Chat message via ahmedhussein.org">
+        <div class="chat-field"><label class="chat-lbl">Name</label><input class="chat-inp" type="text" name="name" placeholder="Ahmed Hassan" required autocomplete="name"></div>
+        <div class="chat-field"><label class="chat-lbl">Email</label><input class="chat-inp" type="email" name="email" placeholder="you@example.com" required autocomplete="email"></div>
+        <div class="chat-field"><label class="chat-lbl">Message</label><textarea class="chat-inp chat-area" name="message" placeholder="How can I help you?" required rows="3"></textarea></div>
+        <div id="chat-err" class="chat-err" style="display:none"></div>
+        <button type="submit" id="chat-send" class="chat-send-btn">
+          <span class="csb-text">Send Message</span>
+          <span class="csb-spin"><svg viewBox="0 0 24 24" fill="none" width="14" height="14" class="chat-spinner"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-dasharray="28" stroke-dashoffset="9"/></svg>Sending…</span>
+        </button>
+      </form>
+    </div>
+    <div id="chat-success" style="display:none" class="chat-success-wrap">
+      <div class="chat-success-ico">✓</div>
+      <div class="chat-success-title">Message sent!</div>
+      <div class="chat-success-sub">We'll respond to <span id="chat-reply-email"></span> shortly.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SCRIPTS ── -->
+<script src="router.js"></script>
+<script src="ui.js"></script>
+<script src="app.js"></script>
+
+<!-- Tawk.to: loads ONLY when user clicks the chat button -->
+<script>
+var tawkLoaded=false;
+function loadTawk(cb){if(tawkLoaded){if(cb)cb();return;}tawkLoaded=true;var s=document.createElement("script");s.async=true;s.src="https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50";s.charset="UTF-8";s.setAttribute("crossorigin","*");document.body.appendChild(s);s.onload=function(){if(cb)cb();};}
+function openChat(){var p=document.getElementById("chat-panel");p.classList.toggle("open");}
+function closePanel(){document.getElementById("chat-panel").classList.remove("open");}
+document.getElementById('chat-form').addEventListener('submit',async function(e){e.preventDefault();var form=this,send=document.getElementById('chat-send'),err=document.getElementById('chat-err'),text=send.querySelector('.csb-text'),spin=send.querySelector('.csb-spin');send.disabled=true;text.style.display='none';spin.style.display='inline-flex';err.style.display='none';try{var res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});if(res.ok){var email=form.querySelector('[name="email"]').value;document.getElementById('chat-reply-email').textContent=email;document.getElementById('chat-form-wrap').style.display='none';document.getElementById('chat-success').style.display='block';}else{throw new Error('Failed to send. Please try again.');}}catch(ex){err.textContent=ex.message;err.style.display='block';send.disabled=false;text.style.display='inline';spin.style.display='none';}});
+</script>
+
+</body>
+</html>
