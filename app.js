@@ -1139,7 +1139,7 @@ function renderLabs() {
   if (!pg) return;
   // Source labs from the course object — data lives in the course, not a separate const
   const labCourse = COURSES.find(c => c.id === 7) || DEFAULT_COURSES.find(c => c.id === 7);
-  const LABS_DATA = labCourse?.items || [];
+  const LABS_DATA = labCourse?.labs || [];
 
   pg.innerHTML = `
     <div class="pg-header">
