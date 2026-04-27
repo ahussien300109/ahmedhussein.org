@@ -386,14 +386,16 @@ async function _init() {
     [initCircuit,initCursor,initScroll,initObserver,initScrollProgress,initAutoEngagement]
       .forEach(function(fn){try{fn();}catch(e){console.warn('[subsystem]',fn.name,e.message);}});
     /* 3. Supabase admin session */
-    try{if(typeof Api!=='undefined'&&Api.Auth&&Api.Auth.restore())S.isAdmin=true;}catch(_){}
+    try{if(typeof Api!=='undefined'&&Api.Auth&&Api.Auth.restore()){S.isAdmin=true;}}catch(_){}
     /* 4. Load courses — 3 s timeout, fallback to local data on any failure */
     try {
-      var remote = await _withTimeout(Api.Courses.list(), 3000, null);
-      if (Array.isArray(remote) && remote.length) {
-        COURSES = remote.map(mapDbCourse);
-        console.log('[init] Supabase courses:', COURSES.length);
-      } else { console.log('[init] API unavailable — local courses:', COURSES.length); }
+      if (typeof Api !== 'undefined' && Api.Courses) {
+        var remote = await _withTimeout(Api.Courses.list(), 3000, null);
+        if (Array.isArray(remote) && remote.length) {
+          COURSES = remote.map(mapDbCourse);
+          console.log('[init] Supabase courses:', COURSES.length);
+        } else { console.log('[init] API unavailable — local courses:', COURSES.length); }
+      } else { console.log('[init] API not loaded — using local courses:', COURSES.length); }
     } catch(e) { console.warn('[init] API error:', e.message); }
     /* 5. Student session */
     try{restoreSession();}catch(_){}
@@ -418,7 +420,7 @@ async function _init() {
     try {
       Router
         .guard(function(path){
-          if((path==='admin'||path.startsWith('admin/'))&&!Api.Auth.isAdmin)return 'admin/login';
+          if((path==='admin'||path.startsWith('admin/'))&&!(typeof Api!=='undefined'&&Api.Auth&&Api.Auth.user))return 'admin/login';
           if(path==='dashboard'&&!S.user){openModal('login');return 'home';}
         })
         .on('home',      function(){document.getElementById('site-footer').style.display='';UI.renderHome();})
@@ -1613,10 +1615,14 @@ async function adminLogin(email, password) {
   if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
   if (err) err.style.display = 'none';
   try {
-    await Api.Auth.signIn(email, password);
-    S.isAdmin = true;
-    Router.go('admin');
-    toast('Welcome, Admin!', 'suc');
+    if (typeof Api !== 'undefined' && Api.Auth) {
+      await Api.Auth.signIn(email, password);
+      S.isAdmin = true;
+      Router.go('admin');
+      toast('Welcome, Admin!', 'suc');
+    } else {
+      throw new Error('Admin login requires Supabase credentials. Please configure api.js with your Supabase project.');
+    }
   } catch (e) {
     if (err) { err.textContent = e.message; err.style.display = 'block'; }
   } finally {
@@ -1625,7 +1631,9 @@ async function adminLogin(email, password) {
 }
 
 async function adminLogout() {
-  await Api.Auth.signOut();
+  if (typeof Api !== 'undefined' && Api.Auth) {
+    await Api.Auth.signOut();
+  }
   S.isAdmin = false;
   Router.go('home');
   toast('Logged out.', 'inf');
@@ -1649,6 +1657,9 @@ async function adminSaveCourseDb(formEl, courseId) {
   };
   if (!data.title) { toast('Title is required.', 'err'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Course'; } return; }
   try {
+    if (typeof Api === 'undefined' || !Api.Courses) {
+      throw new Error('Supabase not configured. Admin features require valid credentials in api.js');
+    }
     let row;
     if (courseId) {
       row = await Api.Courses.update(courseId, data);
@@ -1674,6 +1685,9 @@ async function adminSaveCourseDb(formEl, courseId) {
 async function adminDeleteCourseDb(courseId) {
   if (!confirm('Delete this course and all its lessons?')) return;
   try {
+    if (typeof Api === 'undefined' || !Api.Courses) {
+      throw new Error('Supabase not configured');
+    }
     await Api.Courses.delete(courseId);
     COURSES = COURSES.filter(c => c.dbId !== courseId);
     toast('Course deleted.', 'inf');
@@ -1697,6 +1711,9 @@ async function adminSaveLessonDb(formEl, courseId, lessonId) {
   };
   if (!data.title) { toast('Lesson title required.', 'err'); if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-save"></i> Save Lesson'; } return; }
   try {
+    if (typeof Api === 'undefined' || !Api.Lessons) {
+      throw new Error('Supabase not configured');
+    }
     if (lessonId) {
       await Api.Lessons.update(lessonId, data);
       toast('Lesson updated!', 'suc');
@@ -1717,6 +1734,9 @@ async function adminSaveLessonDb(formEl, courseId, lessonId) {
 async function adminDeleteLessonDb(lessonId, courseId) {
   if (!confirm('Delete this lesson?')) return;
   try {
+    if (typeof Api === 'undefined' || !Api.Lessons) {
+      throw new Error('Supabase not configured');
+    }
     await Api.Lessons.delete(lessonId);
     toast('Lesson deleted.', 'inf');
     await _refreshLessonsPanel(courseId);
@@ -1727,6 +1747,9 @@ async function adminReorderLessons(courseId) {
   const items = document.querySelectorAll(`#lesson-list-${courseId} .lesson-item[data-lesson-id]`);
   const orderedIds = [...items].map(el => el.dataset.lessonId);
   try {
+    if (typeof Api === 'undefined' || !Api.Lessons) {
+      throw new Error('Supabase not configured');
+    }
     await Api.Lessons.reorder(orderedIds);
     toast('Order saved.', 'suc');
   } catch (e) { toast(e.message, 'err'); }
@@ -1737,7 +1760,7 @@ async function _refreshLessonsPanel(courseId) {
   const panel = document.getElementById('lessons-panel');
   if (!panel) return;
   try {
-    const lessons = await Api.Lessons.list(courseId);
+    const lessons = (typeof Api !== 'undefined' && Api.Lessons) ? await Api.Lessons.list(courseId) : [];
     /* Use the UI helper that builds the lesson panel HTML */
     panel.innerHTML = UI._renderLessonsPanel(courseId, lessons);
   } catch (e) { toast(e.message, 'err'); }

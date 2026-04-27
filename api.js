@@ -40,13 +40,26 @@
      using (auth.role() = 'authenticated');
    ───────────────────────────────────────────────────────────────── */
 
-const SUPABASE_URL      = 'https://YOUR_PROJECT_REF.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+const SUPABASE_URL      = '';  // Leave empty to use local-only mode
+const SUPABASE_ANON_KEY = '';  // Leave empty to use local-only mode
 
 /* ── Internal HTTP layer ──────────────────────────────────────── */
 const _http = (() => {
   let _session = null;
-
+  
+  // If no Supabase credentials, return mock responses
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.includes('YOUR_PROJECT')) {
+    console.log('[API] Running in local-only mode (no Supabase credentials)');
+    return {
+      get:  async () => [],
+      post: async () => null,
+      patch:async () => null,
+      del:  async () => null,
+      setSession: () => {},
+      getSession: () => null,
+    };
+  }
+  
   const request = async (path, opts = {}) => {
     const headers = {
       apikey: SUPABASE_ANON_KEY,
