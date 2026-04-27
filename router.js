@@ -13,6 +13,8 @@ const Router = (() => {
     courses:   { title: 'Courses | Ahmed Hussein',                       desc: 'CCNA, CCNP and Security courses with lab-first teaching.' },
     about:     { title: 'About | Ahmed Hussein',                         desc: 'Cisco Certified Instructor with 10+ years enterprise networking experience.' },
     contact:   { title: 'Contact | Ahmed Hussein',                       desc: 'Get in touch for course inquiries or corporate training.' },
+    privacy:   { title: 'Privacy Policy | Ahmed Hussein',                desc: 'How we protect your data and privacy.' },
+    terms:     { title: 'Terms of Service | Ahmed Hussein',              desc: 'Terms and conditions for using our platform.' },
     dashboard: { title: 'Dashboard | Ahmed Hussein',                     desc: 'Your student learning dashboard.' },
     labs:      { title: 'Exam Labs | Ahmed Hussein',                     desc: 'Hands-on CCNA 200-301 Packet Tracer labs.' },
     freecourse:{ title: 'Free CCNA Bootcamp | Ahmed Hussein',            desc: 'Free 10-day CCNA exam bootcamp — no signup needed.' },

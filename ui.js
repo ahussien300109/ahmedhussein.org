@@ -284,6 +284,173 @@ const renderAbout = () => {
 };
 
 /* ══════════════════════════════════════════════
+   PRIVACY POLICY SECTION
+   ══════════════════════════════════════════════ */
+const renderPrivacy = () => {
+  root().innerHTML = /* html */`
+    ${PageHeader({ breadcrumb:'Privacy Policy', title:'YOUR PRIVACY MATTERS', subtitle:'How we collect, use, and protect your data.' })}
+    <div class="legal-page">
+      <div class="legal-inner">
+        <div class="legal-section">
+          <h3>1. Information We Collect</h3>
+          <p>We collect information you voluntarily provide:</p>
+          <ul>
+            <li><strong>Account Data:</strong> Name, email, phone, profile details when you register</li>
+            <li><strong>Course Data:</strong> Learning progress, quiz scores, lab completion status</li>
+            <li><strong>Communication:</strong> Messages sent through contact forms and support channels</li>
+            <li><strong>Payment Info:</strong> Billing address and transaction history (processed by secure third parties)</li>
+            <li><strong>Device Data:</strong> IP address, browser type, device info for site analytics and security</li>
+          </ul>
+        </div>
+        <div class="legal-section">
+          <h3>2. How We Use Your Information</h3>
+          <p>Your information is used only for:</p>
+          <ul>
+            <li>Delivering course content and maintaining your learning dashboard</li>
+            <li>Sending course updates, certificates, and educational communications</li>
+            <li>Processing payments and handling refunds</li>
+            <li>Responding to inquiries and providing technical support</li>
+            <li>Improving course quality and user experience through analytics</li>
+            <li>Ensuring platform security and preventing fraud</li>
+            <li>Complying with legal obligations</li>
+          </ul>
+        </div>
+        <div class="legal-section">
+          <h3>3. Data Protection & Security</h3>
+          <p>We implement industry-standard security measures including SSL/TLS encryption, secure password hashing, regular security audits, access controls, and GDPR compliance.</p>
+        </div>
+        <div class="legal-section">
+          <h3>4. Third-Party Services</h3>
+          <p>We use trusted partners like Stripe for payments, SendGrid for email, Google Analytics for insights, and AWS for hosting. We do not sell your personal data.</p>
+        </div>
+        <div class="legal-section">
+          <h3>5. Your Rights</h3>
+          <p>Under GDPR and local laws, you can access, correct, delete, or download your data. Contact <strong>info@ahmedhussein.org</strong> to exercise these rights.</p>
+        </div>
+        <div class="legal-section">
+          <h3>6. Cookies & Tracking</h3>
+          <p>We use cookies for essential functions, preferences (like dark mode), and analytics. You can control cookies in your browser settings.</p>
+        </div>
+        <div class="legal-section">
+          <h3>7. Data Retention</h3>
+          <ul>
+            <li><strong>Active Accounts:</strong> As long as your account is active</li>
+            <li><strong>Course Records:</strong> 5 years post-completion</li>
+            <li><strong>Payment Records:</strong> 7 years for compliance</li>
+            <li><strong>Inactive Accounts:</strong> 2 years, then deleted</li>
+          </ul>
+        </div>
+        <div class="legal-section">
+          <h3>8. Children's Privacy</h3>
+          <p>Our services are for ages 18+. We do not knowingly collect data from children under 13.</p>
+        </div>
+        <div class="legal-section">
+          <h3>9. International Data Transfers</h3>
+          <p>Your data may be transferred internationally. We ensure compliance with GDPR and local data protection laws.</p>
+        </div>
+        <div class="legal-section">
+          <h3>10. Policy Updates</h3>
+          <p>We may update this policy. Material changes will be announced. Your continued use means you accept updates. Last updated: <strong>April 2025</strong></p>
+        </div>
+        <div class="legal-section legal-cta">
+          <p><strong>Questions?</strong> Contact us at <a href="mailto:info@ahmedhussein.org">info@ahmedhussein.org</a> or call <strong>+973 3219 8505</strong></p>
+        </div>
+      </div>
+    </div>`;
+  reObserve();
+};
+
+/* ══════════════════════════════════════════════
+   TERMS OF SERVICE SECTION
+   ══════════════════════════════════════════════ */
+const renderTerms = () => {
+  root().innerHTML = /* html */`
+    ${PageHeader({ breadcrumb:'Terms of Service', title:'TERMS & CONDITIONS', subtitle:'Please read these terms carefully before using our platform.' })}
+    <div class="legal-page">
+      <div class="legal-inner">
+        <div class="legal-section">
+          <h3>1. Acceptance of Terms</h3>
+          <p>By using ahmedhussein.org, you agree to these Terms of Service. We reserve the right to modify terms anytime. Continued use means you accept changes.</p>
+        </div>
+        <div class="legal-section">
+          <h3>2. User Eligibility</h3>
+          <p>You must be 18+ years old (or legal age in your jurisdiction), capable of forming a contract, and not prohibited by law from using this service.</p>
+        </div>
+        <div class="legal-section">
+          <h3>3. Account Registration</h3>
+          <p>Provide accurate information, maintain password confidentiality, notify us of unauthorized access, and do not share accounts. False information may result in termination.</p>
+        </div>
+        <div class="legal-section">
+          <h3>4. Course Enrollments & Purchases</h3>
+          <h4>Payment Terms:</h4>
+          <ul>
+            <li>All prices in USD unless stated otherwise</li>
+            <li>Payments processed immediately upon enrollment</li>
+            <li>Major credit cards and local payment methods accepted</li>
+            <li>Invoices provided upon request</li>
+          </ul>
+          <h4>Refund Policy:</h4>
+          <ul>
+            <li><strong>Full Refund:</strong> Within 7 days if no content started</li>
+            <li><strong>Partial Refund:</strong> Up to 30% within 14 days if under 20% completion</li>
+            <li><strong>No Refund:</strong> After 30 days or 20%+ completion</li>
+            <li>Refunds processed within 5-7 business days</li>
+          </ul>
+        </div>
+        <div class="legal-section">
+          <h3>5. Course Content & Access</h3>
+          <p>You get a non-exclusive license to access content for personal, educational use only. Access valid for 1 year from enrollment. Prohibited: screen recording, copying, redistribution, sharing credentials.</p>
+        </div>
+        <div class="legal-section">
+          <h3>6. Prohibited Activities</h3>
+          <p>Do not: hack systems, distribute malware, harass users, spam, infringe IP rights, or bypass security. Violations result in immediate account suspension without refund.</p>
+        </div>
+        <div class="legal-section">
+          <h3>7. Intellectual Property</h3>
+          <p>All course materials, curriculum, and platform code are our exclusive intellectual property. Your feedback may be used to improve services.</p>
+        </div>
+        <div class="legal-section">
+          <h3>8. Certificates & Credentials</h3>
+          <p>Completion certificates confirm course completion (typically 80%+ exam). Official Cisco certifications come from Cisco only. We are not officially affiliated with Cisco for certifications.</p>
+        </div>
+        <div class="legal-section">
+          <h3>9. Limitation of Liability</h3>
+          <p>Platform provided "AS IS" without warranties. We don't guarantee service uptime, certification success, job placement, or fitness for purpose. Our liability is limited to what you paid.</p>
+        </div>
+        <div class="legal-section">
+          <h3>10. Indemnification</h3>
+          <p>You indemnify us from claims arising from your use, violations, IP infringement, or unauthorized account access.</p>
+        </div>
+        <div class="legal-section">
+          <h3>11. Third-Party Links</h3>
+          <p>We're not responsible for external websites (YouTube, GitHub, Cisco). Use at your own risk.</p>
+        </div>
+        <div class="legal-section">
+          <h3>12. Termination of Account</h3>
+          <p>You can delete anytime. We may suspend/terminate for violations, illegal activity, disputes, or fraud without refund.</p>
+        </div>
+        <div class="legal-section">
+          <h3>13. Support & Disputes</h3>
+          <p><strong>Support:</strong> Email info@ahmedhussein.org (24-hour response) or WhatsApp +973 3219 8505. <strong>Disputes:</strong> Governed by Bahrain law and resolved through local courts.</p>
+        </div>
+        <div class="legal-section">
+          <h3>14. Severability</h3>
+          <p>If any term is invalid, it's severed and remaining terms continue in full force.</p>
+        </div>
+        <div class="legal-section">
+          <h3>15. Entire Agreement</h3>
+          <p>These Terms of Service and Privacy Policy constitute the entire agreement and supersede prior negotiations.</p>
+        </div>
+        <div class="legal-section legal-cta">
+          <p><strong>Questions?</strong> Contact us at <a href="mailto:info@ahmedhussein.org">info@ahmedhussein.org</a> or call <strong>+973 3219 8505</strong></p>
+          <p style="margin-top:.8rem;color:var(--tm);font-size:.85rem;">Last updated: <strong>April 2025</strong></p>
+        </div>
+      </div>
+    </div>`;
+  reObserve();
+};
+
+/* ══════════════════════════════════════════════
    CONTACT SECTION
    ══════════════════════════════════════════════ */
 const renderContact = () => {
@@ -334,4 +501,4 @@ const renderContact = () => {
 /* ══════════════════════════════════════════════
    PUBLIC API — imported by app.js
    ══════════════════════════════════════════════ */
-const UI = { renderHome, renderCoursesPage, renderAbout, renderContact, PageHeader };
+const UI = { renderHome, renderCoursesPage, renderAbout, renderContact, renderPrivacy, renderTerms, PageHeader };

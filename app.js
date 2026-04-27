@@ -401,6 +401,14 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('site-footer').style.display = '';
       UI.renderContact();
     })
+    .on('privacy', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderPrivacy();
+    })
+    .on('terms', () => {
+      document.getElementById('site-footer').style.display = '';
+      UI.renderTerms();
+    })
     .on('labs', () => {
       document.getElementById('site-footer').style.display = '';
       renderLabs();

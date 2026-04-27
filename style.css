@@ -301,7 +301,7 @@ body:hover #cursor{transform:translate(-50%,-50%) scale(1);}
 #nav.stuck{background:rgba(3,13,26,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--bdr);}
 .nav-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:70px;}
 .nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
-.logo-hex{width:38px;height:38px;flex-shrink:0;animation:lgPulse 3s ease-in-out infinite;filter:drop-shadow(0 0 3px rgba(0,212,255,.4));}
+.logo-hex{width:48px;height:48px;flex-shrink:0;animation:lgPulse 3s ease-in-out infinite;filter:drop-shadow(0 0 3px rgba(0,212,255,.4));}
 @keyframes lgPulse{0%,100%{filter:drop-shadow(0 0 3px rgba(0,212,255,.35))}50%{filter:drop-shadow(0 0 10px rgba(0,212,255,.9))}}
 .lr1{animation:lgSpin 10s linear infinite;transform-box:fill-box;transform-origin:center;}
 .lr2{animation:lgSpin 6s linear infinite reverse;transform-box:fill-box;transform-origin:center;}
@@ -324,9 +324,10 @@ body:hover #cursor{transform:translate(-50%,-50%) scale(1);}
 .ham.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
 .ham.open span:nth-child(2){opacity:0;}
 .ham.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-.mob-nav{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(3,13,26,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);padding:1.5rem 2rem;flex-direction:column;gap:0.3rem;z-index:999;}
+.mob-nav{display:none;position:fixed;top:70px;left:0;right:0;background:rgba(3,13,26,0.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);padding:2rem 2rem;flex-direction:column;gap:0.5rem;z-index:999;}
+@media(max-width:768px){#theme-toggle-btn{margin-right:1.2rem;}}
 .mob-nav.open{display:flex;}
-.mob-nav a{padding:0.7rem 0;color:var(--tm);text-decoration:none;font-size:0.9rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--bdr);transition:color 0.2s;}
+.mob-nav a{padding:1rem 0;color:var(--tm);text-decoration:none;font-size:0.9rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;border-bottom:1px solid var(--bdr);transition:color 0.2s;}
 .mob-nav a:hover{color:var(--c);}
 
 /* ── COMMON PAGE WRAPPER ── */
