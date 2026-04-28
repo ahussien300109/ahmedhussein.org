@@ -458,7 +458,7 @@ function renderDashboard() {
         <div class="enrolled-list" id="dash-enr-list"></div>
         <div class="upgrade-banner" style="margin-top:1.5rem">
           <div class="ub-text"><div class="ub-t">UPGRADE TO PREMIUM &#9889;</div><div class="ub-d">Full course access, downloadable labs, and certificates.</div></div>
-          <button class="btn btn-o" onclick="openModal('register')"><i class="fas fa-crown"></i> Upgrade Now</button>
+          <button class="btn btn-o" onclick="upgradeNow()"><i class="fas fa-crown"></i> Upgrade Now</button>
         </div>
       </div>
       <div class="dash-panel" id="dash-my-courses">
@@ -638,6 +638,21 @@ function switchTab(tab) {
 function pickTier(t) {
   S.tier = t;
   document.querySelectorAll('.tier-opt').forEach(o => o.classList.toggle('on', o.dataset.tier === t));
+  // If selecting premium, trigger checkout
+  if (t === 'premium') {
+    goToPremiumCheckout();
+  }
+}
+
+function goToPremiumCheckout() {
+  // Stripe checkout link for premium subscription ($29/month)
+  // Replace this with your actual Stripe checkout link from your Stripe account
+  const stripeCheckoutUrl = 'https://buy.stripe.com/test_14k4hu8H20L1aAE144';
+  window.open(stripeCheckoutUrl, '_blank');
+}
+
+function upgradeNow() {
+  goToPremiumCheckout();
 }
 
 function doLogin() {
