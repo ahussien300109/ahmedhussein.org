@@ -195,6 +195,23 @@ function initCursor() {
   });
 }
 
+function initChatCursorOverride() {
+  const panel = document.getElementById('chat-panel');
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  if (!panel || !cur || !ring) return;
+  panel.addEventListener('mouseenter', () => {
+    cur.style.display = 'none';
+    ring.style.display = 'none';
+    document.body.style.cursor = 'auto';
+  });
+  panel.addEventListener('mouseleave', () => {
+    cur.style.display = 'block';
+    ring.style.display = 'block';
+    document.body.style.cursor = 'none';
+  });
+}
+
 /* ── SCROLL & OBSERVER ── */
 function initScroll() {
   const nav = document.getElementById('nav');
@@ -366,6 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Core subsystems */
   initCircuit();
   initCursor();
+  initChatCursorOverride();
   initScroll();
   initObserver();
   initScrollProgress();

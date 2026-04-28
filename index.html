@@ -152,26 +152,17 @@
       <button class="chat-close-btn" onclick="closePanel()"><i class="fas fa-times"></i></button>
     </div>
     <div id="chat-form-wrap">
-      <p class="chat-intro">Send a message and we'll get back to you quickly.</p>
-      <form id="chat-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
-        <input type="hidden" name="_subject" value="Chat message via ahmedhussein.org">
-        <div class="chat-field"><label class="chat-lbl">Name</label><input class="chat-inp" type="text" name="name" placeholder="Ahmed Hassan" required autocomplete="name"></div>
-        <div class="chat-field"><label class="chat-lbl">Email</label><input class="chat-inp" type="email" name="email" placeholder="you@example.com" required autocomplete="email"></div>
-        <div class="chat-field"><label class="chat-lbl">Message</label><textarea class="chat-inp chat-area" name="message" placeholder="How can I help you?" required rows="3"></textarea></div>
-        <div id="chat-err" class="chat-err" style="display:none"></div>
-        <button type="submit" id="chat-send" class="chat-send-btn">
-          <span class="csb-text"><i class="fas fa-paper-plane"></i> Send Message</span>
-          <span class="csb-spin"><svg viewBox="0 0 24 24" fill="none" width="14" height="14" class="chat-spinner"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2.5" stroke-dasharray="28" stroke-dashoffset="9"/></svg>Sending…</span>
-        </button>
-        <a href="https://wa.me/97332198505?text=Hello%20Ahmed%2C%20I%20want%20to%20chat%20about%20Cisco%20courses" target="_blank" rel="noopener" class="chat-whatsapp-btn">
+      <p class="chat-intro">Click below to open WhatsApp inside this chat panel.</p>
+      <div class="chat-footer">
+        <button type="button" id="chat-whatsapp" class="chat-whatsapp-btn" onclick="openWhatsApp()">
           <i class="fab fa-whatsapp"></i> Chat on WhatsApp
-        </a>
-      </form>
-    </div>
-    <div id="chat-success" style="display:none" class="chat-success-wrap">
-      <div class="chat-success-ico">✓</div>
-      <div class="chat-success-title">Message sent!</div>
-      <div class="chat-success-sub">We'll respond to <span id="chat-reply-email"></span> shortly.</div>
+        </button>
+      </div>
+      <div id="chat-wa-view" class="chat-wa-view" style="display:none;">
+        <div class="chat-wa-header">WhatsApp</div>
+        <iframe id="chat-wa-iframe" src="" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+        <p class="chat-wa-fallback">If WhatsApp does not load here, <a href="https://wa.me/97332198505?text=Hello%20Ahmed%2C%20I%20want%20to%20chat%20about%20Cisco%20courses" target="_blank" rel="noopener">open it in a new tab</a>.</p>
+      </div>
     </div>
   </div>
 </div>
@@ -187,7 +178,7 @@ var tawkLoaded=false;
 function loadTawk(cb){if(tawkLoaded){if(cb)cb();return;}tawkLoaded=true;var s=document.createElement("script");s.async=true;s.src="https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50";s.charset="UTF-8";s.setAttribute("crossorigin","*");document.body.appendChild(s);s.onload=function(){if(cb)cb();};}
 function openChat(){var p=document.getElementById("chat-panel");p.classList.toggle("open");}
 function closePanel(){document.getElementById("chat-panel").classList.remove("open");}
-document.getElementById('chat-form').addEventListener('submit',async function(e){e.preventDefault();var form=this,send=document.getElementById('chat-send'),err=document.getElementById('chat-err'),text=send.querySelector('.csb-text'),spin=send.querySelector('.csb-spin');send.disabled=true;text.style.display='none';spin.style.display='inline-flex';err.style.display='none';try{var res=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{'Accept':'application/json'}});if(res.ok){var email=form.querySelector('[name="email"]').value;document.getElementById('chat-reply-email').textContent=email;document.getElementById('chat-form-wrap').style.display='none';document.getElementById('chat-success').style.display='block';}else{throw new Error('Failed to send. Please try again.');}}catch(ex){err.textContent=ex.message;err.style.display='block';send.disabled=false;text.style.display='inline';spin.style.display='none';}});
+function openWhatsApp(){var view=document.getElementById('chat-wa-view');var iframe=document.getElementById('chat-wa-iframe');if(!view||!iframe)return;iframe.src='https://web.whatsapp.com/send?phone=97332198505&text=Hello%20Ahmed%2C%20I%20want%20to%20chat%20about%20Cisco%20courses';view.style.display='flex';}
 </script>
 
 </body>
