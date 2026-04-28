@@ -265,7 +265,14 @@
 [data-theme="light"] .dstat{background:#fff;border-color:rgba(0,0,0,.07);}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;font-size:16px;}
-body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t);overflow-x:hidden;cursor:auto;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--t);overflow-x:hidden;cursor:none;}
+
+/* ── CUSTOM CURSOR ── */
+#cursor{width:12px;height:12px;background:var(--c);border-radius:50%;position:fixed;pointer-events:none;z-index:10001;transform:translate(-50%,-50%);transition:transform 0.1s,width 0.2s,height 0.2s;mix-blend-mode:screen;}
+#cursor-ring{width:36px;height:36px;border:1.5px solid var(--c);border-radius:50%;position:fixed;pointer-events:none;z-index:10000;transform:translate(-50%,-50%);transition:transform 0.18s,width 0.25s,height 0.25s;mix-blend-mode:screen;opacity:0.6;}
+body:hover #cursor{transform:translate(-50%,-50%) scale(1);}
+.cursor-hover{width:50px!important;height:50px!important;background:transparent!important;border:2px solid var(--o)!important;}
+.cursor-ring-hover{width:60px!important;height:60px!important;border-color:var(--o)!important;}
 
 /* ── CIRCUIT CANVAS ── */
 #circuit-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.18;}
