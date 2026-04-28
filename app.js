@@ -181,37 +181,6 @@ function initCircuit() {
   draw();
 }
 
-/* ── CUSTOM CURSOR ── */
-function initCursor() {
-  if (window.innerWidth < 1024) return;
-  const cur = document.getElementById('cursor'), ring = document.getElementById('cursor-ring');
-  document.addEventListener('mousemove', e => {
-    cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
-    ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
-  });
-  document.querySelectorAll('button,a,.ccard,.cert-tile,.feat-item').forEach(el => {
-    el.addEventListener('mouseenter', () => { cur.classList.add('cursor-hover'); ring.classList.add('cursor-ring-hover'); });
-    el.addEventListener('mouseleave', () => { cur.classList.remove('cursor-hover'); ring.classList.remove('cursor-ring-hover'); });
-  });
-}
-
-function initChatCursorOverride() {
-  const panel = document.getElementById('chat-panel');
-  const cur = document.getElementById('cursor');
-  const ring = document.getElementById('cursor-ring');
-  if (!panel || !cur || !ring) return;
-  panel.addEventListener('mouseenter', () => {
-    cur.style.display = 'none';
-    ring.style.display = 'none';
-    document.body.style.cursor = 'auto';
-  });
-  panel.addEventListener('mouseleave', () => {
-    cur.style.display = 'block';
-    ring.style.display = 'block';
-    document.body.style.cursor = 'none';
-  });
-}
-
 /* ── SCROLL & OBSERVER ── */
 function initScroll() {
   const nav = document.getElementById('nav');
@@ -382,8 +351,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Core subsystems */
   initCircuit();
-  initCursor();
-  initChatCursorOverride();
   initScroll();
   initObserver();
   initScrollProgress();
