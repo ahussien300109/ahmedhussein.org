@@ -10,6 +10,11 @@
 .adm-course-name{display:flex;align-items:center;gap:.55rem;font-size:.81rem;font-weight:600;color:var(--tw);overflow:hidden;}
 .adm-course-name span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .lvl-tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.61rem;font-weight:700;background:rgba(0,212,255,.08);color:var(--c);border:1px solid rgba(0,212,255,.2);white-space:nowrap;}
+.lesson-panel{background:var(--bg3);border:1px solid var(--bdr);border-radius:12px;padding:1rem;}
+.lesson-list{display:grid;gap:.75rem;margin-bottom:.85rem;}
+.lesson-row{display:grid;grid-template-columns:1fr auto;gap:.8rem;align-items:center;}
+.lesson-row .lesson-input{width:100%;}
+.lesson-row button{padding:8px 11px;min-width:48px;}
 .premium-tag{background:rgba(255,215,0,.08)!important;color:#ffd700!important;border-color:rgba(255,215,0,.2)!important;}
 .free-tag{color:var(--g);font-weight:700;font-size:.78rem;}
 .price-tag{color:var(--tw);font-weight:700;font-size:.78rem;}

@@ -489,7 +489,14 @@ function renderDashboard() {
           <div class="fgrp"><label class="flbl">Description</label><textarea id="cf-desc" class="finp" style="min-height:80px"></textarea></div>
           <div class="fgrp"><label class="flbl">Prerequisites</label><input id="cf-prereqs" class="finp"></div>
           <div class="fgrp"><label class="flbl">Direct Page Link <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">(optional)</span></label><input id="cf-link" class="finp"></div>
-          <div class="fgrp"><label class="flbl">Curriculum <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--tm)">(one module per line)</span></label><textarea id="cf-curr" class="finp" style="min-height:140px"></textarea></div>
+          <div class="fgrp">
+            <label class="flbl">Lessons / Modules</label>
+            <div class="lesson-panel">
+              <div id="cf-lesson-list" class="lesson-list"></div>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="adminAddLesson()"><i class="fas fa-plus"></i> Add Lesson</button>
+            </div>
+            <textarea id="cf-curr" class="finp" style="display:none;min-height:140px"></textarea>
+          </div>
           <div style="display:flex;gap:1rem;margin-top:.5rem;flex-wrap:wrap"><button class="btn btn-c" onclick="adminSaveCourse()"><i class="fas fa-save"></i> Save Course</button><button class="btn btn-ghost" onclick="activatePanel('admin-courses');renderAdminCourses()"><i class="fas fa-times"></i> Cancel</button></div>
         </div>
       </div>
@@ -986,6 +993,7 @@ function openEditCourse(id) {
     const lvl = document.getElementById('cf-level'); if (lvl) lvl.value='Beginner';
     const pri = document.getElementById('cf-price'); if (pri) pri.value='$149';
     const ico = document.getElementById('cf-icon'); if (ico) ico.value='🌐';
+    adminPopulateLessonList([]);
   } else {
     const c = COURSES.find(x => x.id === id);
     if (!c) return;
@@ -995,8 +1003,37 @@ function openEditCourse(id) {
     set('cf-level', c.level); set('cf-dur', c.duration); set('cf-price', c.price);
     set('cf-desc', c.desc); set('cf-prereqs', c.prereqs); set('cf-link', c.link||'');
     set('cf-curr', (c.curriculum||[]).join('\n'));
+    adminPopulateLessonList(c.curriculum || []);
   }
   activatePanel('admin-edit');
+}
+
+function adminAddLesson(value = '') {
+  const list = document.getElementById('cf-lesson-list');
+  if (!list) return;
+  const row = document.createElement('div');
+  row.className = 'lesson-row';
+  row.innerHTML = `
+    <input class="finp lesson-input" type="text" value="${String(value).replace(/"/g, '&quot;')}" placeholder="Lesson title or module name">
+    <button type="button" class="btn btn-ghost btn-sm" onclick="adminRemoveLesson(this)"><i class="fas fa-trash"></i></button>
+  `;
+  list.appendChild(row);
+}
+
+function adminRemoveLesson(btn) {
+  const row = btn.closest('.lesson-row');
+  if (row) row.remove();
+}
+
+function adminPopulateLessonList(curr) {
+  const list = document.getElementById('cf-lesson-list');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!curr || !curr.length) {
+    adminAddLesson();
+    return;
+  }
+  curr.forEach(item => adminAddLesson(item));
 }
 
 /* ── ADMIN: SAVE COURSE ── */
@@ -1012,7 +1049,10 @@ function adminSaveCourse() {
   const desc   = g('cf-desc').trim();
   const prereqs= g('cf-prereqs').trim();
   const link   = g('cf-link').trim();
-  const curr   = g('cf-curr').split('\n').map(s=>s.trim()).filter(Boolean);
+  let curr = Array.from(document.querySelectorAll('.lesson-row input')).map(i => i.value.trim()).filter(Boolean);
+  if (!curr.length) {
+    curr = g('cf-curr').split('\n').map(s=>s.trim()).filter(Boolean);
+  }
   const thMap  = {CCNA:'th1',CCNP:'th2',Security:'th3',Labs:'th4'};
   const th     = thMap[cat] || 'th5';
   if (editingId === null) {
