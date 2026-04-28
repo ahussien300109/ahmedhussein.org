@@ -372,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAutoEngagement();
 
   /* Auth / session */
+  ensureDefaultAdmin();
   restoreSession();
 
   /* Modal close-on-backdrop */
@@ -690,6 +691,25 @@ function doRegister() {
   users.push(nu); localStorage.setItem('ah_users', JSON.stringify(users));
   document.getElementById('reg-ok').classList.add('show');
   setTimeout(() => { document.getElementById('reg-ok').classList.remove('show'); switchTab('login'); }, 1600);
+}
+
+function ensureDefaultAdmin() {
+  const users = JSON.parse(localStorage.getItem('ah_users') || '[]');
+  const exists = users.some(u => u.email === 'admin@ahmedhussein.org');
+  if (!exists) {
+    users.push({
+      fname: 'Admin',
+      lname: 'User',
+      email: 'admin@ahmedhussein.org',
+      phone: '',
+      pass: btoa('Admin123!'),
+      tier: 'premium',
+      enrolled: [],
+      joined: new Date().toLocaleDateString(),
+      isAdmin: true
+    });
+    localStorage.setItem('ah_users', JSON.stringify(users));
+  }
 }
 
 function doLogout() {
