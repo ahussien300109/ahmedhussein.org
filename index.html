@@ -174,7 +174,7 @@ var tawkLoaded=false;
 function loadTawk(cb){if(tawkLoaded){if(cb)cb();return;}tawkLoaded=true;var s=document.createElement("script");s.async=true;s.src="https://embed.tawk.to/69ed1bc4fb92e01c33a9a1ff/1jn338u50";s.charset="UTF-8";s.setAttribute("crossorigin","*");document.body.appendChild(s);s.onload=function(){if(cb)cb();};}
 function openChat(){var p=document.getElementById("chat-panel");p.classList.toggle("open");}
 function closePanel(){document.getElementById("chat-panel").classList.remove("open");}
-function openWhatsApp(){var view=document.getElementById('chat-wa-view');var iframe=document.getElementById('chat-wa-iframe');if(!view||!iframe)return;iframe.src='https://web.whatsapp.com/send?phone=97332198505&text=Hello%20Ahmed%2C%20I%20want%20to%20chat%20about%20Cisco%20courses';view.style.display='flex';}
+function openWhatsApp(){window.open('https://wa.me/97332198505?text=Hello%20Ahmed%2C%20I%20want%20to%20chat%20about%20Cisco%20courses','whatsapp','width=500,height=600');}
 </script>
 
 </body>
