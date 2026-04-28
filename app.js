@@ -183,8 +183,8 @@ function initCircuit() {
 
 /* ── CUSTOM CURSOR ── */
 function initCursor() {
-  if (window.innerWidth < 1024) return;
   const cur = document.getElementById('cursor'), ring = document.getElementById('cursor-ring');
+  if (!cur || !ring) return;
   document.addEventListener('mousemove', e => {
     cur.style.left = e.clientX + 'px'; cur.style.top = e.clientY + 'px';
     ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px';
