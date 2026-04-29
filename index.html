@@ -10,7 +10,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="legal.css">
-<link rel="stylesheet" href="lesson-viewer.css">
 <!-- Theme: set before first paint to prevent flash -->
 <script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');if(t==='light')document.documentElement.setAttribute('data-theme','light');})();</script>
 </head>
@@ -169,31 +168,9 @@
 </div>
 
 <!-- ── SCRIPTS ── -->
-
-<!-- Firebase SDK (compat v9) -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-
-<!-- Firebase config + data layer -->
-<script src="firebase-config.js"></script>
-<script src="firebase-db.js"></script>
-<script src="firebase-storage.js"></script>
-
-<!-- App scripts -->
 <script src="router.js"></script>
 <script src="ui.js"></script>
 <script src="app.js"></script>
-
-<!-- Firebase auth (overrides doLogin, doRegister, doLogout) -->
-<script src="firebase-auth.js"></script>
-
-<!-- Lesson viewer -->
-<script src="lesson-viewer.js"></script>
-
-<!-- Migration script (REMOVE AFTER ONE-TIME USE) -->
-<script src="migrate.js"></script>
 
 <!-- Tawk.to: loads ONLY when user clicks the chat button -->
 <script>
