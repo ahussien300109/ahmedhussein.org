@@ -64,8 +64,6 @@ const DEFAULT_COURSES = [
     type: 'course', pageLink: 'labs', btnLabel: '▶ Start Lab',
     curriculum: ['Layer 2: 802.1Q Trunking & LACP (Labs 1–2)','Layer 2: Voice VLAN & LLDP (Lab 3)','Layer 2: VLAN & Neighbor Discovery (Labs 8–10)','Layer 2: EtherChannel Series (Labs 13–18)','Routing: Dual-Stack Addressing (Lab 4)','Routing: Static Routing & Failover (Lab 5)','Routing: OSPF Single-Area (Labs 6–7)','Routing: IPv6 Static (Lab 19)','Security: ACLs & DHCP Snooping (Lab 11)','Security: NAT, DHCP, NTP & SSH (Lab 14)','Security: Port Security (Labs 16–17)'] }
 ];
-let COURSES = loadCourses();
-console.log('[COURSES]', COURSES.map(c => c.id + ' ' + c.title + ' cat:' + c.cat + ' price:' + c.price));
 
 /* ── INJECT LAB CONTENT INTO CCNA EXAM LABS COURSE ──────────────
    Labs are defined here and written directly onto the course object
