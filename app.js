@@ -2,34 +2,20 @@
    app.js — Main entry point: UI, data, routing
    ───────────────────────────────────────────── */
 
-/* ── COURSE PERSISTENCE ── */
-function loadCourses() {
+/* ── COURSE PERSISTENCE (Firebase) ── */
+let COURSES = [];
+
+async function initCourses() {
   try {
-    const s = localStorage.getItem('ah_courses');
-    if (s) {
-      const saved = JSON.parse(s);
-      const defMap = Object.fromEntries(DEFAULT_COURSES.map(c => [c.id, c]));
-      // Merge saved (admin edits preserved) but always sync routing fields from DEFAULT_COURSES
-      // so deleted/renamed pages never cause 404s after a code update.
-      const ROUTING_KEYS = ['link', 'pageLink', 'btnLabel', 'type'];
-      const merged = saved.map(c => {
-        const def = defMap[c.id];
-        if (!def) return c;
-        const out = { ...c };
-        ROUTING_KEYS.forEach(k => {
-          if (k in def) out[k] = def[k];
-          else delete out[k]; // remove stale value if default no longer has it
-        });
-        return out;
-      });
-      // Append courses added to DEFAULT_COURSES since last save
-      const savedIds = new Set(saved.map(c => c.id));
-      return [...merged, ...DEFAULT_COURSES.filter(c => !savedIds.has(c.id))];
-    }
-  } catch(e) {}
-  return DEFAULT_COURSES.map(c => Object.assign({}, c));
+    COURSES = await DB.getCourses(S.isAdmin);
+    // Refresh any grids that may already be rendered
+    renderCourses('home-courses-grid', COURSES.slice(0, 3));
+    renderCourses('all-courses-grid', COURSES);
+  } catch (e) {
+    console.error('[Courses] Failed to load from Firestore:', e);
+    toast('Could not load courses. Check your connection.', 'err');
+  }
 }
-function saveCourses() { localStorage.setItem('ah_courses', JSON.stringify(COURSES)); }
 
 /* ── COURSE DATA ── */
 const DEFAULT_COURSES = [
@@ -375,6 +361,9 @@ document.addEventListener('DOMContentLoaded', () => {
   ensureDefaultAdmin();
   restoreSession();
 
+  /* Load courses from Firebase */
+  initCourses();
+
   /* Modal close-on-backdrop */
   document.getElementById('auth-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
   document.getElementById('course-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeCourseModal(); });
@@ -421,6 +410,14 @@ document.addEventListener('DOMContentLoaded', () => {
     .on('freecourse', () => {
       document.getElementById('site-footer').style.display = '';
       renderFreeCourse();
+    })
+    .on('lesson', async () => {
+      document.getElementById('site-footer').style.display = 'none';
+      const params = new URLSearchParams(location.hash.split('?')[1] || '');
+      const courseId = params.get('course');
+      const lessonId = params.get('lesson');
+      if (!courseId || !lessonId) { Router.go('courses'); return; }
+      await renderLessonViewer(courseId, lessonId);
     })
     .init();
 
@@ -514,7 +511,7 @@ function renderCourses(gridId, data) {
   const g = document.getElementById(gridId);
   if (!g) return;
   g.innerHTML = data.map(c => `
-    <div class="ccard reveal" onclick="openCourseDetail(${c.id})">
+    <div class="ccard reveal" onclick="openCourseDetail('${c.id}')">
       <div class="cc-thumb ${c.th}"><span class="cc-thumb-icon">${c.icon}</span><div class="cc-level-tag lvl-${c.level === 'Beginner' ? 'beg' : c.level === 'Advanced' ? 'adv' : 'int'}">${c.level}</div>${c.badge ? `<div class="cc-badge ccb-${c.badge}">${{hot:'🔥 Popular',free:'✓ Free',new:'New'}[c.badge]}</div>` : ''}</div>
       <div class="cc-body">
         <div class="cc-cat">${c.cat}</div>
@@ -527,7 +524,7 @@ function renderCourses(gridId, data) {
         </div>
         <div class="cc-footer">
           <span class="cc-price ${c.price === 'Free' ? 'free' : ''}">${c.price}</span>
-          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse(${c.id})">${(c.link||c.pageLink) ? (c.btnLabel||'▶ Start Course') : S.enrolled.includes(c.id) ? '✓ Enrolled' : 'Enroll Now'}</button>
+          <button class="cc-enroll" onclick="event.stopPropagation();enrollCourse('${c.id}')">${(c.link||c.pageLink) ? (c.btnLabel||'▶ Start Course') : S.enrolled.includes(c.id) ? '✓ Enrolled' : 'Enroll Now'}</button>
         </div>
       </div>
     </div>`).join('');
@@ -560,7 +557,7 @@ function openCourseDetail(id) {
     ? `<button class="btn btn-c" onclick="closeCourseModal();showPage('${c.pageLink}')"><i class="fas fa-play"></i> ${c.btnLabel||'Start'}</button>`
     : c.link
     ? `<a href="${c.link}" class="btn btn-g"><i class="fas fa-play"></i> Start Free Course</a>`
-    : `<button class="btn ${isEnrolled ? 'btn-ghost' : 'btn-c'}" onclick="enrollCourse(${c.id});closeCourseModal()">${isEnrolled ? '<i class="fas fa-check"></i> Already Enrolled' : '<i class="fas fa-graduation-cap"></i> Enroll Now'}</button>`;
+    : `<button class="btn ${isEnrolled ? 'btn-ghost' : 'btn-c'}" onclick="enrollCourse('${c.id}');closeCourseModal()">${isEnrolled ? '<i class="fas fa-check"></i> Already Enrolled' : '<i class="fas fa-graduation-cap"></i> Enroll Now'}</button>`;
   document.getElementById('course-detail-inner').innerHTML = `
     <div class="cdm-header">
       <div class="cdm-thumb ${c.th}">${c.icon}</div>
@@ -609,19 +606,22 @@ function closeCourseModal() {
   document.body.style.overflow = '';
 }
 
-function enrollCourse(id) {
+async function enrollCourse(id) {
   const course = COURSES.find(x => x.id === id);
   if (course?.pageLink) { closeCourseModal(); showPage(course.pageLink); return; }
   if (course?.link) { window.location.href = course.link; return; }
   if (!S.user) { openModal('login'); toast('Sign in to enroll in a course', 'inf'); return; }
   if (S.enrolled.includes(id)) { toast('Already enrolled in this course', 'inf'); return; }
-  S.enrolled.push(id);
-  S.user.enrolled = S.enrolled;
-  saveSession();
-  updateDash();
-  toast('Enrolled successfully! Check your dashboard.', 'suc');
-  renderCourses('home-courses-grid', COURSES.slice(0, 3));
-  renderCourses('all-courses-grid', COURSES);
+  try {
+    await DB.enrollUser(S.user.uid, id);
+    S.enrolled.push(id);
+    updateDash();
+    toast('Enrolled successfully! Check your dashboard.', 'suc');
+    renderCourses('home-courses-grid', COURSES.slice(0, 3));
+    renderCourses('all-courses-grid', COURSES);
+  } catch (e) {
+    toast('Enrollment failed: ' + e.message, 'err');
+  }
 }
 
 /* ── AUTHENTICATION ── */
@@ -1037,53 +1037,50 @@ function adminPopulateLessonList(curr) {
 }
 
 /* ── ADMIN: SAVE COURSE ── */
-function adminSaveCourse() {
+async function adminSaveCourse() {
   const title = (document.getElementById('cf-title').value||'').trim();
   if (!title) { toast('Course title is required.', 'err'); return; }
   const g = id => (document.getElementById(id)||{}).value || '';
-  const cat    = g('cf-cat') || 'CCNA';
-  const level  = g('cf-level') || 'Beginner';
-  const dur    = g('cf-dur').trim() || '0 hrs';
-  const price  = g('cf-price').trim() || 'Free';
-  const icon   = g('cf-icon').trim() || '📚';
-  const desc   = g('cf-desc').trim();
-  const prereqs= g('cf-prereqs').trim();
-  const link   = g('cf-link').trim();
-  let curr = Array.from(document.querySelectorAll('.lesson-row input')).map(i => i.value.trim()).filter(Boolean);
-  if (!curr.length) {
-    curr = g('cf-curr').split('\n').map(s=>s.trim()).filter(Boolean);
+  const courseData = {
+    cat:      g('cf-cat') || 'CCNA',
+    level:    g('cf-level') || 'Beginner',
+    duration: g('cf-dur').trim() || '0 hrs',
+    price:    g('cf-price').trim() || 'Free',
+    icon:     g('cf-icon').trim() || '📚',
+    desc:     g('cf-desc').trim(),
+    prereqs:  g('cf-prereqs').trim(),
+    pageLink: g('cf-link').trim() || undefined,
+    title,
+    published: true,
+    th:       {CCNA:'th1',CCNP:'th2',Security:'th3',Labs:'th4'}[g('cf-cat')] || 'th5',
+  };
+
+  try {
+    const courseId = await DB.saveCourse(editingId, courseData);
+    // TODO: Save lessons if lesson editor is implemented
+    await initCourses();
+    toast(editingId ? 'Course updated!' : 'Course added!', 'suc');
+    activatePanel('admin-courses');
+    renderAdminCourses();
+  } catch (e) {
+    console.error('[Admin] save failed', e);
+    toast('Save failed: ' + e.message, 'err');
   }
-  const thMap  = {CCNA:'th1',CCNP:'th2',Security:'th3',Labs:'th4'};
-  const th     = thMap[cat] || 'th5';
-  if (editingId === null) {
-    const newId = COURSES.length ? Math.max(...COURSES.map(c=>c.id))+1 : 1;
-    COURSES.push({id:newId,cat,icon,th,title,desc,level,duration:dur,students:'0',price,rating:'5.0',reviews:'0',prereqs,link:link||undefined,curriculum:curr});
-    toast('Course added!', 'suc');
-  } else {
-    const idx = COURSES.findIndex(x=>x.id===editingId);
-    if (idx>-1) {
-      COURSES[idx] = Object.assign({}, COURSES[idx], {cat,icon,th,title,desc,level,duration:dur,price,prereqs,link:link||undefined,curriculum:curr});
-      toast('Course updated!', 'suc');
-    }
-  }
-  saveCourses();
-  renderCourses('home-courses-grid', COURSES.slice(0,3));
-  renderCourses('all-courses-grid', COURSES);
-  activatePanel('admin-courses');
-  renderAdminCourses();
 }
 
 /* ── ADMIN: DELETE COURSE ── */
-function adminDeleteCourse(id) {
+async function adminDeleteCourse(id) {
   const c = COURSES.find(x=>x.id===id);
   if (!c) return;
-  if (!confirm('Delete "' + c.title + '"? This cannot be undone.')) return;
-  COURSES.splice(COURSES.findIndex(x=>x.id===id), 1);
-  saveCourses();
-  renderCourses('home-courses-grid', COURSES.slice(0,3));
-  renderCourses('all-courses-grid', COURSES);
-  renderAdminCourses();
-  toast('Course deleted.', 'inf');
+  if (!confirm('Delete "' + c.title + '"? This also deletes all its lessons.')) return;
+  try {
+    await DB.deleteCourse(id);
+    await initCourses();
+    renderAdminCourses();
+    toast('Course deleted.', 'inf');
+  } catch (e) {
+    toast('Delete failed: ' + e.message, 'err');
+  }
 }
 
 /* ── ADMIN: STUDENTS ── */
@@ -1288,7 +1285,7 @@ function renderLabs() {
         <h2 class="cta-h">Pair Labs with the<br><span class="hl">Free CCNA Bootcamp</span></h2>
         <p class="cta-sub">The free bootcamp covers all 6 exam domains with lessons and quizzes. Use it alongside these labs for maximum retention.</p>
         <div class="cta-btns">
-          <button class="hbtn hbtn-primary" onclick="enrollCourse(6)"><i class="fas fa-play"></i> Start Free Bootcamp</button>
+          <button class="hbtn hbtn-primary" onclick="enrollCourse('ccna-exam-bootcamp-10-day-intensive')"><i class="fas fa-play"></i> Start Free Bootcamp</button>
           <button class="hbtn hbtn-outline" onclick="showPage('courses')"><i class="fas fa-compass"></i> All Courses</button>
         </div>
       </div>
