@@ -1,0 +1,45 @@
+*
+!.gitignore
+!/SETUP.md
+!/README.md
+!/composer.json
+!/.env.example
+!/database/
+!/app/
+!/resources/
+!/routes/
+!/config/
+!/bootstrap/
+!/public/
+!/tests/
+!/bin/
+!/.git/
+!/node_modules/.gitkeep
+
+# Laravel specific
+.env
+.env.local
+.env.*.local
+storage/
+bootstrap/cache/
+vendor/
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Compiled
+public/js/
+public/css/
+public/mix-manifest.json
