@@ -11,7 +11,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 4rem 2rem 2rem;
+        padding: 6rem 2rem 2rem;
         z-index: 1;
         position: relative;
         overflow: hidden;
