@@ -69,10 +69,10 @@
             <ul class="nav-links">
                 <li><a href="/" data-pg="home" class="@if(request()->path() == '/') act @endif">Home</a></li>
                 <li><a href="{{ route('courses.index') }}" data-pg="courses" class="@if(str_contains(request()->path(), 'courses')) act @endif">Courses</a></li>
-                <li><a href="#about" data-pg="about">About</a></li>
-                <li><a href="#contact" data-pg="contact">Contact</a></li>
+                <li><a href="{{ route('about') }}" data-pg="about" class="@if(str_contains(request()->path(), 'about')) act @endif">About</a></li>
+                <li><a href="{{ route('contact') }}" data-pg="contact" class="@if(str_contains(request()->path(), 'contact')) act @endif">Contact</a></li>
                 @auth
-                    <li><a href="{{ route('student.my-learning') }}" data-pg="dashboard">My Learning</a></li>
+                    <li><a href="{{ route('student.my-learning') }}" data-pg="dashboard" class="@if(str_contains(request()->path(), 'my-learning')) act @endif">My Learning</a></li>
                 @endauth
             </ul>
             <div class="nav-right">
@@ -100,8 +100,8 @@
     <div class="mob-nav" id="mob-nav">
         <a href="/">Home</a>
         <a href="{{ route('courses.index') }}">Courses</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
+        <a href="{{ route('about') }}">About</a>
+        <a href="{{ route('contact') }}">Contact</a>
         @auth
             <a href="{{ route('student.my-learning') }}">My Learning</a>
             @if(auth()->user()->isAdmin())

@@ -20,6 +20,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 // Public Routes
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course}', [CourseController::class, 'show'])->name('courses.show');
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
 
 // Student Routes
 Route::middleware('auth')->group(function () {

@@ -194,6 +194,156 @@
         color: var(--bg);
     }
 
+    .lab-category {
+        margin-bottom: 3rem;
+    }
+
+    .lab-category-title {
+        font-family: 'Orbitron', monospace;
+        font-size: 1.1rem;
+        color: var(--c);
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid var(--bdr);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .lab-category-icon {
+        font-size: 1.3rem;
+        color: #00ff88;
+    }
+
+    .lab-item {
+        border: 1px solid var(--bdr);
+        border-radius: 10px;
+        padding: 1.5rem;
+        background: var(--card);
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .lab-item:hover {
+        border-color: var(--c);
+        background: rgba(0,212,255,0.02);
+        box-shadow: 0 0 20px rgba(0,212,255,0.1);
+    }
+
+    .lab-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        cursor: pointer;
+    }
+
+    .lab-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #00ff88, var(--c));
+        color: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        flex-shrink: 0;
+        font-size: 0.9rem;
+    }
+
+    .lab-title-section {
+        flex: 1;
+    }
+
+    .lab-title {
+        font-family: 'Orbitron', monospace;
+        font-size: 1.1rem;
+        color: var(--tw);
+        margin: 0 0 0.5rem 0;
+    }
+
+    .lab-desc {
+        color: var(--tm);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .lab-expand-icon {
+        color: var(--c);
+        transition: transform 0.3s ease;
+        align-self: center;
+    }
+
+    .lab-item.expanded .lab-expand-icon {
+        transform: rotate(180deg);
+    }
+
+    .lab-content {
+        display: none;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--bdr);
+    }
+
+    .lab-item.expanded .lab-content {
+        display: block;
+    }
+
+    .lab-tasks {
+        margin-bottom: 1.5rem;
+    }
+
+    .lab-tasks-title {
+        font-weight: 600;
+        color: var(--c);
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .lab-task-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .lab-task-list li {
+        padding: 0.5rem 0 0.5rem 1.75rem;
+        position: relative;
+        color: var(--t);
+        line-height: 1.6;
+    }
+
+    .lab-task-list li:before {
+        content: "▶";
+        position: absolute;
+        left: 0;
+        color: #00ff88;
+        font-size: 0.7rem;
+    }
+
+    .lab-config {
+        background: rgba(0,212,255,0.05);
+        border: 1px solid rgba(0,212,255,0.2);
+        border-radius: 8px;
+        padding: 1rem;
+        font-family: 'Courier New', monospace;
+        font-size: 0.8rem;
+        color: #00ff88;
+        overflow-x: auto;
+        margin-top: 0.75rem;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .lab-config-title {
+        font-weight: 600;
+        color: var(--c);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
     .empty-state {
         text-align: center;
         padding: 3rem 2rem;
@@ -536,6 +686,77 @@
                 @endif
             @endauth
         @endif
+
+        <!-- LABS SECTION -->
+        @if($course->labs && $course->labs->count() > 0)
+            <h3 class="section-title" style="margin-top:3rem">Hands-On Labs</h3>
+
+            @php
+                $labsByCategory = $course->labs->groupBy('category');
+            @endphp
+
+            @foreach($labsByCategory as $category => $labs)
+                <div class="lab-category">
+                    <div class="lab-category-title">
+                        @switch($category)
+                            @case('Layer 2 Switching')
+                                <i class="lab-category-icon fas fa-network-wired"></i>
+                                @break
+                            @case('Routing')
+                                <i class="lab-category-icon fas fa-road"></i>
+                                @break
+                            @case('Security & Services')
+                                <i class="lab-category-icon fas fa-shield-alt"></i>
+                                @break
+                            @default
+                                <i class="lab-category-icon fas fa-flask"></i>
+                        @endswitch
+                        {{ $category }}
+                    </div>
+
+                    @foreach($labs as $lab)
+                        <div class="lab-item" onclick="toggleLab(this)">
+                            <div class="lab-header">
+                                <div class="lab-number">{{ $lab->number }}</div>
+                                <div class="lab-title-section">
+                                    <h4 class="lab-title">{{ $lab->title }}</h4>
+                                    <p class="lab-desc">{{ $lab->description }}</p>
+                                </div>
+                                <i class="lab-expand-icon fas fa-chevron-down"></i>
+                            </div>
+
+                            <div class="lab-content">
+                                @if($lab->tasks && count(json_decode($lab->tasks, true) ?? []) > 0)
+                                    <div class="lab-tasks">
+                                        <div class="lab-tasks-title">Lab Tasks:</div>
+                                        <ul class="lab-task-list">
+                                            @php
+                                                $tasks = json_decode($lab->tasks, true) ?? [];
+                                            @endphp
+                                            @foreach($tasks as $task)
+                                                <li>{{ $task }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
+                                @if($lab->config_examples && count(json_decode($lab->config_examples, true) ?? []) > 0)
+                                    <div>
+                                        <div class="lab-config-title">Configuration Examples:</div>
+                                        @php
+                                            $configs = json_decode($lab->config_examples, true) ?? [];
+                                        @endphp
+                                        @foreach($configs as $config)
+                                            <div class="lab-config">{{ $config }}</div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endforeach
+        @endif
     </div>
 
     <!-- SIDEBAR -->
@@ -565,4 +786,10 @@
         </div>
     </aside>
 </div>
+
+<script>
+    function toggleLab(element) {
+        element.classList.toggle('expanded');
+    }
+</script>
 @endsection
