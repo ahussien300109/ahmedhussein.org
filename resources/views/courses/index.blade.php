@@ -190,7 +190,7 @@
         </div>
         @auth
             @if(auth()->user()->isAdmin())
-                <a href="{{ route('courses.create') }}" class="add-course-btn">
+                <a href="{{ route('admin.courses.create') }}" class="add-course-btn">
                     <i class="fas fa-plus"></i> Create Course
                 </a>
             @endif
@@ -206,7 +206,7 @@
             <p style="font-size:1.1rem;margin:0">
                 @auth
                     @if(auth()->user()->isAdmin())
-                        No courses yet. <a href="{{ route('courses.create') }}" style="color:var(--c)">Create your first course</a>
+                        No courses yet. <a href="{{ route('admin.courses.create') }}" style="color:var(--c)">Create your first course</a>
                     @else
                         No courses available at the moment.
                     @endif
@@ -245,10 +245,10 @@
                             </a>
                             @auth
                                 @if(auth()->user()->isAdmin())
-                                    <a href="{{ route('courses.edit', $course) }}" class="course-btn" title="Edit">
+                                    <a href="{{ route('admin.courses.edit', $course) }}" class="course-btn" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('courses.destroy', $course) }}" style="flex:1" onsubmit="return confirm('Delete this course?')">
+                                    <form method="POST" action="{{ route('admin.courses.destroy', $course) }}" style="flex:1" onsubmit="return confirm('Delete this course?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="course-btn" style="width:100%;border-color:#ff6a00;color:#ff6a00" title="Delete">
