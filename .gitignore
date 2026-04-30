@@ -2,6 +2,7 @@
 !.gitignore
 !/SETUP.md
 !/README.md
+!/PROJECT_STATUS.md
 !/VARPIX_DEPLOYMENT.md
 !/DEPLOYMENT_CHECKLIST.md
 !/.env.production.example
