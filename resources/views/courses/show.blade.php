@@ -360,6 +360,15 @@
                         <span style="color:#ff6a00;font-weight:600">PREMIUM COURSE</span>
                     @endif
                 </span>
+                @if($course->rating)
+                    <span style="color:var(--c)"><i class="fas fa-star" style="color:#ffd700"></i>{{ number_format($course->rating, 1) }}</span>
+                @endif
+                @if($course->level)
+                    <span style="color:var(--c)"><i class="fas fa-graduation-cap"></i>{{ $course->level }}</span>
+                @endif
+                @if($course->duration)
+                    <span style="color:var(--c)"><i class="fas fa-clock"></i>{{ $course->duration }}</span>
+                @endif
                 <span>{{ $course->lessons->count() }} Lessons</span>
                 <span><i class="fas fa-user"></i>{{ $course->creator->name ?? 'Admin' }}</span>
             </div>
@@ -388,6 +397,29 @@
             <h3>Course Description</h3>
             <p>{{ $course->description }}</p>
         </div>
+
+        @if($course->prerequisites)
+        <!-- PREREQUISITES -->
+        <div class="course-description">
+            <h3>Prerequisites</h3>
+            <p style="color:var(--c)"><i class="fas fa-info-circle"></i> {{ $course->prerequisites }}</p>
+        </div>
+        @endif
+
+        @if($course->curriculum)
+        <!-- CURRICULUM -->
+        <div class="course-description">
+            <h3>What You'll Learn</h3>
+            <ul style="color:var(--t);line-height:1.8;margin:0;padding-left:1.5rem">
+                @php
+                    $topics = is_string($course->curriculum) ? json_decode($course->curriculum, true) : $course->curriculum;
+                @endphp
+                @foreach($topics as $topic)
+                    <li style="margin-bottom:0.5rem"><i class="fas fa-check" style="color:var(--g);margin-right:0.5rem"></i>{{ $topic }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
         <!-- ENROLLMENT BUTTON -->
         @auth

@@ -66,23 +66,83 @@
 
     .course-badge {
         display: inline-block;
-        padding: 0.4rem 0.8rem;
-        border-radius: 50px;
-        font-size: 0.75rem;
+        padding: 0.35rem 0.7rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
         margin-bottom: 0.75rem;
+        margin-right: 0.5rem;
     }
 
     .course-badge.free {
-        background: rgba(0, 255, 136, 0.2);
+        background: rgba(0, 255, 136, 0.15);
         color: #00ff88;
+        border: 1px solid rgba(0, 255, 136, 0.3);
     }
 
     .course-badge.premium {
-        background: rgba(255, 106, 0, 0.2);
+        background: rgba(255, 106, 0, 0.15);
         color: #ff6a00;
+        border: 1px solid rgba(255, 106, 0, 0.3);
+    }
+
+    .course-badge.hot {
+        background: rgba(255, 106, 0, 0.15);
+        color: #ff6a00;
+        border: 1px solid rgba(255, 106, 0, 0.3);
+    }
+
+    .course-badge.new {
+        background: rgba(0, 212, 255, 0.15);
+        color: var(--c);
+        border: 1px solid rgba(0, 212, 255, 0.3);
+    }
+
+    .course-badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 0.75rem;
+    }
+
+    .course-rating {
+        font-size: 0.85rem;
+        color: var(--tm);
+        margin: 0.5rem 0;
+    }
+
+    .course-rating .stars {
+        color: #ffd700;
+        margin-right: 0.25rem;
+    }
+
+    .course-price {
+        font-family: 'Orbitron', monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--c);
+        margin: 0.5rem 0;
+    }
+
+    .course-meta-row {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: var(--tm);
+        padding: 0.75rem 0;
+        border-top: 1px solid var(--bdr);
+    }
+
+    .course-meta-item-new {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .course-meta-item-new i {
+        color: var(--c);
     }
 
     .course-title {
@@ -230,15 +290,50 @@
                         @endif
                     </div>
                     <div class="course-body">
-                        <div class="course-badge @if($course->is_free) free @else premium @endif">
-                            {{ $course->is_free ? 'FREE' : 'PREMIUM' }}
+                        <div class="course-badge-row">
+                            <span class="course-badge @if($course->is_free) free @else premium @endif">
+                                {{ $course->is_free ? 'FREE' : 'PREMIUM' }}
+                            </span>
+                            @if($course->badge)
+                                <span class="course-badge {{ $course->badge }}">{{ ucfirst($course->badge) }}</span>
+                            @endif
                         </div>
+
                         <h3 class="course-title">{{ Str::limit($course->title, 40) }}</h3>
                         <p class="course-desc">{{ Str::limit($course->description, 100) }}</p>
-                        <div class="course-meta">
-                            <span class="course-meta-item"><i class="fas fa-user"></i> {{ $course->creator->name ?? 'Admin' }}</span>
-                            <span class="course-meta-item"><i class="fas fa-users"></i> {{ $course->enrollments->count() }} students</span>
+
+                        @if($course->rating)
+                            <div class="course-rating">
+                                <span class="stars">★ {{ number_format($course->rating, 1) }}</span>
+                                @if($course->review_count)
+                                    ({{ $course->review_count }} reviews)
+                                @endif
+                            </div>
+                        @endif
+
+                        @if($course->price > 0)
+                            <div class="course-price">${{ number_format($course->price, 0) }}</div>
+                        @endif
+
+                        <div class="course-meta-row">
+                            @if($course->duration)
+                                <div class="course-meta-item-new">
+                                    <i class="fas fa-clock"></i>
+                                    <span>{{ $course->duration }}</span>
+                                </div>
+                            @endif
+                            @if($course->level)
+                                <div class="course-meta-item-new">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>{{ $course->level }}</span>
+                                </div>
+                            @endif
+                            <div class="course-meta-item-new">
+                                <i class="fas fa-users"></i>
+                                <span>{{ $course->student_count ?: $course->enrollments->count() }} students</span>
+                            </div>
                         </div>
+
                         <div class="course-actions">
                             <a href="{{ route('courses.show', $course) }}" class="course-btn solid">
                                 <i class="fas fa-eye"></i> View

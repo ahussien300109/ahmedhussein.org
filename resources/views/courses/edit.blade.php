@@ -71,6 +71,8 @@
     .form-group input[type="text"],
     .form-group input[type="url"],
     .form-group input[type="file"],
+    .form-group input[type="number"],
+    .form-group select,
     .form-group textarea {
         width: 100%;
         padding: 0.75rem 1rem;
@@ -292,6 +294,85 @@
                 <div class="form-check">
                     <input type="checkbox" id="is_free" name="is_free" value="1" {{ old('is_free', $course->is_free) ? 'checked' : '' }}>
                     <label for="is_free">Free Course (available to all users)</label>
+                </div>
+            </div>
+
+            <!-- Metadata Section -->
+            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--bdr);">
+                <h3 style="font-family: 'Orbitron', monospace; color: var(--c); margin-bottom: 1.5rem;">Course Metadata</h3>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <div class="form-group">
+                        <label for="price">Price ($)</label>
+                        <input type="number" id="price" name="price" value="{{ old('price', $course->price) }}" step="0.01" min="0">
+                        <span class="help-text">Leave 0 for free courses</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rating">Rating (0-5)</label>
+                        <input type="number" id="rating" name="rating" value="{{ old('rating', $course->rating) }}" step="0.1" min="0" max="5">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <div class="form-group">
+                        <label for="duration">Duration (e.g., "80 hrs")</label>
+                        <input type="text" id="duration" name="duration" value="{{ old('duration', $course->duration) }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="level">Level</label>
+                        <select id="level" name="level">
+                            <option value="Beginner" {{ old('level', $course->level) == 'Beginner' ? 'selected' : '' }}>Beginner</option>
+                            <option value="Intermediate" {{ old('level', $course->level) == 'Intermediate' ? 'selected' : '' }}>Intermediate</option>
+                            <option value="Advanced" {{ old('level', $course->level) == 'Advanced' ? 'selected' : '' }}>Advanced</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <div class="form-group">
+                        <label for="student_count">Student Count</label>
+                        <input type="number" id="student_count" name="student_count" value="{{ old('student_count', $course->student_count) }}" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="review_count">Review Count</label>
+                        <input type="number" id="review_count" name="review_count" value="{{ old('review_count', $course->review_count) }}" min="0">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="badge">Badge (optional)</label>
+                    <select id="badge" name="badge">
+                        <option value="">None</option>
+                        <option value="hot" {{ old('badge', $course->badge) == 'hot' ? 'selected' : '' }}>Hot 🔥</option>
+                        <option value="new" {{ old('badge', $course->badge) == 'new' ? 'selected' : '' }}>New ✨</option>
+                        <option value="free" {{ old('badge', $course->badge) == 'free' ? 'selected' : '' }}>Free 🎁</option>
+                    </select>
+                    <span class="help-text">Displays a special badge on course cards</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="prerequisites">Prerequisites</label>
+                    <textarea id="prerequisites" name="prerequisites">{{ old('prerequisites', $course->prerequisites) }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="curriculum">Curriculum (one topic per line)</label>
+                    <textarea id="curriculum" name="curriculum">{{ old('curriculum', is_string($course->curriculum) ? $course->curriculum : json_encode($course->curriculum ?? [])) }}</textarea>
+                    <span class="help-text">Enter each topic on a new line</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" name="category">
+                        <option value="">Select a category</option>
+                        <option value="CCNA" {{ old('category', $course->category) == 'CCNA' ? 'selected' : '' }}>CCNA</option>
+                        <option value="CCNP" {{ old('category', $course->category) == 'CCNP' ? 'selected' : '' }}>CCNP</option>
+                        <option value="Security" {{ old('category', $course->category) == 'Security' ? 'selected' : '' }}>Security</option>
+                        <option value="Automation" {{ old('category', $course->category) == 'Automation' ? 'selected' : '' }}>Automation</option>
+                    </select>
                 </div>
             </div>
 
