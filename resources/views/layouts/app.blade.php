@@ -28,6 +28,20 @@
     </script>
 
     @stack('styles')
+
+    <style>
+        #main-content {
+            margin-top: 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            #main-content {
+                margin-top: 70px;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- CUSTOM CURSOR -->
