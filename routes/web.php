@@ -39,6 +39,9 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
     Route::get('/courses/{course}/lessons/{lesson}/edit', [LessonController::class, 'edit'])->name('lessons.edit');
     Route::put('/courses/{course}/lessons/{lesson}', [LessonController::class, 'update'])->name('lessons.update');
     Route::delete('/courses/{course}/lessons/{lesson}', [LessonController::class, 'destroy'])->name('lessons.destroy');
+
+    // Note: courses resource will create admin.courses.* named routes
+    // lessons routes are explicitly named without admin. prefix due to explicit ->name() calls
 });
 
 require __DIR__.'/auth.php';
