@@ -168,9 +168,9 @@
                     <div class="f-col-title">Navigate</div>
                     <div class="f-links">
                         <a href="/">Home</a>
-                        <a href="#about">About</a>
-                        <a href="#contact">Contact</a>
-                        <a href="#" onclick="openRegisterModal()">Register</a>
+                        <a href="{{ route('about') }}">About</a>
+                        <a href="{{ route('contact') }}">Contact</a>
+                        <a href="/register">Register</a>
                     </div>
                 </div>
                 <div>
