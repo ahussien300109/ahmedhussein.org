@@ -40,6 +40,7 @@ Thumbs.db
 .DS_Store
 
 # Compiled
-public/js/
-public/css/
-public/mix-manifest.json
+# Note: we're tracking CSS files for the website design
+# public/js/
+# public/css/
+# public/mix-manifest.json
