@@ -479,6 +479,269 @@
         }
     }
 
+    /* FEATURES SECTION */
+    .features-section {
+        padding: 4rem 2rem;
+        background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+        border-top: 1px solid var(--bdr);
+        position: relative;
+        z-index: 1;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .feature-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .feature-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        background: rgba(0,212,255,0.1);
+        border: 1px solid rgba(0,212,255,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--c);
+    }
+
+    .feature-title {
+        font-family: 'Orbitron', monospace;
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--tw);
+    }
+
+    .feature-desc {
+        font-size: 0.85rem;
+        color: var(--tm);
+        line-height: 1.6;
+    }
+
+    /* TESTIMONIALS SECTION */
+    .testimonials-section {
+        padding: 4rem 2rem;
+        background: var(--bg);
+        position: relative;
+        z-index: 1;
+    }
+
+    .section-header-center {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .section-header-center h2 {
+        font-family: 'Orbitron', monospace;
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        font-weight: 700;
+        color: var(--tw);
+        margin: 0;
+    }
+
+    .section-header-center p {
+        color: var(--tm);
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .testimonial-card {
+        border: 1px solid var(--bdr);
+        border-radius: 12px;
+        padding: 2rem;
+        background: var(--card);
+        transition: all 0.3s;
+    }
+
+    .testimonial-card:hover {
+        border-color: var(--c);
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0,212,255,0.15);
+    }
+
+    .testimonial-stars {
+        display: flex;
+        gap: 0.25rem;
+        margin-bottom: 1rem;
+        color: #ffd700;
+        font-size: 0.9rem;
+    }
+
+    .testimonial-text {
+        color: var(--t);
+        font-size: 0.95rem;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        font-style: italic;
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--bdr);
+    }
+
+    .author-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--c), var(--c2));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        color: var(--bg);
+        flex-shrink: 0;
+    }
+
+    .author-info h4 {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--tw);
+        font-weight: 600;
+    }
+
+    .author-info p {
+        margin: 0.25rem 0 0 0;
+        font-size: 0.75rem;
+        color: var(--tm);
+    }
+
+    /* FAQ SECTION */
+    .faq-section {
+        padding: 4rem 2rem;
+        background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+        position: relative;
+        z-index: 1;
+    }
+
+    .faq-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .faq-item {
+        border: 1px solid var(--bdr);
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        background: var(--card);
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+
+    .faq-item:hover {
+        border-color: var(--c);
+    }
+
+    .faq-question {
+        padding: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 0.2s;
+    }
+
+    .faq-question:hover {
+        background: rgba(0,212,255,0.02);
+    }
+
+    .faq-question h3 {
+        margin: 0;
+        font-family: 'Orbitron', monospace;
+        font-size: 1rem;
+        color: var(--tw);
+        font-weight: 600;
+        flex: 1;
+    }
+
+    .faq-toggle {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--c);
+        transition: transform 0.3s;
+        flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-toggle {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer {
+        display: none;
+        padding: 0 1.5rem 1.5rem 1.5rem;
+        color: var(--t);
+        line-height: 1.7;
+        font-size: 0.9rem;
+    }
+
+    .faq-item.open .faq-answer {
+        display: block;
+    }
+
+    /* ANIMATIONS */
+    @keyframes shimmer {
+        from { background-position: 0% 0%; }
+        to { background-position: 200% 0%; }
+    }
+
+    @keyframes floatUpDown {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.1); }
+    }
+
+    .cert-card::before {
+        animation: shimmer 3s linear infinite;
+        background-size: 200%;
+    }
+
+    @media (max-width: 1024px) {
+        .features-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .features-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .testimonials-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
     @media (max-width: 640px) {
         .hero {
             padding: 2rem 1rem;
@@ -510,6 +773,17 @@
 
         .courses-section {
             padding: 2rem 1rem;
+        }
+
+        .features-section,
+        .testimonials-section,
+        .faq-section {
+            padding: 2rem 1rem;
+        }
+
+        .features-grid,
+        .testimonials-grid {
+            gap: 1rem;
         }
     }
 </style>
@@ -651,4 +925,174 @@
         </div>
     </div>
 </section>
+
+<!-- FEATURES SECTION -->
+<section class="features-section">
+    <div class="features-grid">
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-laptop"></i></div>
+            <div class="feature-title">Hands-On Labs</div>
+            <p class="feature-desc">20+ practical Packet Tracer labs with real-world configuration scenarios</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-book"></i></div>
+            <div class="feature-title">Structured Curriculum</div>
+            <p class="feature-desc">Comprehensive lessons aligned with official Cisco certification exams</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+            <div class="feature-title">Progress Tracking</div>
+            <p class="feature-desc">Monitor your learning journey with detailed progress analytics</p>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"><i class="fas fa-award"></i></div>
+            <div class="feature-title">Certifications</div>
+            <p class="feature-desc">Earn recognized certificates upon course completion</p>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS SECTION -->
+<section class="testimonials-section">
+    <div class="section-container">
+        <div class="section-header-center">
+            <h2>Student <span class="accent">Success Stories</span></h2>
+            <p>See what our students have accomplished</p>
+        </div>
+
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Ahmed's teaching style is exceptional. The hands-on labs made complex networking concepts clear and practical. I passed my CCNA on the first attempt!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MA</div>
+                    <div class="author-info">
+                        <h4>Muhammad Ali</h4>
+                        <p>CCNA Certified • Kuwait</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"The course structure is perfect for working professionals. I was able to balance work and studies, and the mentorship support was outstanding throughout."</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">FH</div>
+                    <div class="author-info">
+                        <h4>Fatima Hassan</h4>
+                        <p>CCNP Enterprise • UAE</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card">
+                <div class="testimonial-stars">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="testimonial-text">"Beyond just passing the exam, Ahmed's course taught me practical networking skills I use daily in my job. Highly recommended for anyone serious about networking!"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SA</div>
+                    <div class="author-info">
+                        <h4>Salem Ahmed</h4>
+                        <p>Network Engineer • Saudi Arabia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section class="faq-section">
+    <div class="section-container">
+        <div class="section-header-center">
+            <h2>Frequently Asked <span class="accent">Questions</span></h2>
+            <p>Find answers to common questions about our courses</p>
+        </div>
+
+        <div class="faq-container">
+            <div class="faq-item open">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>What are the prerequisites for CCNA course?</h3>
+                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    While no formal prerequisites are required, a basic understanding of computer networking concepts is recommended. The course covers everything from fundamentals to advanced topics, making it suitable for beginners with IT background. We provide review materials for those new to networking.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>How long does it take to complete a course?</h3>
+                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    CCNA course typically takes 4-6 weeks with consistent 10-12 hours per week of study. However, you have lifetime access to course materials, allowing you to learn at your own pace. Most students complete within 8-12 weeks including hands-on labs and practice exams.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>Are the labs Cisco NetAcad aligned?</h3>
+                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    Yes, all our labs are designed to align with Cisco NetAcad curriculum standards and real exam scenarios. We use Packet Tracer for network simulation labs, which is the official Cisco simulation software used in certification preparation.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>What's included in the Premium membership?</h3>
+                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    Premium membership ($29/month) includes: Full access to all courses, all hands-on labs, direct mentorship with Ahmed Hussein, certificate of completion, downloadable resources, lifetime course access, and exclusive live Q&A sessions every week.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>What is the exam pass rate guarantee?</h3>
+                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    Our students have achieved a 96% pass rate on Cisco certification exams. While we can't guarantee individual success, our comprehensive curriculum, hands-on labs, and dedicated mentorship significantly improve pass rates. We provide money-back guarantee if unsatisfied with the course content.
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <h3>Do you offer payment plans?</h3>
+                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
+                </div>
+                <div class="faq-answer">
+                    Yes, we offer flexible payment options. Premium membership can be paid monthly ($29/month), quarterly, or annually with discounts. We also offer interest-free payment plans through our partner payment processors for larger commitments.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function toggleFaq(element) {
+        element.parentElement.classList.toggle('open');
+    }
+</script>
 @endsection
