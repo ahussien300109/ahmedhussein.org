@@ -244,24 +244,50 @@ function showPanel(panelId) {
     document.querySelectorAll('.dash-panel').forEach(p => p.classList.remove('act'));
 
     // Show selected panel
-    document.getElementById('dash-' + panelId).classList.add('act');
+    const panel = document.getElementById('dash-' + panelId);
+    if (panel) {
+        panel.classList.add('act');
+    }
 
     // Update sidebar active state
     document.querySelectorAll('.ds-item').forEach(item => item.classList.remove('act'));
-    event.target.closest('.ds-item').classList.add('act');
+    if (event && event.target) {
+        const dsItem = event.target.closest('.ds-item');
+        if (dsItem) {
+            dsItem.classList.add('act');
+        }
+    }
 }
 
-// Sidebar toggle for mobile
-document.getElementById('sidebar-toggle')?.addEventListener('click', function() {
-    document.getElementById('dash-sidebar').classList.toggle('open');
-});
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure overview panel is shown by default
+    const overviewPanel = document.getElementById('dash-overview');
+    if (overviewPanel) {
+        overviewPanel.classList.add('act');
+    }
 
-// Close sidebar when link is clicked on mobile
-document.querySelectorAll('.ds-item').forEach(item => {
-    item.addEventListener('click', function() {
-        if (window.innerWidth <= 768) {
-            document.getElementById('dash-sidebar').classList.remove('open');
-        }
+    // Set first sidebar item as active
+    const firstItem = document.querySelector('.ds-item');
+    if (firstItem) {
+        firstItem.classList.add('act');
+    }
+
+    // Sidebar toggle for mobile
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            document.getElementById('dash-sidebar').classList.toggle('open');
+        });
+    }
+
+    // Close sidebar when link is clicked on mobile
+    document.querySelectorAll('.ds-item').forEach(item => {
+        item.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                document.getElementById('dash-sidebar').classList.remove('open');
+            }
+        });
     });
 });
 </script>
