@@ -705,6 +705,150 @@
         display: block;
     }
 
+    /* PRICING SECTION */
+    .pricing-section {
+        padding: 4rem 2rem;
+        background: var(--bg);
+        position: relative;
+        z-index: 1;
+    }
+
+    .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .pricing-card {
+        border: 1px solid var(--bdr);
+        border-radius: 12px;
+        padding: 2.5rem;
+        background: var(--card);
+        transition: all 0.3s;
+        position: relative;
+    }
+
+    .pricing-card:hover {
+        border-color: var(--c);
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0,212,255,0.15);
+    }
+
+    .pricing-card.featured {
+        border-color: var(--c);
+        background: rgba(0,212,255,0.02);
+        transform: scale(1.05);
+    }
+
+    .pricing-badge {
+        position: absolute;
+        top: -12px;
+        right: 20px;
+        background: linear-gradient(135deg, var(--c), var(--c2));
+        color: var(--bg);
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+    .pricing-title {
+        font-family: 'Orbitron', monospace;
+        font-size: 1.3rem;
+        color: var(--tw);
+        margin: 0 0 0.75rem 0;
+        font-weight: 700;
+    }
+
+    .pricing-desc {
+        color: var(--tm);
+        font-size: 0.9rem;
+        margin: 0 0 1.5rem 0;
+    }
+
+    .pricing-amount {
+        font-family: 'Orbitron', monospace;
+        font-size: 2.5rem;
+        color: var(--c);
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .pricing-period {
+        color: var(--tm);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--bdr);
+    }
+
+    .pricing-features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2rem 0;
+    }
+
+    .pricing-features li {
+        padding: 0.75rem 0;
+        color: var(--t);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .pricing-features li:before {
+        content: '✓';
+        color: var(--g);
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .pricing-features li.disabled {
+        color: var(--tm);
+        opacity: 0.5;
+    }
+
+    .pricing-features li.disabled:before {
+        content: '✕';
+        color: var(--tm);
+    }
+
+    .pricing-btn {
+        display: block;
+        width: 100%;
+        padding: 0.85rem;
+        border: 2px solid var(--bdr);
+        background: transparent;
+        color: var(--c);
+        border-radius: 8px;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+    }
+
+    .pricing-card:hover .pricing-btn {
+        border-color: var(--c);
+        background: rgba(0,212,255,0.1);
+    }
+
+    .pricing-card.featured .pricing-btn {
+        background: var(--c);
+        color: var(--bg);
+        border-color: var(--c);
+    }
+
+    .pricing-card.featured .pricing-btn:hover {
+        box-shadow: 0 0 30px rgba(0,212,255,0.5);
+    }
+
     /* ANIMATIONS */
     @keyframes shimmer {
         from { background-position: 0% 0%; }
@@ -739,6 +883,14 @@
 
         .testimonials-grid {
             grid-template-columns: 1fr;
+        }
+
+        .pricing-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .pricing-card.featured {
+            transform: scale(1);
         }
     }
 
@@ -1018,6 +1170,63 @@
     </div>
 </section>
 
+<!-- PRICING SECTION -->
+<section class="pricing-section">
+    <div class="section-container">
+        <div class="section-header-center">
+            <h2>Simple, Transparent <span class="accent">Pricing</span></h2>
+            <p>Choose the plan that fits your learning goals</p>
+        </div>
+
+        <div class="pricing-grid">
+            <!-- FREE TIER -->
+            <div class="pricing-card">
+                <h3 class="pricing-title">Free Access</h3>
+                <p class="pricing-desc">Start your learning journey</p>
+                <div class="pricing-amount">Free</div>
+                <div class="pricing-period">Forever</div>
+
+                <ul class="pricing-features">
+                    <li>Course previews & highlights</li>
+                    <li>Free sample lessons</li>
+                    <li>Community support</li>
+                    <li class="disabled">Hands-on labs access</li>
+                    <li class="disabled">Full course access</li>
+                    <li class="disabled">Direct mentorship</li>
+                    <li class="disabled">Certificates</li>
+                </ul>
+
+                <button class="pricing-btn" onclick="openRegisterModal()">
+                    <i class="fas fa-rocket"></i> Get Started
+                </button>
+            </div>
+
+            <!-- PREMIUM TIER -->
+            <div class="pricing-card featured">
+                <div class="pricing-badge">POPULAR</div>
+                <h3 class="pricing-title">Premium</h3>
+                <p class="pricing-desc">Complete learning experience</p>
+                <div class="pricing-amount">$29<span style="font-size:0.5em;color:var(--tm)">/mo</span></div>
+                <div class="pricing-period">Billed monthly</div>
+
+                <ul class="pricing-features">
+                    <li>All free features</li>
+                    <li>Full course access</li>
+                    <li>20+ hands-on labs</li>
+                    <li>Direct mentorship</li>
+                    <li>Certificate of completion</li>
+                    <li>Lifetime course updates</li>
+                    <li>Exclusive live Q&A sessions</li>
+                </ul>
+
+                <a href="/register" class="pricing-btn">
+                    <i class="fas fa-star"></i> Upgrade Now
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- FAQ SECTION -->
 <section class="faq-section">
     <div class="section-container">
@@ -1086,6 +1295,32 @@
                     Yes, we offer flexible payment options. Premium membership can be paid monthly ($29/month), quarterly, or annually with discounts. We also offer interest-free payment plans through our partner payment processors for larger commitments.
                 </div>
             </div>
+        </div>
+    </div>
+</section>
+
+<!-- FINAL CTA SECTION -->
+<section style="padding:4rem 2rem;background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(255,106,0,0.04));border-top:1px solid var(--bdr);position:relative;z-index:1;text-align:center">
+    <div style="max-width:800px;margin:0 auto">
+        <h2 style="font-family:'Orbitron',monospace;font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;color:var(--tw);margin:0 0 1rem 0">
+            Ready to Master Cisco Networking?
+        </h2>
+        <p style="color:var(--tm);font-size:1rem;line-height:1.8;margin:0 0 2rem 0">
+            Start your learning journey today with our comprehensive courses, hands-on labs, and expert mentorship. Join 1200+ students who've achieved their networking certifications.
+        </p>
+        <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+            <a href="{{ route('courses.index') }}" style="padding:0.9rem 2rem;background:linear-gradient(135deg,var(--c),var(--c2));color:var(--bg);border-radius:8px;text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.75rem">
+                <i class="fas fa-book"></i> Explore Courses
+            </a>
+            @if(!auth()->check())
+                <a href="/register" style="padding:0.9rem 2rem;border:2px solid var(--c);background:transparent;color:var(--c);border-radius:8px;text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.75rem">
+                    <i class="fas fa-user-plus"></i> Sign Up Free
+                </a>
+            @else
+                <a href="{{ route('student.my-learning') }}" style="padding:0.9rem 2rem;border:2px solid var(--c);background:transparent;color:var(--c);border-radius:8px;text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:1px;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.75rem">
+                    <i class="fas fa-chart-line"></i> Continue Learning
+                </a>
+            @endif
         </div>
     </div>
 </section>
