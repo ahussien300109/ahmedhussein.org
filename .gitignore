@@ -2,6 +2,9 @@
 !.gitignore
 !/SETUP.md
 !/README.md
+!/VARPIX_DEPLOYMENT.md
+!/DEPLOYMENT_CHECKLIST.md
+!/.env.production.example
 !/composer.json
 !/.env.example
 !/database/
