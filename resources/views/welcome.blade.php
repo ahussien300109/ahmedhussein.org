@@ -11,10 +11,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 6rem 2rem 2rem;
+        padding: 2rem 2rem 2rem;
         z-index: 1;
         position: relative;
         overflow: hidden;
+        margin-top: -80px;
+        padding-top: 100px;
     }
 
     .hero::before {
