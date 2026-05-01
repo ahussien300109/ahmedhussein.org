@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="@yield('description', 'Expert Cisco certification training with LMS platform. Learn from Ahmed Hussein - Cisco Certified Instructor.')">
     <title>@yield('title', 'Ahmed Hussein LMS') - Cisco Training</title>
 
@@ -18,6 +19,7 @@
     <link rel="stylesheet" href="{{ asset('css/hero.css') }}">
     <link rel="stylesheet" href="{{ asset('css/pages.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/animations.css') }}">
 
     <!-- Theme preference -->
     <script>
@@ -87,12 +89,12 @@
                         @csrf
                     </form>
                 @else
-                    <button class="nbtn" onclick="openLoginModal()">Sign In</button>
-                    <button class="nbtn solid" onclick="openRegisterModal()">Register</button>
+                    <button class="nbtn" onclick="openModal('login')">Sign In</button>
+                    <button class="nbtn solid" onclick="openModal('register')">Register</button>
                 @endauth
             </div>
             <button class="nbtn" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle theme" style="padding:7px 11px;font-size:.95rem"><i class="fas fa-sun" id="theme-icon"></i></button>
-            <button class="ham" id="ham" onclick="toggleMobileNav()"><span></span><span></span><span></span></button>
+            <button class="ham" id="ham" onclick="toggleMob()"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
@@ -108,8 +110,8 @@
                 <a href="{{ route('admin.dashboard') }}">Admin Dashboard</a>
             @endif
         @else
-            <a href="#" onclick="openLoginModal()">Sign In</a>
-            <a href="#" onclick="openRegisterModal()">Register Free</a>
+            <a href="#" onclick="openModal('login')">Sign In</a>
+            <a href="#" onclick="openModal('register')">Register Free</a>
         @endauth
     </div>
 
@@ -193,20 +195,46 @@
         </div>
     </footer>
 
-    <!-- AUTH MODAL (for non-authenticated users) -->
+    <!-- AUTH MODAL (for non-authenticated users) - MATCHES WEBSITE EXACTLY -->
     @if(!auth()->check())
     <div class="modal-ov" id="auth-modal" style="display:none">
         <div class="modal-box">
-            <button class="mclose" onclick="closeLoginModal()"><i class="fas fa-times"></i></button>
-            <div class="m-title">SIGN IN</div>
-            <div class="m-sub">Enter your credentials to access your learning portal</div>
-            <form action="{{ route('login') }}" method="POST">
-                @csrf
-                <div class="fgrp"><label class="flbl">Email</label><input name="email" class="finp" type="email" placeholder="you@example.com" required></div>
-                <div class="fgrp"><label class="flbl">Password</label><input name="password" class="finp" type="password" placeholder="••••••••" required></div>
-                <button class="btn btn-c btn-full" type="submit"><i class="fas fa-sign-in-alt"></i> Sign In</button>
-                <p style="text-align:center;font-size:0.78rem;color:var(--tm);margin-top:1rem">Don't have an account? <a href="/register" style="color:var(--c)">Register free</a></p>
-            </form>
+            <button class="mclose" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <div class="m-title">ACCESS PORTAL</div>
+            <div class="m-sub">Sign in or create your free account</div>
+            <div class="m-tabs">
+                <button class="m-tab on" data-tab="login" onclick="switchTab('login')">Sign In</button>
+                <button class="m-tab" data-tab="register" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- LOGIN PANEL -->
+            <div class="m-panel on" id="mp-login">
+                <div class="form-msg" id="login-ok"><i class="fas fa-check-circle"></i> Logged in!</div>
+                <div class="fgrp"><label class="flbl">Email</label><input id="l-email" class="finp" type="email" placeholder="you@example.com"></div>
+                <div class="fgrp"><label class="flbl">Password <a href="#" class="forgot">Forgot?</a></label><input id="l-pass" class="finp" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+                <div class="form-err" id="login-err"></div>
+                <button class="btn btn-c btn-full" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+                <p style="text-align:center;font-size:0.78rem;color:var(--tm);margin-top:1rem">No account? <a href="#" onclick="switchTab('register')" style="color:var(--c)">Register free</a></p>
+            </div>
+
+            <!-- REGISTER PANEL -->
+            <div class="m-panel" id="mp-register">
+                <div class="form-msg" id="reg-ok"><i class="fas fa-check-circle"></i> Account created! Sign in now.</div>
+                <p style="font-size:0.68rem;font-weight:700;color:var(--tm);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem">Choose Plan</p>
+                <div class="tier-row">
+                    <div class="tier-opt on" data-tier="free" onclick="pickTier('free')"><div class="tier-name">FREE</div><div class="tier-price">$0</div><div class="tier-feat">Course previews & free courses</div></div>
+                    <div class="tier-opt" data-tier="premium" onclick="pickTier('premium')"><div class="tier-name">PREMIUM ⚡</div><div class="tier-price">$29/mo</div><div class="tier-feat">Full access + labs + certificates</div></div>
+                </div>
+                <div class="form-row2">
+                    <div class="fgrp"><label class="flbl">First Name *</label><input id="r-fname" class="finp" placeholder="Ahmed"></div>
+                    <div class="fgrp"><label class="flbl">Last Name</label><input id="r-lname" class="finp" placeholder="Hassan"></div>
+                </div>
+                <div class="fgrp"><label class="flbl">Email *</label><input id="r-email" class="finp" type="email" placeholder="you@example.com"></div>
+                <div class="fgrp"><label class="flbl">Phone</label><input id="r-phone" class="finp" placeholder="+973..."></div>
+                <div class="fgrp"><label class="flbl">Password * (min 8 chars)</label><input id="r-pass" class="finp" type="password" placeholder="Min 8 characters" onkeydown="if(event.key==='Enter')doRegister()"></div>
+                <div class="form-err" id="reg-err"></div>
+                <button class="btn btn-c btn-full" onclick="doRegister()"><i class="fas fa-user-plus"></i> Create Account</button>
+            </div>
         </div>
     </div>
     @endif
@@ -215,135 +243,8 @@
     <div id="toast-box"></div>
 
     <!-- SCRIPTS -->
-    <script>
-        // Theme toggle
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon();
-        }
-
-        function updateThemeIcon() {
-            const icon = document.getElementById('theme-icon');
-            const isDark = !document.documentElement.hasAttribute('data-theme') ||
-                          document.documentElement.getAttribute('data-theme') === 'dark';
-            icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-        }
-
-        // Mobile nav
-        function toggleMobileNav() {
-            document.getElementById('mob-nav').classList.toggle('open');
-        }
-
-        // Modal functions
-        function openLoginModal() {
-            document.getElementById('auth-modal').style.display = 'flex';
-        }
-
-        function closeLoginModal() {
-            document.getElementById('auth-modal').style.display = 'none';
-        }
-
-        function openRegisterModal() {
-            window.location.href = '/register';
-        }
-
-        // Circuit canvas animation
-        function initCircuitCanvas() {
-            const canvas = document.getElementById('circuit-canvas');
-            if (!canvas) return;
-
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            let animationFrame;
-            function drawCircuit() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.strokeStyle = 'rgba(0,212,255,0.03)';
-                ctx.lineWidth = 1;
-
-                const gridSize = 50;
-                for (let x = 0; x < canvas.width; x += gridSize) {
-                    ctx.beginPath();
-                    ctx.moveTo(x, 0);
-                    ctx.lineTo(x, canvas.height);
-                    ctx.stroke();
-                }
-
-                for (let y = 0; y < canvas.height; y += gridSize) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, y);
-                    ctx.lineTo(canvas.width, y);
-                    ctx.stroke();
-                }
-
-                animationFrame = requestAnimationFrame(drawCircuit);
-            }
-
-            drawCircuit();
-        }
-
-        // Custom cursor
-        function initCursor() {
-            const cursor = document.getElementById('cursor');
-            const cursorRing = document.getElementById('cursor-ring');
-
-            document.addEventListener('mousemove', (e) => {
-                cursor.style.left = e.clientX + 'px';
-                cursor.style.top = e.clientY + 'px';
-                cursorRing.style.left = e.clientX + 'px';
-                cursorRing.style.top = e.clientY + 'px';
-            });
-
-            document.addEventListener('mousedown', () => {
-                cursor.classList.add('active');
-                cursorRing.classList.add('active');
-            });
-
-            document.addEventListener('mouseup', () => {
-                cursor.classList.remove('active');
-                cursorRing.classList.remove('active');
-            });
-        }
-
-        // Scroll progress
-        function initScrollProgress() {
-            window.addEventListener('scroll', () => {
-                const scrollProgress = document.getElementById('scroll-progress');
-                const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-                const scrolled = (window.scrollY / scrollHeight) * 100;
-                scrollProgress.style.width = scrolled + '%';
-            });
-        }
-
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', () => {
-            initCircuitCanvas();
-            initCursor();
-            initScrollProgress();
-            updateThemeIcon();
-
-            // Close mobile nav on link click
-            document.querySelectorAll('.mob-nav a').forEach(link => {
-                link.addEventListener('click', () => {
-                    document.getElementById('mob-nav').classList.remove('open');
-                });
-            });
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            const canvas = document.getElementById('circuit-canvas');
-            if (canvas) {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            }
-        });
-    </script>
+    <script src="{{ asset('js/animations.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     @stack('scripts')
 </body>
