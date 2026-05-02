@@ -310,9 +310,12 @@ body:hover #cursor{transform:translate(-50%,-50%) scale(1);}
 .logo-text span{color:var(--c);}
 .logo-sub{font-size:0.58rem;color:var(--c);letter-spacing:3px;text-transform:uppercase;margin-top:-2px;}
 .nav-links{display:flex;gap:2.5rem;list-style:none;}
-.nav-links a{color:var(--tm);font-size:0.85rem;font-weight:600;text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s;position:relative;padding-bottom:5px;border-bottom:2px solid transparent;}
-.nav-links a:hover{color:var(--c);border-bottom-color:var(--c);text-shadow:0 0 10px rgba(0,212,255,0.3);}
-.nav-links a.act{color:var(--c);border-bottom-color:var(--c);font-weight:700;text-shadow:0 0 15px rgba(0,212,255,0.4);}
+.nav-links a{color:var(--tm);font-size:0.85rem;font-weight:600;text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:all 0.3s;position:relative;padding-bottom:5px;}
+.nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--c),var(--c2));transform:scaleX(0);transform-origin:center;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+.nav-links a:hover{color:var(--c);text-shadow:0 0 10px rgba(0,212,255,0.3);}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-links a.act{color:var(--c);font-weight:700;text-shadow:0 0 15px rgba(0,212,255,0.4);}
+.nav-links a.act::after{transform:scaleX(1)!important;}
 .nav-right{display:flex;gap:0.7rem;align-items:center;}
 .nbtn{font-family:'Exo 2',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 20px;border-radius:6px;cursor:pointer;transition:all 0.2s;border:1px solid var(--bdr2);background:transparent;color:var(--c);}
 .nbtn:hover{background:rgba(0,212,255,0.08);border-color:var(--c);}

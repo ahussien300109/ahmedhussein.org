@@ -812,13 +812,32 @@
         padding: 1.5rem;
         cursor: pointer;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .faq-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--c), var(--o));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .faq-card:hover::before {
+        transform: scaleX(1);
     }
 
     .faq-card:hover {
         border-color: var(--c);
-        background: rgba(0, 212, 255, 0.02);
-        transform: translateY(-4px);
-        box-shadow: 0 8px 24px rgba(0, 212, 255, 0.1);
+        background: rgba(0, 212, 255, 0.03);
+        transform: translateY(-6px);
+        box-shadow: 0 12px 32px rgba(0, 212, 255, 0.12), inset 0 1px 0 rgba(0, 212, 255, 0.1);
     }
 
     .faq-card h3 {
@@ -830,11 +849,19 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
+        position: relative;
     }
 
     .faq-card h3 i {
         color: var(--c);
         font-size: 0.85rem;
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s;
+        display: inline-block;
+    }
+
+    .faq-card:hover h3 i {
+        transform: scale(1.15) rotate(10deg);
+        filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.5));
     }
 
     .faq-card p {
@@ -842,6 +869,11 @@
         color: var(--tm);
         font-size: 0.88rem;
         line-height: 1.6;
+        transition: color 0.3s;
+    }
+
+    .faq-card:hover p {
+        color: var(--t);
     }
 
     @media (max-width: 820px) {
