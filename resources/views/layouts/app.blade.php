@@ -51,11 +51,11 @@
     <div id="cursor"></div>
     <div id="cursor-ring"></div>
 
+    <!-- SCROLL PROGRESS BAR -->
+    <div id="scroll-progress"></div>
+
     <!-- CIRCUIT CANVAS -->
     <canvas id="circuit-canvas"></canvas>
-
-    <!-- SCROLL PROGRESS -->
-    <div id="scroll-progress"></div>
 
     <!-- NAVIGATION -->
     <nav id="nav">
@@ -251,7 +251,7 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script src="{{ asset('js/animations.js') }}"></script>
+    <script src="{{ asset('js/animations.js') }}" defer></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/premium-interactions.js') }}" defer></script>
 

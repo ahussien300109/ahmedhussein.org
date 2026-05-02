@@ -1176,17 +1176,23 @@
     .pcc-chart {
         position: relative;
         width: 100%;
-        height: 380px;
+        height: 420px;
         margin-bottom: 1.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
+        background: rgba(0,212,255,0.03);
+        border: 1px solid rgba(0,212,255,0.15);
+        border-radius: 8px;
+        padding: 1rem 0;
     }
 
     .pcc-chart svg {
         width: 100%;
-        max-width: 360px;
-        height: auto;
+        max-width: 100%;
+        height: 100%;
+        display: block;
+        filter: drop-shadow(0 0 30px rgba(0,212,255,0.15));
     }
 
     /* SVG path animation */
@@ -1299,6 +1305,70 @@
     .path-chart-card {
         transition: transform 0.3s ease-out;
     }
+
+    /* Typewriter Animation - Looping */
+    .terminal-line {
+        overflow: hidden;
+        white-space: nowrap;
+        display: block;
+        animation: typewriter 0.6s steps(60, end) 1 infinite, holdFade 9s ease-in-out infinite;
+    }
+
+    .terminal-line:nth-child(1) {
+        animation-delay: 0s, 0s;
+    }
+    .terminal-line:nth-child(2) {
+        animation-delay: 0.7s, 0s;
+    }
+    .terminal-line:nth-child(3) {
+        animation-delay: 1.4s, 0s;
+    }
+    .terminal-line:nth-child(4) {
+        animation-delay: 2.1s, 0s;
+    }
+    .terminal-line:nth-child(5) {
+        animation-delay: 2.8s, 0s;
+    }
+
+    @keyframes typewriter {
+        0% {
+            width: 0;
+            opacity: 1;
+        }
+        100% {
+            width: 100%;
+            opacity: 1;
+        }
+    }
+
+    @keyframes holdFade {
+        0% {
+            opacity: 0;
+        }
+        38% {
+            opacity: 1;
+        }
+        85% {
+            opacity: 1;
+        }
+        100% {
+            opacity: 0;
+        }
+    }
+
+    .terminal-cursor {
+        display: inline-block;
+        width: 2px;
+        height: 1em;
+        background: var(--c);
+        margin-left: 4px;
+        animation: blink 0.7s infinite;
+    }
+
+    @keyframes blink {
+        0%, 49% { opacity: 1; }
+        50%, 100% { opacity: 0; }
+    }
 </style>
 
 <!-- HERO SECTION -->
@@ -1381,16 +1451,99 @@
                     <!-- Floating Badge -->
                     <div class="pcc-badge">96% Pass Rate</div>
 
-                    <!-- SVG Chart -->
+                    <!-- SVG Chart - Clean Professional Design -->
                     <div class="pcc-chart">
-                        <svg viewBox="0 0 360 370" xmlns="http://www.w3.org/2000/svg" class="chart-svg">
-                            <!-- Grid background -->
+                        <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg" class="chart-svg" preserveAspectRatio="xMidYMid meet">
                             <defs>
-                                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0,212,255,0.03)" stroke-width="0.5"/>
-                                </pattern>
+                                <filter id="nodeGlow" x="-100%" y="-100%" width="300%" height="300%">
+                                    <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+                                </filter>
                             </defs>
-                            <rect width="360" height="370" fill="url(#grid)"/>
+
+                            <!-- LEFT COLUMN: NETWORKING -->
+                            <!-- CCST -->
+                            <g class="pcc-node">
+                                <circle cx="100" cy="60" r="24" fill="#00ff88" filter="url(#nodeGlow)"/>
+                                <text x="100" y="65" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCST</text>
+                            </g>
+                            <text x="100" y="100" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">100-150</text>
+
+                            <!-- Line 1 -->
+                            <line x1="100" y1="84" x2="100" y2="126" stroke="#00d4ff" stroke-width="2.5" opacity="0.7"/>
+
+                            <!-- CCNA -->
+                            <g class="pcc-node">
+                                <circle cx="100" cy="150" r="24" fill="#00d4ff" filter="url(#nodeGlow)"/>
+                                <text x="100" y="155" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCNA</text>
+                            </g>
+                            <text x="100" y="190" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">200-301</text>
+
+                            <!-- Line 2 -->
+                            <line x1="100" y1="174" x2="100" y2="216" stroke="#00d4ff" stroke-width="2.5" opacity="0.7"/>
+
+                            <!-- CCNP -->
+                            <g class="pcc-node">
+                                <circle cx="100" cy="240" r="24" fill="#ff6a00" filter="url(#nodeGlow)"/>
+                                <text x="100" y="245" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCNP</text>
+                            </g>
+                            <text x="100" y="280" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">350-401</text>
+
+                            <!-- Line 3 -->
+                            <line x1="100" y1="264" x2="100" y2="306" stroke="#ff6a00" stroke-width="2.5" opacity="0.7"/>
+
+                            <!-- CCIE -->
+                            <g class="pcc-node">
+                                <circle cx="100" cy="330" r="24" fill="#ffd700" filter="url(#nodeGlow)"/>
+                                <text x="100" y="337" font-family="Orbitron" font-size="14" font-weight="bold" fill="#030d1a" text-anchor="middle">★</text>
+                            </g>
+                            <text x="100" y="365" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Expert</text>
+
+                            <!-- LEFT LABELS -->
+                            <text x="145" y="65" font-family="Arial" font-size="10" fill="#7a9ab5">Entry Level</text>
+                            <text x="145" y="155" font-family="Arial" font-size="10" fill="#7a9ab5">Associate</text>
+                            <text x="145" y="245" font-family="Arial" font-size="10" fill="#7a9ab5">Professional</text>
+                            <text x="145" y="337" font-family="Arial" font-size="10" fill="#7a9ab5">Expert</text>
+
+                            <!-- VERTICAL DIVIDER -->
+                            <line x1="250" y1="20" x2="250" y2="360" stroke="rgba(0,212,255,0.15)" stroke-width="1" stroke-dasharray="5,5"/>
+
+                            <!-- RIGHT COLUMN: CYBERSECURITY -->
+                            <!-- CCST Cyber -->
+                            <g class="pcc-node">
+                                <circle cx="400" cy="60" r="24" fill="#00ff88" filter="url(#nodeGlow)"/>
+                                <text x="400" y="65" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCST</text>
+                            </g>
+                            <text x="400" y="100" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">100-160</text>
+
+                            <!-- Line 1 -->
+                            <line x1="400" y1="84" x2="400" y2="126" stroke="#00d4ff" stroke-width="2.5" opacity="0.7"/>
+
+                            <!-- CCNA Cyber -->
+                            <g class="pcc-node">
+                                <circle cx="400" cy="150" r="24" fill="#00d4ff" filter="url(#nodeGlow)"/>
+                                <text x="400" y="155" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCNA</text>
+                            </g>
+                            <text x="400" y="190" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">200-201</text>
+
+                            <!-- Line 2 (Dashed - Coming Soon) -->
+                            <line x1="400" y1="174" x2="400" y2="216" stroke="#ff6a00" stroke-width="2.5" opacity="0.4" stroke-dasharray="5,5"/>
+
+                            <!-- CCNP Cyber Coming Soon -->
+                            <g class="pcc-node" opacity="0.5">
+                                <circle cx="400" cy="240" r="24" fill="none" stroke="#ff6a00" stroke-width="2" stroke-dasharray="3,3"/>
+                                <text x="400" y="245" font-family="Orbitron" font-size="10" font-weight="bold" fill="#ff6a00" text-anchor="middle">CCNP</text>
+                            </g>
+                            <text x="400" y="280" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="middle" font-weight="500">Coming Soon</text>
+
+                            <!-- RIGHT LABELS -->
+                            <text x="355" y="65" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="end">Entry Level</text>
+                            <text x="355" y="155" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="end">Associate</text>
+                            <text x="355" y="245" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="end">Professional</text>
+
+                            <!-- HEADERS -->
+                            <text x="100" y="25" font-family="Orbitron" font-size="12" font-weight="700" fill="#00d4ff" text-anchor="middle" letter-spacing="1">NETWORKING</text>
+                            <text x="400" y="25" font-family="Orbitron" font-size="12" font-weight="700" fill="#00d4ff" text-anchor="middle" letter-spacing="1">CYBERSECURITY</text>
+                        </svg>
 
                             <!-- NETWORKING TRACK (LEFT) -->
                             <!-- Line 1: CCST -> CCNA -->
@@ -1398,8 +1551,8 @@
 
                             <!-- CCST Networking Node -->
                             <g class="pcc-node">
-                                <circle cx="90" cy="55" r="22" fill="rgba(0,255,136,0.35)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="90" cy="55" r="12" fill="rgba(0,255,136,0.65)" stroke="none"/>
+                                <circle cx="90" cy="55" r="22" fill="rgba(0,255,136,0.5)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
+                                <circle cx="90" cy="55" r="12" fill="rgba(0,255,136,0.5)" stroke="none" opacity="1"/>
                                 <text x="90" y="68" class="pcc-label">CCST</text>
                                 <text x="90" y="78" class="pcc-code">100-150</text>
                             </g>
@@ -1409,8 +1562,8 @@
 
                             <!-- CCNA Node -->
                             <g class="pcc-node">
-                                <circle cx="90" cy="145" r="22" fill="rgba(0,212,255,0.35)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="90" cy="145" r="12" fill="rgba(0,212,255,0.65)" stroke="none"/>
+                                <circle cx="90" cy="145" r="22" fill="rgba(0,212,255,0.5)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
+                                <circle cx="90" cy="145" r="12" fill="rgba(0,212,255,0.5)" stroke="none" opacity="1"/>
                                 <text x="90" y="152" class="pcc-label">CCNA</text>
                                 <text x="90" y="162" class="pcc-code">200-301</text>
                             </g>
@@ -1420,16 +1573,16 @@
 
                             <!-- CCNP Node -->
                             <g class="pcc-node">
-                                <circle cx="90" cy="235" r="22" fill="rgba(255,106,0,0.35)" stroke="#ff6a00" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="90" cy="235" r="12" fill="rgba(255,106,0,0.65)" stroke="none"/>
+                                <circle cx="90" cy="235" r="22" fill="rgba(255,106,0,0.5)" stroke="#ff6a00" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
+                                <circle cx="90" cy="235" r="12" fill="rgba(255,106,0,0.5)" stroke="none" opacity="1"/>
                                 <text x="90" y="242" class="pcc-label">CCNP</text>
                                 <text x="90" y="252" class="pcc-code">350-401</text>
                             </g>
 
                             <!-- CCIE Node -->
                             <g class="pcc-node">
-                                <circle cx="90" cy="325" r="22" fill="rgba(255,215,0,0.35)" stroke="#ffd700" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="90" cy="325" r="12" fill="rgba(255,215,0,0.65)" stroke="none"/>
+                                <circle cx="90" cy="325" r="22" fill="rgba(255,215,0,0.5)" stroke="#ffd700" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
+                                <circle cx="90" cy="325" r="12" fill="rgba(255,215,0,0.5)" stroke="none" opacity="1"/>
                                 <text x="90" y="331" class="pcc-label">CCIE</text>
                                 <text x="90" y="341" class="pcc-code">★ Expert</text>
                             </g>
@@ -1440,8 +1593,8 @@
 
                             <!-- CCST Cyber Node -->
                             <g class="pcc-node">
-                                <circle cx="270" cy="55" r="22" fill="rgba(0,255,136,0.35)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="270" cy="55" r="12" fill="rgba(0,255,136,0.65)" stroke="none"/>
+                                <circle cx="270" cy="55" r="22" fill="rgba(0,255,136,0.5)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
+                                <circle cx="270" cy="55" r="12" fill="rgba(0,255,136,0.5)" stroke="none" opacity="1"/>
                                 <text x="270" y="63" class="pcc-label" font-size="0.55rem">CCST</text>
                                 <text x="270" y="73" class="pcc-code">Cyber</text>
                                 <text x="270" y="80" class="pcc-code">100-160</text>
@@ -1452,17 +1605,92 @@
 
                             <!-- CCNA Cyber Node -->
                             <g class="pcc-node">
-                                <circle cx="270" cy="145" r="22" fill="rgba(0,212,255,0.35)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="270" cy="145" r="12" fill="rgba(0,212,255,0.65)" stroke="none"/>
+                                <circle cx="270" cy="145" r="22" fill="rgba(0,212,255,0.5)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
+                                <circle cx="270" cy="145" r="12" fill="rgba(0,212,255,0.5)" stroke="none" opacity="1"/>
                                 <text x="270" y="150" class="pcc-label" font-size="0.55rem">CCNA</text>
                                 <text x="270" y="160" class="pcc-code">Cyber</text>
                                 <text x="270" y="167" class="pcc-code">200-201</text>
                             </g>
 
                             <!-- CCNP Cyber Node (Coming Soon) -->
-                            <g class="pcc-node" opacity="0.7">
-                                <circle cx="270" cy="235" r="22" fill="rgba(255,106,0,0.25)" stroke="rgba(255,106,0,0.8)" stroke-width="2.5" stroke-dasharray="4 4" class="pcc-node-outer"/>
-                                <circle cx="270" cy="235" r="12" fill="rgba(255,106,0,0.45)" stroke="none"/>
+                            <g class="pcc-node" opacity="0.8">
+                                <circle cx="270" cy="235" r="22" fill="rgba(255,106,0,0.5)" stroke="rgba(255,106,0,0.9)" stroke-width="2.5" stroke-dasharray="4 4" class="pcc-node-outer"/>
+                                <circle cx="270" cy="235" r="12" fill="rgba(255,106,0,0.6)" stroke="none"/>
+                                <text x="270" y="238" class="pcc-label" font-size="0.5rem" fill="var(--t)">CCNP</text>
+                                <text x="270" y="248" class="pcc-code" fill="var(--t)">Coming</text>
+                            </g>
+
+                            <!-- NETWORKING TRACK (LEFT) -->
+                            <!-- Line 1: CCST -> CCNA -->
+                            <line x1="90" y1="70" x2="90" y2="130" class="pcc-line" style="--line-color: #00d4ff"/>
+
+                            <!-- CCST Networking Node -->
+                            <g class="pcc-node">
+                                <circle cx="90" cy="55" r="22" fill="rgba(0,255,136,0.5)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="90" cy="55" r="12" fill="rgba(0,255,136,0.8)" stroke="none"/>
+                                <text x="90" y="68" class="pcc-label">CCST</text>
+                                <text x="90" y="78" class="pcc-code">100-150</text>
+                            </g>
+
+                            <!-- Line 2: CCNA -> CCNP -->
+                            <line x1="90" y1="160" x2="90" y2="220" class="pcc-line" style="--line-color: #00d4ff"/>
+
+                            <!-- CCNA Node -->
+                            <g class="pcc-node">
+                                <circle cx="90" cy="145" r="22" fill="rgba(0,212,255,0.5)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="90" cy="145" r="12" fill="rgba(0,212,255,0.8)" stroke="none"/>
+                                <text x="90" y="152" class="pcc-label">CCNA</text>
+                                <text x="90" y="162" class="pcc-code">200-301</text>
+                            </g>
+
+                            <!-- Line 3: CCNP -> CCIE -->
+                            <line x1="90" y1="250" x2="90" y2="310" class="pcc-line" style="--line-color: #ff6a00"/>
+
+                            <!-- CCNP Node -->
+                            <g class="pcc-node">
+                                <circle cx="90" cy="235" r="22" fill="rgba(255,106,0,0.5)" stroke="#ff6a00" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="90" cy="235" r="12" fill="rgba(255,106,0,0.8)" stroke="none"/>
+                                <text x="90" y="242" class="pcc-label">CCNP</text>
+                                <text x="90" y="252" class="pcc-code">350-401</text>
+                            </g>
+
+                            <!-- CCIE Node -->
+                            <g class="pcc-node">
+                                <circle cx="90" cy="325" r="22" fill="rgba(255,215,0,0.5)" stroke="#ffd700" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="90" cy="325" r="12" fill="rgba(255,215,0,0.8)" stroke="none"/>
+                                <text x="90" y="331" class="pcc-label">CCIE</text>
+                                <text x="90" y="341" class="pcc-code">★ Expert</text>
+                            </g>
+
+                            <!-- CYBERSECURITY TRACK (RIGHT) -->
+                            <!-- Line 1: CCST -> CCNA -->
+                            <line x1="270" y1="70" x2="270" y2="130" class="pcc-line" style="--line-color: #00d4ff"/>
+
+                            <!-- CCST Cyber Node -->
+                            <g class="pcc-node">
+                                <circle cx="270" cy="55" r="22" fill="rgba(0,255,136,0.5)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="270" cy="55" r="12" fill="rgba(0,255,136,0.8)" stroke="none"/>
+                                <text x="270" y="63" class="pcc-label" font-size="0.55rem">CCST</text>
+                                <text x="270" y="73" class="pcc-code">Cyber</text>
+                                <text x="270" y="80" class="pcc-code">100-160</text>
+                            </g>
+
+                            <!-- Line 2: CCNA -> CCNP -->
+                            <line x1="270" y1="160" x2="270" y2="220" class="pcc-line" style="--line-color: #00d4ff"/>
+
+                            <!-- CCNA Cyber Node -->
+                            <g class="pcc-node">
+                                <circle cx="270" cy="145" r="22" fill="rgba(0,212,255,0.5)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="270" cy="145" r="12" fill="rgba(0,212,255,0.8)" stroke="none"/>
+                                <text x="270" y="150" class="pcc-label" font-size="0.55rem">CCNA</text>
+                                <text x="270" y="160" class="pcc-code">Cyber</text>
+                                <text x="270" y="167" class="pcc-code">200-201</text>
+                            </g>
+
+                            <!-- CCNP Cyber Node (Coming Soon) -->
+                            <g class="pcc-node" opacity="0.8">
+                                <circle cx="270" cy="235" r="22" fill="rgba(255,106,0,0.4)" stroke="rgba(255,106,0,0.9)" stroke-width="2.5" stroke-dasharray="4 4" class="pcc-node-outer"/>
+                                <circle cx="270" cy="235" r="12" fill="rgba(255,106,0,0.6)" stroke="none"/>
                                 <text x="270" y="238" class="pcc-label" font-size="0.5rem" fill="var(--t)">CCNP</text>
                                 <text x="270" y="248" class="pcc-code" fill="var(--t)">Coming</text>
                             </g>
@@ -1484,6 +1712,81 @@
     </div>
 </section>
 
+<!-- TRY BEFORE YOU ENROLL SECTION -->
+<section style="padding: 4rem 2rem; background: linear-gradient(135deg, var(--bg) 0%, var(--bg2) 100%); position: relative; z-index: 1; overflow: hidden;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
+            <!-- LEFT SIDE -->
+            <div>
+                <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 1.5rem; color: var(--c); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">
+                    <span style="width: 20px; height: 2px; background: var(--c);"></span>
+                    TRY BEFORE YOU ENROLL
+                </div>
+
+                <h2 style="font-size: 2.5rem; font-weight: 800; color: var(--tw); margin-bottom: 1.5rem; line-height: 1.2; font-family: 'Orbitron', monospace;">
+                    Run a Real Lab<br>Right Now
+                </h2>
+
+                <p style="font-size: 1rem; color: var(--c); margin-bottom: 2rem; line-height: 1.6;">
+                    Configure 802.1Q trunking and LACP on actual Cisco topology. Free Packet Tracer file included.
+                </p>
+
+                <!-- Features -->
+                <ul style="list-style: none; padding: 0; margin-bottom: 2.5rem;">
+                    <li style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; color: var(--t); font-size: 1rem;">
+                        <span style="width: 20px; height: 20px; border-radius: 50%; background: var(--g); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="fas fa-check" style="color: var(--bg); font-size: 0.75rem;"></i>
+                        </span>
+                        Real Cisco IOS commands
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; color: var(--t); font-size: 1rem;">
+                        <span style="width: 20px; height: 20px; border-radius: 50%; background: var(--g); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="fas fa-check" style="color: var(--bg); font-size: 0.75rem;"></i>
+                        </span>
+                        Step-by-step task guide
+                    </li>
+                    <li style="display: flex; align-items: center; gap: 12px; color: var(--t); font-size: 1rem;">
+                        <span style="width: 20px; height: 20px; border-radius: 50%; background: var(--g); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="fas fa-check" style="color: var(--bg); font-size: 0.75rem;"></i>
+                        </span>
+                        Free Packet Tracer software
+                    </li>
+                </ul>
+
+                <!-- CTA Buttons -->
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="{{ route('courses.index') }}" style="display: inline-flex; align-items: center; gap: 8px; background: var(--c); color: var(--bg); padding: 12px 28px; border-radius: 8px; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; text-decoration: none; transition: all 0.3s; border: 2px solid var(--c);">
+                        <i class="fas fa-flask-vial"></i> START FREE LAB
+                    </a>
+                    <a href="{{ route('courses.index') }}" style="display: inline-flex; align-items: center; gap: 8px; background: transparent; color: var(--c); padding: 10px 26px; border: 2px solid var(--c); border-radius: 8px; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; text-decoration: none; transition: all 0.3s;">
+                        <i class="fas fa-eye"></i> PREVIEW LABS
+                    </a>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE - TERMINAL MOCKUP -->
+            <div style="background: rgba(12, 22, 40, 0.6); border: 1px solid var(--bdr); border-radius: 12px; padding: 1.5rem; font-family: 'Courier New', monospace; overflow: hidden;">
+                <!-- Terminal Header -->
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--bdr);">
+                    <span style="width: 10px; height: 10px; border-radius: 50%; background: #ff6a56;"></span>
+                    <span style="width: 10px; height: 10px; border-radius: 50%; background: #ffbd44;"></span>
+                    <span style="width: 10px; height: 10px; border-radius: 50%; background: #00d4ff;"></span>
+                    <span style="margin-left: auto; font-size: 0.75rem; color: var(--c); font-weight: 700; letter-spacing: 2px;">CISCO IOS - LAB 01</span>
+                </div>
+
+                <!-- Terminal Content -->
+                <div style="font-size: 0.85rem; line-height: 1.6; color: var(--c);">
+                    <div class="terminal-line" style="margin-bottom: 0.5rem;">sw1$ <span style="color: var(--t);">configure terminal</span></div>
+                    <div class="terminal-line" style="margin-bottom: 0.5rem;">sw1(config)$ <span style="color: var(--t);">interface range Fa0/1-2</span></div>
+                    <div class="terminal-line" style="margin-bottom: 0.5rem;">sw1(config-if)$ <span style="color: var(--t);">switchport trunk encapsulation dotlq</span></div>
+                    <div class="terminal-line" style="margin-bottom: 0.5rem;">sw1(config-if)$ <span style="color: var(--t);">switchport mode trunk</span></div>
+                    <div class="terminal-line" style="color: var(--c);">sw1(config-if)$ <span style="color: var(--t);">channel-group 10 mode active</span><span class="terminal-cursor"></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- FEATURED COURSES SECTION -->
 <section class="courses-section">
     <div class="section-container">
@@ -1495,7 +1798,7 @@
 
         <div class="courses-grid">
             @forelse(\App\Models\Course::latest()->take(3)->get() as $course)
-                <div class="course-card reveal">
+                <div class="course-card reveal" data-stagger="{{ $loop->index + 1 }}">
                     <div class="course-thumb">{{ Str::limit($course->title, 20) }}</div>
                     <div class="course-body">
                         <h3 class="course-title">{{ $course->title }}</h3>
@@ -1526,22 +1829,22 @@
 <!-- FEATURES SECTION -->
 <section class="features-section">
     <div class="features-grid">
-        <div class="feature-item reveal">
+        <div class="feature-item reveal" data-stagger="1">
             <div class="feature-icon"><i class="fas fa-laptop"></i></div>
             <div class="feature-title">Hands-On Labs</div>
             <p class="feature-desc">20+ practical Packet Tracer labs with real-world configuration scenarios</p>
         </div>
-        <div class="feature-item reveal">
+        <div class="feature-item reveal" data-stagger="2">
             <div class="feature-icon"><i class="fas fa-book"></i></div>
             <div class="feature-title">Structured Curriculum</div>
             <p class="feature-desc">Comprehensive lessons aligned with official Cisco certification exams</p>
         </div>
-        <div class="feature-item reveal">
+        <div class="feature-item reveal" data-stagger="3">
             <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
             <div class="feature-title">Progress Tracking</div>
             <p class="feature-desc">Monitor your learning journey with detailed progress analytics</p>
         </div>
-        <div class="feature-item reveal">
+        <div class="feature-item reveal" data-stagger="4">
             <div class="feature-icon"><i class="fas fa-award"></i></div>
             <div class="feature-title">Certifications</div>
             <p class="feature-desc">Earn recognized certificates upon course completion</p>
@@ -1557,7 +1860,7 @@
         </div>
 
         <div class="testimonials-grid">
-            <div class="testimonial-card reveal">
+            <div class="testimonial-card reveal" data-stagger="1">
                 <div class="testimonial-stars">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
@@ -1575,7 +1878,7 @@
                 </div>
             </div>
 
-            <div class="testimonial-card">
+            <div class="testimonial-card reveal" data-stagger="2">
                 <div class="testimonial-stars">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
@@ -1593,7 +1896,7 @@
                 </div>
             </div>
 
-            <div class="testimonial-card">
+            <div class="testimonial-card reveal" data-stagger="3">
                 <div class="testimonial-stars">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
@@ -1624,7 +1927,7 @@
 
         <div class="pricing-grid">
             <!-- FREE TIER -->
-            <div class="pricing-card reveal">
+            <div class="pricing-card reveal" data-stagger="1">
                 <h3 class="pricing-title">Free Access</h3>
                 <p class="pricing-desc">Start your learning journey</p>
                 <div class="pricing-amount">Free</div>
@@ -1646,7 +1949,7 @@
             </div>
 
             <!-- PREMIUM TIER -->
-            <div class="pricing-card featured reveal">
+            <div class="pricing-card featured reveal" data-stagger="2">
                 <div class="pricing-badge">POPULAR</div>
                 <h3 class="pricing-title">Premium</h3>
                 <p class="pricing-desc">Complete learning experience</p>
