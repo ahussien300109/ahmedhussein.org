@@ -1456,253 +1456,188 @@
                         <i class="fas fa-check-circle" style="margin-right:4px"></i>96% Pass Rate
                     </div>
 
-                    <!-- SVG Chart - Clean Professional Design -->
+                                        <!-- SVG Chart - Enhanced Professional Design -->
                     <div class="pcc-chart">
                         <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" class="chart-svg" preserveAspectRatio="xMidYMid meet">
                             <defs>
-                                <filter id="nodeGlow" x="-100%" y="-100%" width="300%" height="300%">
-                                    <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
+                                <filter id="strongGlow" x="-150%" y="-150%" width="400%" height="400%">
+                                    <feGaussianBlur in="SourceGraphic" stdDeviation="3.5"/>
+                                </filter>
+                                <filter id="outerGlow" x="-200%" y="-200%" width="500%" height="500%">
+                                    <feGaussianBlur in="SourceGraphic" stdDeviation="5"/>
                                 </filter>
                             </defs>
-
-                            <!-- LEFT COLUMN: NETWORKING -->
-                            <!-- CCST -->
-                            <g class="pcc-node">
-                                <circle cx="100" cy="60" r="24" fill="#00ff88" filter="url(#nodeGlow)"/>
-                                <text x="100" y="65" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCST</text>
+                            <!-- LEFT: NETWORKING -->
+                            <g class="pcc-node" data-cert="ccst-net" data-name="CCST Networking" data-code="100-150" data-salary="$45K - $65K">
+                                <!-- Glow effect -->
+                                <circle cx="100" cy="60" r="32" fill="rgba(0,255,136,0.1)" filter="url(#outerGlow)"/>
+                                <!-- Badge design -->
+                                <g class="cert-badge" filter="url(#strongGlow)">
+                                    <defs>
+                                        <linearGradient id="ccst-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#00dd77;stop-opacity:0.8" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Hexagon outer -->
+                                    <polygon points="100,32 118,42 118,62 100,72 82,62 82,42" fill="url(#ccst-grad)" stroke="#00ff88" stroke-width="1" opacity="0.9"/>
+                                    <!-- Hexagon inner -->
+                                    <polygon points="100,38 112,46 112,62 100,68 88,62 88,46" fill="#030d1a" stroke="#00ff88" stroke-width="0.5" opacity="0.8"/>
+                                    <!-- Badge text -->
+                                    <text x="100" y="58" font-family="Orbitron" font-size="9" font-weight="bold" fill="#00ff88" text-anchor="middle">CCST</text>
+                                    <text x="100" y="35" font-family="Arial" font-size="5" fill="#00ff88" text-anchor="middle" font-weight="700">ENTRY</text>
+                                </g>
                             </g>
-                            <text x="100" y="100" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">100-150</text>
-
-                            <!-- Line 1 -->
-                            <line x1="100" y1="84" x2="100" y2="126" stroke="#00d4ff" stroke-width="2.5" opacity="0.7"/>
-
-                            <!-- CCNA -->
-                            <g class="pcc-node">
-                                <circle cx="100" cy="150" r="24" fill="#00d4ff" filter="url(#nodeGlow)"/>
-                                <text x="100" y="155" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCNA</text>
+                            <text x="100" y="110" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 100-150</text>
+                            <line x1="100" y1="88" x2="100" y2="132" stroke="#00d4ff" stroke-width="3" opacity="0.8"/>
+                            <g class="pcc-node" data-cert="ccna-net" data-name="CCNA 200-301" data-code="CCNA Enterprise" data-salary="$60K - $85K">
+                                <!-- Glow effect -->
+                                <circle cx="100" cy="160" r="32" fill="rgba(0,212,255,0.1)" filter="url(#outerGlow)"/>
+                                <!-- Badge design - Shield -->
+                                <g class="cert-badge" filter="url(#strongGlow)">
+                                    <defs>
+                                        <linearGradient id="ccna-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#00b8d4;stop-opacity:0.8" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Shield outer -->
+                                    <path d="M 82 148 L 118 148 L 118 168 Q 100 178 82 168 Z" fill="url(#ccna-grad)" stroke="#00d4ff" stroke-width="1" opacity="0.9"/>
+                                    <!-- Shield inner -->
+                                    <path d="M 86 152 L 114 152 L 114 166 Q 100 173 86 166 Z" fill="#030d1a" stroke="#00d4ff" stroke-width="0.5" opacity="0.8"/>
+                                    <!-- Badge text -->
+                                    <text x="100" y="164" font-family="Orbitron" font-size="9" font-weight="bold" fill="#00d4ff" text-anchor="middle">CCNA</text>
+                                    <text x="100" y="150" font-family="Arial" font-size="5" fill="#00d4ff" text-anchor="middle" font-weight="700">ASSOCIATE</text>
+                                </g>
                             </g>
-                            <text x="100" y="190" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">200-301</text>
-
-                            <!-- Line 2 -->
-                            <line x1="100" y1="174" x2="100" y2="216" stroke="#00d4ff" stroke-width="2.5" opacity="0.7"/>
-
-                            <!-- CCNP -->
-                            <g class="pcc-node">
-                                <circle cx="100" cy="240" r="24" fill="#ff6a00" filter="url(#nodeGlow)"/>
-                                <text x="100" y="245" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCNP</text>
+                            <text x="100" y="210" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 200-301</text>
+                            <line x1="100" y1="188" x2="100" y2="232" stroke="#00d4ff" stroke-width="3" opacity="0.8"/>
+                            <g class="pcc-node" data-cert="ccnp-net" data-name="CCNP Enterprise" data-code="350-401 ENCOR" data-salary="$85K - $120K">
+                                <!-- Glow effect -->
+                                <circle cx="100" cy="260" r="32" fill="rgba(255,106,0,0.1)" filter="url(#outerGlow)"/>
+                                <!-- Badge design - Diamond -->
+                                <g class="cert-badge" filter="url(#strongGlow)">
+                                    <defs>
+                                        <linearGradient id="ccnp-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#ff6a00;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#dd5500;stop-opacity:0.8" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Diamond outer -->
+                                    <polygon points="100,240 118,260 100,280 82,260" fill="url(#ccnp-grad)" stroke="#ff6a00" stroke-width="1" opacity="0.9"/>
+                                    <!-- Diamond inner -->
+                                    <polygon points="100,248 110,260 100,272 90,260" fill="#030d1a" stroke="#ff6a00" stroke-width="0.5" opacity="0.8"/>
+                                    <!-- Star accent -->
+                                    <polygon points="100,252 102,258 108,258 103,262 105,268 100,264 95,268 97,262 92,258 98,258" fill="#ff6a00" opacity="0.7"/>
+                                    <!-- Badge text -->
+                                    <text x="100" y="265" font-family="Orbitron" font-size="9" font-weight="bold" fill="#ff6a00" text-anchor="middle">CCNP</text>
+                                    <text x="100" y="242" font-family="Arial" font-size="5" fill="#ff6a00" text-anchor="middle" font-weight="700">PROFESSIONAL</text>
+                                </g>
                             </g>
-                            <text x="100" y="280" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">350-401</text>
-
-                            <!-- Line 3 -->
-                            <line x1="100" y1="264" x2="100" y2="306" stroke="#ff6a00" stroke-width="2.5" opacity="0.7"/>
-
-                            <!-- CCIE -->
-                            <g class="pcc-node">
-                                <circle cx="100" cy="330" r="24" fill="#ffd700" filter="url(#nodeGlow)"/>
-                                <text x="100" y="337" font-family="Orbitron" font-size="14" font-weight="bold" fill="#030d1a" text-anchor="middle">★</text>
+                            <text x="100" y="310" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 350-401</text>
+                            <line x1="100" y1="288" x2="100" y2="332" stroke="#ff6a00" stroke-width="3" opacity="0.8"/>
+                            <g class="pcc-node" data-cert="ccie-net" data-name="CCIE Enterprise" data-code="Expert Level" data-salary="$120K - $180K">
+                                <!-- Glow effect with pulse -->
+                                <circle cx="100" cy="360" r="32" fill="rgba(255,215,0,0.15)" filter="url(#outerGlow)" style="animation: nodeGlow 2s ease-in-out infinite;"/>
+                                <!-- Badge design - Crown -->
+                                <g class="cert-badge" filter="url(#strongGlow)">
+                                    <defs>
+                                        <linearGradient id="ccie-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#ffcc00;stop-opacity:0.8" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Crown outer -->
+                                    <circle cx="100" cy="360" r="20" fill="url(#ccie-grad)" stroke="#ffd700" stroke-width="1.5" opacity="0.95"/>
+                                    <!-- Crown inner -->
+                                    <circle cx="100" cy="360" r="16" fill="#030d1a" stroke="#ffd700" stroke-width="0.5" opacity="0.85"/>
+                                    <!-- Crown points -->
+                                    <polygon points="88,356 92,346 96,352 100,342 104,352 108,346 112,356" fill="none" stroke="#ffd700" stroke-width="1.2" opacity="0.7"/>
+                                    <!-- Main star -->
+                                    <polygon points="100,348 103,358 113,358 106,364 109,374 100,368 91,374 94,364 87,358 97,358" fill="#ffd700" opacity="0.95"/>
+                                    <!-- Badge text -->
+                                    <text x="100" y="365" font-family="Orbitron" font-size="10" font-weight="bold" fill="#030d1a" text-anchor="middle">★</text>
+                                    <text x="100" y="348" font-family="Arial" font-size="5" fill="#030d1a" text-anchor="middle" font-weight="700">EXPERT</text>
+                                </g>
                             </g>
-                            <text x="100" y="365" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Expert</text>
-
-                            <!-- LEFT LABELS -->
-                            <text x="145" y="65" font-family="Arial" font-size="10" fill="#7a9ab5">Entry Level</text>
-                            <text x="145" y="155" font-family="Arial" font-size="10" fill="#7a9ab5">Associate</text>
-                            <text x="145" y="245" font-family="Arial" font-size="10" fill="#7a9ab5">Professional</text>
-                            <text x="145" y="337" font-family="Arial" font-size="10" fill="#7a9ab5">Expert</text>
-
-                            <!-- VERTICAL DIVIDER -->
-                            <line x1="250" y1="20" x2="250" y2="360" stroke="rgba(0,212,255,0.15)" stroke-width="1" stroke-dasharray="5,5"/>
-
-                            <!-- RIGHT COLUMN: CYBERSECURITY -->
-                            <!-- CCST Cyber -->
-                            <g class="pcc-node">
-                                <circle cx="400" cy="60" r="24" fill="#00ff88" filter="url(#nodeGlow)"/>
-                                <text x="400" y="65" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCST</text>
+                            <line x1="250" y1="30" x2="250" y2="380" stroke="rgba(0,212,255,0.1)" stroke-width="2" stroke-dasharray="8,6"/>
+                            <!-- RIGHT: CYBERSECURITY -->
+                            <g class="pcc-node" data-cert="ccst-cyber" data-name="CCST Cybersecurity" data-code="100-160" data-salary="$50K - $70K">
+                                <!-- Glow effect -->
+                                <circle cx="400" cy="60" r="32" fill="rgba(0,255,136,0.1)" filter="url(#outerGlow)"/>
+                                <!-- Badge design -->
+                                <g class="cert-badge" filter="url(#strongGlow)">
+                                    <defs>
+                                        <linearGradient id="ccst-cyber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#00dd77;stop-opacity:0.8" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Hexagon outer -->
+                                    <polygon points="400,32 418,42 418,62 400,72 382,62 382,42" fill="url(#ccst-cyber-grad)" stroke="#00ff88" stroke-width="1" opacity="0.9"/>
+                                    <!-- Hexagon inner -->
+                                    <polygon points="400,38 412,46 412,62 400,68 388,62 388,46" fill="#030d1a" stroke="#00ff88" stroke-width="0.5" opacity="0.8"/>
+                                    <!-- Badge text -->
+                                    <text x="400" y="58" font-family="Orbitron" font-size="9" font-weight="bold" fill="#00ff88" text-anchor="middle">CCST</text>
+                                    <text x="400" y="35" font-family="Arial" font-size="5" fill="#00ff88" text-anchor="middle" font-weight="700">ENTRY</text>
+                                </g>
                             </g>
-                            <text x="400" y="100" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">100-160</text>
-
-                            <!-- Line 1 -->
-                            <line x1="400" y1="84" x2="400" y2="126" stroke="#00d4ff" stroke-width="2.5" opacity="0.7"/>
-
-                            <!-- CCNA Cyber -->
-                            <g class="pcc-node">
-                                <circle cx="400" cy="150" r="24" fill="#00d4ff" filter="url(#nodeGlow)"/>
-                                <text x="400" y="155" font-family="Orbitron" font-size="12" font-weight="bold" fill="#030d1a" text-anchor="middle">CCNA</text>
+                            <text x="400" y="110" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 100-160</text>
+                            <line x1="400" y1="88" x2="400" y2="132" stroke="#00d4ff" stroke-width="3" opacity="0.8"/>
+                            <g class="pcc-node" data-cert="ccna-cyber" data-name="CCNA Cybersecurity" data-code="200-201 IINS" data-salary="$65K - $95K">
+                                <!-- Glow effect -->
+                                <circle cx="400" cy="160" r="32" fill="rgba(0,212,255,0.1)" filter="url(#outerGlow)"/>
+                                <!-- Badge design - Shield -->
+                                <g class="cert-badge" filter="url(#strongGlow)">
+                                    <defs>
+                                        <linearGradient id="ccna-cyber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:#00b8d4;stop-opacity:0.8" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Shield outer -->
+                                    <path d="M 382 148 L 418 148 L 418 168 Q 400 178 382 168 Z" fill="url(#ccna-cyber-grad)" stroke="#00d4ff" stroke-width="1" opacity="0.9"/>
+                                    <!-- Shield inner -->
+                                    <path d="M 386 152 L 414 152 L 414 166 Q 400 173 386 166 Z" fill="#030d1a" stroke="#00d4ff" stroke-width="0.5" opacity="0.8"/>
+                                    <!-- Badge text -->
+                                    <text x="400" y="164" font-family="Orbitron" font-size="9" font-weight="bold" fill="#00d4ff" text-anchor="middle">CCNA</text>
+                                    <text x="400" y="150" font-family="Arial" font-size="5" fill="#00d4ff" text-anchor="middle" font-weight="700">ASSOCIATE</text>
+                                </g>
                             </g>
-                            <text x="400" y="190" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">200-201</text>
-
-                            <!-- Line 2 (Dashed - Coming Soon) -->
-                            <line x1="400" y1="174" x2="400" y2="216" stroke="#ff6a00" stroke-width="2.5" opacity="0.4" stroke-dasharray="5,5"/>
-
-                            <!-- CCNP Cyber Coming Soon -->
-                            <g class="pcc-node" opacity="0.5">
-                                <circle cx="400" cy="240" r="24" fill="none" stroke="#ff6a00" stroke-width="2" stroke-dasharray="3,3"/>
-                                <text x="400" y="245" font-family="Orbitron" font-size="10" font-weight="bold" fill="#ff6a00" text-anchor="middle">CCNP</text>
+                            <text x="400" y="210" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 200-201</text>
+                            <line x1="400" y1="188" x2="400" y2="232" stroke="#00d4ff" stroke-width="3" opacity="0.8"/>
+                            <g class="pcc-node" data-cert="ccnp-cyber" data-name="CCNP Cybersecurity" data-code="Coming Soon" data-salary="$95K - $135K">
+                                <!-- Glow effect (dimmed for Coming Soon) -->
+                                <circle cx="400" cy="260" r="32" fill="rgba(255,106,0,0.08)" filter="url(#outerGlow)"/>
+                                <!-- Badge design - Diamond (faded) -->
+                                <g class="cert-badge" filter="url(#strongGlow)" opacity="0.6">
+                                    <defs>
+                                        <linearGradient id="ccnp-cyber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#ff6a00;stop-opacity:0.6" />
+                                            <stop offset="100%" style="stop-color:#dd5500;stop-opacity:0.4" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Diamond outer (dashed effect) -->
+                                    <polygon points="400,240 418,260 400,280 382,260" fill="url(#ccnp-cyber-grad)" stroke="#ff6a00" stroke-width="1" stroke-dasharray="3,3" opacity="0.7"/>
+                                    <!-- Diamond inner -->
+                                    <polygon points="400,248 410,260 400,272 390,260" fill="#030d1a" stroke="#ff6a00" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.6"/>
+                                    <!-- Badge text -->
+                                    <text x="400" y="265" font-family="Orbitron" font-size="8" font-weight="bold" fill="#ff6a00" text-anchor="middle" opacity="0.7">CCNP</text>
+                                    <text x="400" y="242" font-family="Arial" font-size="4.5" fill="#ff6a00" text-anchor="middle" font-weight="700" opacity="0.7">COMING</text>
+                                </g>
                             </g>
-                            <text x="400" y="280" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="middle" font-weight="500">Coming Soon</text>
-
-                            <!-- RIGHT LABELS -->
-                            <text x="355" y="65" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="end">Entry Level</text>
-                            <text x="355" y="155" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="end">Associate</text>
-                            <text x="355" y="245" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="end">Professional</text>
-
-                            <!-- HEADERS -->
-                            <text x="100" y="25" font-family="Orbitron" font-size="12" font-weight="700" fill="#00d4ff" text-anchor="middle" letter-spacing="1">NETWORKING</text>
-                            <text x="400" y="25" font-family="Orbitron" font-size="12" font-weight="700" fill="#00d4ff" text-anchor="middle" letter-spacing="1">CYBERSECURITY</text>
-                        </svg>
-
-                            <!-- NETWORKING TRACK (LEFT) -->
-                            <!-- Line 1: CCST -> CCNA -->
-                            <line x1="90" y1="70" x2="90" y2="130" class="pcc-line" style="--line-color: #00d4ff"/>
-
-                            <!-- CCST Networking Node -->
-                            <g class="pcc-node">
-                                <circle cx="90" cy="55" r="22" fill="rgba(0,255,136,0.5)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
-                                <circle cx="90" cy="55" r="12" fill="rgba(0,255,136,0.5)" stroke="none" opacity="1"/>
-                                <text x="90" y="68" class="pcc-label">CCST</text>
-                                <text x="90" y="78" class="pcc-code">100-150</text>
-                            </g>
-
-                            <!-- Line 2: CCNA -> CCNP -->
-                            <line x1="90" y1="160" x2="90" y2="220" class="pcc-line" style="--line-color: #00d4ff"/>
-
-                            <!-- CCNA Node -->
-                            <g class="pcc-node">
-                                <circle cx="90" cy="145" r="22" fill="rgba(0,212,255,0.5)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
-                                <circle cx="90" cy="145" r="12" fill="rgba(0,212,255,0.5)" stroke="none" opacity="1"/>
-                                <text x="90" y="152" class="pcc-label">CCNA</text>
-                                <text x="90" y="162" class="pcc-code">200-301</text>
-                            </g>
-
-                            <!-- Line 3: CCNP -> CCIE -->
-                            <line x1="90" y1="250" x2="90" y2="310" class="pcc-line" style="--line-color: #ff6a00"/>
-
-                            <!-- CCNP Node -->
-                            <g class="pcc-node">
-                                <circle cx="90" cy="235" r="22" fill="rgba(255,106,0,0.5)" stroke="#ff6a00" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
-                                <circle cx="90" cy="235" r="12" fill="rgba(255,106,0,0.5)" stroke="none" opacity="1"/>
-                                <text x="90" y="242" class="pcc-label">CCNP</text>
-                                <text x="90" y="252" class="pcc-code">350-401</text>
-                            </g>
-
-                            <!-- CCIE Node -->
-                            <g class="pcc-node">
-                                <circle cx="90" cy="325" r="22" fill="rgba(255,215,0,0.5)" stroke="#ffd700" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
-                                <circle cx="90" cy="325" r="12" fill="rgba(255,215,0,0.5)" stroke="none" opacity="1"/>
-                                <text x="90" y="331" class="pcc-label">CCIE</text>
-                                <text x="90" y="341" class="pcc-code">★ Expert</text>
-                            </g>
-
-                            <!-- CYBERSECURITY TRACK (RIGHT) -->
-                            <!-- Line 1: CCST -> CCNA -->
-                            <line x1="270" y1="70" x2="270" y2="130" class="pcc-line" style="--line-color: #00d4ff"/>
-
-                            <!-- CCST Cyber Node -->
-                            <g class="pcc-node">
-                                <circle cx="270" cy="55" r="22" fill="rgba(0,255,136,0.5)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
-                                <circle cx="270" cy="55" r="12" fill="rgba(0,255,136,0.5)" stroke="none" opacity="1"/>
-                                <text x="270" y="63" class="pcc-label" font-size="0.55rem">CCST</text>
-                                <text x="270" y="73" class="pcc-code">Cyber</text>
-                                <text x="270" y="80" class="pcc-code">100-160</text>
-                            </g>
-
-                            <!-- Line 2: CCNA -> CCNP -->
-                            <line x1="270" y1="160" x2="270" y2="220" class="pcc-line" style="--line-color: #00d4ff"/>
-
-                            <!-- CCNA Cyber Node -->
-                            <g class="pcc-node">
-                                <circle cx="270" cy="145" r="22" fill="rgba(0,212,255,0.5)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer" opacity="0.9"/>
-                                <circle cx="270" cy="145" r="12" fill="rgba(0,212,255,0.5)" stroke="none" opacity="1"/>
-                                <text x="270" y="150" class="pcc-label" font-size="0.55rem">CCNA</text>
-                                <text x="270" y="160" class="pcc-code">Cyber</text>
-                                <text x="270" y="167" class="pcc-code">200-201</text>
-                            </g>
-
-                            <!-- CCNP Cyber Node (Coming Soon) -->
-                            <g class="pcc-node" opacity="0.8">
-                                <circle cx="270" cy="235" r="22" fill="rgba(255,106,0,0.5)" stroke="rgba(255,106,0,0.9)" stroke-width="2.5" stroke-dasharray="4 4" class="pcc-node-outer"/>
-                                <circle cx="270" cy="235" r="12" fill="rgba(255,106,0,0.6)" stroke="none"/>
-                                <text x="270" y="238" class="pcc-label" font-size="0.5rem" fill="var(--t)">CCNP</text>
-                                <text x="270" y="248" class="pcc-code" fill="var(--t)">Coming</text>
-                            </g>
-
-                            <!-- NETWORKING TRACK (LEFT) -->
-                            <!-- Line 1: CCST -> CCNA -->
-                            <line x1="90" y1="70" x2="90" y2="130" class="pcc-line" style="--line-color: #00d4ff"/>
-
-                            <!-- CCST Networking Node -->
-                            <g class="pcc-node">
-                                <circle cx="90" cy="55" r="22" fill="rgba(0,255,136,0.5)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="90" cy="55" r="12" fill="rgba(0,255,136,0.8)" stroke="none"/>
-                                <text x="90" y="68" class="pcc-label">CCST</text>
-                                <text x="90" y="78" class="pcc-code">100-150</text>
-                            </g>
-
-                            <!-- Line 2: CCNA -> CCNP -->
-                            <line x1="90" y1="160" x2="90" y2="220" class="pcc-line" style="--line-color: #00d4ff"/>
-
-                            <!-- CCNA Node -->
-                            <g class="pcc-node">
-                                <circle cx="90" cy="145" r="22" fill="rgba(0,212,255,0.5)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="90" cy="145" r="12" fill="rgba(0,212,255,0.8)" stroke="none"/>
-                                <text x="90" y="152" class="pcc-label">CCNA</text>
-                                <text x="90" y="162" class="pcc-code">200-301</text>
-                            </g>
-
-                            <!-- Line 3: CCNP -> CCIE -->
-                            <line x1="90" y1="250" x2="90" y2="310" class="pcc-line" style="--line-color: #ff6a00"/>
-
-                            <!-- CCNP Node -->
-                            <g class="pcc-node">
-                                <circle cx="90" cy="235" r="22" fill="rgba(255,106,0,0.5)" stroke="#ff6a00" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="90" cy="235" r="12" fill="rgba(255,106,0,0.8)" stroke="none"/>
-                                <text x="90" y="242" class="pcc-label">CCNP</text>
-                                <text x="90" y="252" class="pcc-code">350-401</text>
-                            </g>
-
-                            <!-- CCIE Node -->
-                            <g class="pcc-node">
-                                <circle cx="90" cy="325" r="22" fill="rgba(255,215,0,0.5)" stroke="#ffd700" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="90" cy="325" r="12" fill="rgba(255,215,0,0.8)" stroke="none"/>
-                                <text x="90" y="331" class="pcc-label">CCIE</text>
-                                <text x="90" y="341" class="pcc-code">★ Expert</text>
-                            </g>
-
-                            <!-- CYBERSECURITY TRACK (RIGHT) -->
-                            <!-- Line 1: CCST -> CCNA -->
-                            <line x1="270" y1="70" x2="270" y2="130" class="pcc-line" style="--line-color: #00d4ff"/>
-
-                            <!-- CCST Cyber Node -->
-                            <g class="pcc-node">
-                                <circle cx="270" cy="55" r="22" fill="rgba(0,255,136,0.5)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="270" cy="55" r="12" fill="rgba(0,255,136,0.8)" stroke="none"/>
-                                <text x="270" y="63" class="pcc-label" font-size="0.55rem">CCST</text>
-                                <text x="270" y="73" class="pcc-code">Cyber</text>
-                                <text x="270" y="80" class="pcc-code">100-160</text>
-                            </g>
-
-                            <!-- Line 2: CCNA -> CCNP -->
-                            <line x1="270" y1="160" x2="270" y2="220" class="pcc-line" style="--line-color: #00d4ff"/>
-
-                            <!-- CCNA Cyber Node -->
-                            <g class="pcc-node">
-                                <circle cx="270" cy="145" r="22" fill="rgba(0,212,255,0.5)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer"/>
-                                <circle cx="270" cy="145" r="12" fill="rgba(0,212,255,0.8)" stroke="none"/>
-                                <text x="270" y="150" class="pcc-label" font-size="0.55rem">CCNA</text>
-                                <text x="270" y="160" class="pcc-code">Cyber</text>
-                                <text x="270" y="167" class="pcc-code">200-201</text>
-                            </g>
-
-                            <!-- CCNP Cyber Node (Coming Soon) -->
-                            <g class="pcc-node" opacity="0.8">
-                                <circle cx="270" cy="235" r="22" fill="rgba(255,106,0,0.4)" stroke="rgba(255,106,0,0.9)" stroke-width="2.5" stroke-dasharray="4 4" class="pcc-node-outer"/>
-                                <circle cx="270" cy="235" r="12" fill="rgba(255,106,0,0.6)" stroke="none"/>
-                                <text x="270" y="238" class="pcc-label" font-size="0.5rem" fill="var(--t)">CCNP</text>
-                                <text x="270" y="248" class="pcc-code" fill="var(--t)">Coming</text>
-                            </g>
+                            <text x="400" y="310" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="middle" font-weight="500" font-style="italic">Coming Soon</text>
                         </svg>
                     </div>
 
-                    <!-- Instructor Footer -->
+                    <!-- Tooltip -->
+                    <div class="pcc-tooltip" style="display:none">
+                        <div class="pcc-tooltip-title"></div>
+                        <div class="pcc-tooltip-code"></div>
+                        <div class="pcc-tooltip-salary"></div>
+                    </div>
+
+<!-- Instructor Footer -->
                     <div class="cert-instructor" style="margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--bdr);">
                         <div class="cert-avatar">AH</div>
                         <div class="cert-instructor-info">
@@ -2247,6 +2182,43 @@
             }
         })();
 
+        // Career Paths - Tooltip Interactions
+        const chartCard = document.querySelector('.path-chart-card');
+        if (chartCard) {
+            const tooltip = chartCard.querySelector('.pcc-tooltip');
+            const nodes = chartCard.querySelectorAll('.pcc-node');
+
+            nodes.forEach(node => {
+                node.style.cursor = 'pointer';
+                node.style.transition = 'all 0.3s ease';
+
+                node.addEventListener('mouseenter', function() {
+                    const name = this.getAttribute('data-name');
+                    const code = this.getAttribute('data-code');
+                    const salary = this.getAttribute('data-salary');
+
+                    if (tooltip && name) {
+                        tooltip.querySelector('.pcc-tooltip-title').textContent = name;
+                        tooltip.querySelector('.pcc-tooltip-code').textContent = code;
+                        tooltip.querySelector('.pcc-tooltip-salary').textContent = salary;
+                        tooltip.style.display = 'block';
+
+                        const rect = this.getBoundingClientRect();
+                        const cardRect = chartCard.getBoundingClientRect();
+                        tooltip.style.left = (rect.left - cardRect.left + rect.width / 2 - 60) + 'px';
+                        tooltip.style.top = (rect.top - cardRect.top - 80) + 'px';
+                    }
+
+                    this.style.filter = 'brightness(1.3) drop-shadow(0 0 20px currentColor)';
+                });
+
+                node.addEventListener('mouseleave', function() {
+                    if (tooltip) tooltip.style.display = 'none';
+                    this.style.filter = 'none';
+                });
+            });
+        }
+
         // Add keyframes dynamically
         const style = document.createElement('style');
         style.textContent = `
@@ -2254,6 +2226,38 @@
                 0% { transform: translateY(0) translateX(0); opacity: 0.5; }
                 50% { opacity: 1; }
                 100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+            }
+
+            .pcc-tooltip {
+                position: absolute;
+                background: rgba(12, 22, 40, 0.95);
+                border: 1px solid rgba(0, 212, 255, 0.3);
+                border-radius: 8px;
+                padding: 10px 14px;
+                font-size: 0.75rem;
+                color: #c8ddf0;
+                white-space: nowrap;
+                z-index: 1000;
+                box-shadow: 0 0 15px rgba(0, 212, 255, 0.2), inset 0 0 15px rgba(0, 212, 255, 0.05);
+                backdrop-filter: blur(4px);
+            }
+
+            .pcc-tooltip-title {
+                font-weight: 700;
+                color: #00d4ff;
+                margin-bottom: 4px;
+            }
+
+            .pcc-tooltip-code {
+                color: #7a9ab5;
+                font-size: 0.7rem;
+                margin-bottom: 2px;
+            }
+
+            .pcc-tooltip-salary {
+                color: #00ff88;
+                font-weight: 600;
+                font-size: 0.7rem;
             }
         `;
         document.head.appendChild(style);
