@@ -47,9 +47,6 @@
     </style>
 </head>
 <body>
-    <!-- CUSTOM CURSOR -->
-    <div id="cursor"></div>
-    <div id="cursor-ring"></div>
 
     <!-- SCROLL PROGRESS BAR -->
     <div id="scroll-progress"></div>
