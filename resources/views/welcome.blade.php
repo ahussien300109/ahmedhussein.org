@@ -253,12 +253,12 @@
     .hbtn-primary {
         background: linear-gradient(135deg, var(--c), var(--c2));
         color: var(--bg);
-        box-shadow: 0 0 20px rgba(0,212,255,0.3);
+        box-shadow: 0 0 0 rgba(0, 212, 255, 0);
     }
 
     .hbtn-primary:hover {
-        box-shadow: 0 0 40px rgba(0,212,255,0.6);
-        transform: translateY(-3px);
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.5), 0 0 60px rgba(0, 212, 255, 0.2);
+        transform: translateY(-2px);
     }
 
     .hbtn-outline {
@@ -268,8 +268,9 @@
     }
 
     .hbtn-outline:hover {
-        background: rgba(0,212,255,0.1);
-        transform: translateY(-3px);
+        background: rgba(0, 212, 255, 0.08);
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
     }
 
     .hero-trust {

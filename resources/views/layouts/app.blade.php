@@ -51,6 +51,10 @@
     <!-- SCROLL PROGRESS BAR -->
     <div id="scroll-progress"></div>
 
+    <!-- CUSTOM CURSOR -->
+    <div id="cursor"></div>
+    <div id="cursor-ring"></div>
+
     <!-- CIRCUIT CANVAS -->
     <canvas id="circuit-canvas"></canvas>
 
@@ -239,6 +243,37 @@
 
     <!-- TOAST CONTAINER -->
     <div id="toast-box"></div>
+
+    <!-- LIVE CHAT WIDGET — PIXEL PERFECT CLONE -->
+    <div id="custom-chat">
+      <button id="chat-btn" onclick="openChat()" aria-label="Chat with Instructor">
+        <span id="lc-badge" style="display:none">0</span>
+        <span class="lc-gem"><i class="fas fa-headset"></i></span>
+        <span class="lc-tip">Chat with Instructor</span>
+      </button>
+      <div id="chat-panel">
+        <div class="chat-header">
+          <div class="chat-hdr-info">
+            <div class="chat-hdr-title">Live Support</div>
+            <div class="chat-hdr-status"><span class="chat-sdot"></span>Ahmed Hussein · Online</div>
+          </div>
+          <button class="chat-close-btn" onclick="closePanel()"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="chat-form-wrap">
+          <p class="chat-intro">Click below to open WhatsApp inside this chat panel.</p>
+          <div class="chat-footer">
+            <button type="button" id="chat-whatsapp" class="chat-whatsapp-btn" onclick="openWhatsApp()">
+              <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+            </button>
+          </div>
+          <div id="chat-wa-view" class="chat-wa-view" style="display:none;">
+            <div class="chat-wa-header">WhatsApp</div>
+            <iframe id="chat-wa-iframe" src="" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
+            <p class="chat-wa-fallback">If WhatsApp does not load here, <a href="https://wa.me/97332198505?text=Hello%20Ahmed%2C%20I%20want%20to%20chat%20about%20Cisco%20courses" target="_blank" rel="noopener">open it in a new tab</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- SCRIPTS -->
     <script src="{{ asset('js/animations.js') }}" defer></script>
