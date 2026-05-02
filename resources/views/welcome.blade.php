@@ -1437,208 +1437,69 @@
         <!-- RIGHT SIDE - CERT TRACKS -->
         <div class="hero-right">
             <div class="cert-showcase">
-                <div class="cert-card path-chart-card">
+                                <div class="cert-card">
                     <!-- Header -->
-                    <div class="pcc-header">
-                        <div style="display:flex;align-items:center;gap:8px">
-                            <span style="width:8px;height:8px;border-radius:50%;background:#00d4ff;box-shadow:0 0 12px #00d4ff"></span>
-                            <span class="pcc-title">CAREER PATHS</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--bdr);">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #00d4ff; box-shadow: 0 0 12px #00d4ff;"></span>
+                            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; color: #00d4ff; font-family: Orbitron;">CERT TRACKS</h3>
                         </div>
-                        <div class="pcc-dots">
-                            <span class="pcc-dot pcc-dot-red"></span>
-                            <span class="pcc-dot pcc-dot-orange"></span>
-                            <span class="pcc-dot pcc-dot-green"></span>
+                        <div style="display: flex; gap: 8px;">
+                            <span style="width: 12px; height: 12px; border-radius: 50%; background: #ff4444;"></span>
+                            <span style="width: 12px; height: 12px; border-radius: 50%; background: #ffaa00;"></span>
+                            <span style="width: 12px; height: 12px; border-radius: 50%; background: #00ff88;"></span>
                         </div>
                     </div>
 
-                    <!-- Floating Badge -->
-                    <div class="pcc-badge">
-                        <i class="fas fa-check-circle" style="margin-right:4px"></i>96% Pass Rate
+                    <!-- 4 Tile Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                        <!-- CCNA Tile -->
+                        <div style="border: 1px solid rgba(0,212,255,0.25); border-radius: 12px; padding: 1.5rem; background: rgba(0,212,255,0.05); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#00d4ff'; this.style.background='rgba(0,212,255,0.1)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.borderColor='rgba(0,212,255,0.25)'; this.style.background='rgba(0,212,255,0.05)'; this.style.transform='translateY(0)';">
+                            <div style="text-align: center; margin-bottom: 1rem;">
+                                <i class="fas fa-globe" style="font-size: 2.5rem; color: #00d4ff;"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1rem; font-weight: 700; color: #c8ddf0; margin-bottom: 0.5rem; font-family: Orbitron;">CCNA</div>
+                                <div style="font-size: 0.85rem; color: #00d4ff; font-weight: 600;">EXAM 200-301</div>
+                            </div>
+                        </div>
+
+                        <!-- CCNP Tile -->
+                        <div style="border: 1px solid rgba(255,106,0,0.25); border-radius: 12px; padding: 1.5rem; background: rgba(255,106,0,0.05); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#ff6a00'; this.style.background='rgba(255,106,0,0.1)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.borderColor='rgba(255,106,0,0.25)'; this.style.background='rgba(255,106,0,0.05)'; this.style.transform='translateY(0)';">
+                            <div style="text-align: center; margin-bottom: 1rem;">
+                                <i class="fas fa-diamond" style="font-size: 2.5rem; color: #ff6a00;"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1rem; font-weight: 700; color: #c8ddf0; margin-bottom: 0.5rem; font-family: Orbitron;">CCNP</div>
+                                <div style="font-size: 0.85rem; color: #ff6a00; font-weight: 600;">ENCOR 350-401</div>
+                            </div>
+                        </div>
+
+                        <!-- Security Tile -->
+                        <div style="border: 1px solid rgba(255,106,0,0.25); border-radius: 12px; padding: 1.5rem; background: rgba(255,106,0,0.05); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#ff6a00'; this.style.background='rgba(255,106,0,0.1)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.borderColor='rgba(255,106,0,0.25)'; this.style.background='rgba(255,106,0,0.05)'; this.style.transform='translateY(0)';">
+                            <div style="text-align: center; margin-bottom: 1rem;">
+                                <i class="fas fa-lock" style="font-size: 2.5rem; color: #ff6a00;"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1rem; font-weight: 700; color: #c8ddf0; margin-bottom: 0.5rem; font-family: Orbitron;">SECURITY</div>
+                                <div style="font-size: 0.85rem; color: #ff6a00; font-weight: 600;">SCOR 350-701</div>
+                            </div>
+                        </div>
+
+                        <!-- Automation Tile -->
+                        <div style="border: 1px solid rgba(100,200,255,0.25); border-radius: 12px; padding: 1.5rem; background: rgba(100,200,255,0.05); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#64c8ff'; this.style.background='rgba(100,200,255,0.1)'; this.style.transform='translateY(-4px)';" onmouseout="this.style.borderColor='rgba(100,200,255,0.25)'; this.style.background='rgba(100,200,255,0.05)'; this.style.transform='translateY(0)';">
+                            <div style="text-align: center; margin-bottom: 1rem;">
+                                <i class="fas fa-cog" style="font-size: 2.5rem; color: #9b9bff;"></i>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 1rem; font-weight: 700; color: #c8ddf0; margin-bottom: 0.5rem; font-family: Orbitron;">AUTOMATION</div>
+                                <div style="font-size: 0.85rem; color: #9b9bff; font-weight: 600;">SD-WAN + PYTHON</div>
+                            </div>
+                        </div>
                     </div>
 
-                                        <!-- SVG Chart - Enhanced Professional Design -->
-                    <div class="pcc-chart">
-                        <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" class="chart-svg" preserveAspectRatio="xMidYMid meet">
-                            <defs>
-                                <filter id="strongGlow" x="-150%" y="-150%" width="400%" height="400%">
-                                    <feGaussianBlur in="SourceGraphic" stdDeviation="3.5"/>
-                                </filter>
-                                <filter id="outerGlow" x="-200%" y="-200%" width="500%" height="500%">
-                                    <feGaussianBlur in="SourceGraphic" stdDeviation="5"/>
-                                </filter>
-                            </defs>
-                            <!-- LEFT: NETWORKING -->
-                            <g class="pcc-node" data-cert="ccst-net" data-name="CCST Networking" data-code="100-150" data-salary="$45K - $65K">
-                                <!-- Glow effect -->
-                                <circle cx="100" cy="60" r="32" fill="rgba(0,255,136,0.1)" filter="url(#outerGlow)"/>
-                                <!-- Badge design -->
-                                <g class="cert-badge" filter="url(#strongGlow)">
-                                    <defs>
-                                        <linearGradient id="ccst-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#00dd77;stop-opacity:0.8" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Hexagon outer -->
-                                    <polygon points="100,32 118,42 118,62 100,72 82,62 82,42" fill="url(#ccst-grad)" stroke="#00ff88" stroke-width="1" opacity="0.9"/>
-                                    <!-- Hexagon inner -->
-                                    <polygon points="100,38 112,46 112,62 100,68 88,62 88,46" fill="#030d1a" stroke="#00ff88" stroke-width="0.5" opacity="0.8"/>
-                                    <!-- Badge text -->
-                                    <text x="100" y="58" font-family="Orbitron" font-size="9" font-weight="bold" fill="#00ff88" text-anchor="middle">CCST</text>
-                                    <text x="100" y="35" font-family="Arial" font-size="5" fill="#00ff88" text-anchor="middle" font-weight="700">ENTRY</text>
-                                </g>
-                            </g>
-                            <text x="100" y="110" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 100-150</text>
-                            <line x1="100" y1="88" x2="100" y2="132" stroke="#00d4ff" stroke-width="3" opacity="0.8"/>
-                            <g class="pcc-node" data-cert="ccna-net" data-name="CCNA 200-301" data-code="CCNA Enterprise" data-salary="$60K - $85K">
-                                <!-- Glow effect -->
-                                <circle cx="100" cy="160" r="32" fill="rgba(0,212,255,0.1)" filter="url(#outerGlow)"/>
-                                <!-- Badge design - Shield -->
-                                <g class="cert-badge" filter="url(#strongGlow)">
-                                    <defs>
-                                        <linearGradient id="ccna-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#00b8d4;stop-opacity:0.8" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Shield outer -->
-                                    <path d="M 82 148 L 118 148 L 118 168 Q 100 178 82 168 Z" fill="url(#ccna-grad)" stroke="#00d4ff" stroke-width="1" opacity="0.9"/>
-                                    <!-- Shield inner -->
-                                    <path d="M 86 152 L 114 152 L 114 166 Q 100 173 86 166 Z" fill="#030d1a" stroke="#00d4ff" stroke-width="0.5" opacity="0.8"/>
-                                    <!-- Badge text -->
-                                    <text x="100" y="164" font-family="Orbitron" font-size="9" font-weight="bold" fill="#00d4ff" text-anchor="middle">CCNA</text>
-                                    <text x="100" y="150" font-family="Arial" font-size="5" fill="#00d4ff" text-anchor="middle" font-weight="700">ASSOCIATE</text>
-                                </g>
-                            </g>
-                            <text x="100" y="210" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 200-301</text>
-                            <line x1="100" y1="188" x2="100" y2="232" stroke="#00d4ff" stroke-width="3" opacity="0.8"/>
-                            <g class="pcc-node" data-cert="ccnp-net" data-name="CCNP Enterprise" data-code="350-401 ENCOR" data-salary="$85K - $120K">
-                                <!-- Glow effect -->
-                                <circle cx="100" cy="260" r="32" fill="rgba(255,106,0,0.1)" filter="url(#outerGlow)"/>
-                                <!-- Badge design - Diamond -->
-                                <g class="cert-badge" filter="url(#strongGlow)">
-                                    <defs>
-                                        <linearGradient id="ccnp-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#ff6a00;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#dd5500;stop-opacity:0.8" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Diamond outer -->
-                                    <polygon points="100,240 118,260 100,280 82,260" fill="url(#ccnp-grad)" stroke="#ff6a00" stroke-width="1" opacity="0.9"/>
-                                    <!-- Diamond inner -->
-                                    <polygon points="100,248 110,260 100,272 90,260" fill="#030d1a" stroke="#ff6a00" stroke-width="0.5" opacity="0.8"/>
-                                    <!-- Star accent -->
-                                    <polygon points="100,252 102,258 108,258 103,262 105,268 100,264 95,268 97,262 92,258 98,258" fill="#ff6a00" opacity="0.7"/>
-                                    <!-- Badge text -->
-                                    <text x="100" y="265" font-family="Orbitron" font-size="9" font-weight="bold" fill="#ff6a00" text-anchor="middle">CCNP</text>
-                                    <text x="100" y="242" font-family="Arial" font-size="5" fill="#ff6a00" text-anchor="middle" font-weight="700">PROFESSIONAL</text>
-                                </g>
-                            </g>
-                            <text x="100" y="310" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 350-401</text>
-                            <line x1="100" y1="288" x2="100" y2="332" stroke="#ff6a00" stroke-width="3" opacity="0.8"/>
-                            <g class="pcc-node" data-cert="ccie-net" data-name="CCIE Enterprise" data-code="Expert Level" data-salary="$120K - $180K">
-                                <!-- Glow effect with pulse -->
-                                <circle cx="100" cy="360" r="32" fill="rgba(255,215,0,0.15)" filter="url(#outerGlow)" style="animation: nodeGlow 2s ease-in-out infinite;"/>
-                                <!-- Badge design - Crown -->
-                                <g class="cert-badge" filter="url(#strongGlow)">
-                                    <defs>
-                                        <linearGradient id="ccie-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#ffcc00;stop-opacity:0.8" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Crown outer -->
-                                    <circle cx="100" cy="360" r="20" fill="url(#ccie-grad)" stroke="#ffd700" stroke-width="1.5" opacity="0.95"/>
-                                    <!-- Crown inner -->
-                                    <circle cx="100" cy="360" r="16" fill="#030d1a" stroke="#ffd700" stroke-width="0.5" opacity="0.85"/>
-                                    <!-- Crown points -->
-                                    <polygon points="88,356 92,346 96,352 100,342 104,352 108,346 112,356" fill="none" stroke="#ffd700" stroke-width="1.2" opacity="0.7"/>
-                                    <!-- Main star -->
-                                    <polygon points="100,348 103,358 113,358 106,364 109,374 100,368 91,374 94,364 87,358 97,358" fill="#ffd700" opacity="0.95"/>
-                                    <!-- Badge text -->
-                                    <text x="100" y="365" font-family="Orbitron" font-size="10" font-weight="bold" fill="#030d1a" text-anchor="middle">★</text>
-                                    <text x="100" y="348" font-family="Arial" font-size="5" fill="#030d1a" text-anchor="middle" font-weight="700">EXPERT</text>
-                                </g>
-                            </g>
-                            <line x1="250" y1="30" x2="250" y2="380" stroke="rgba(0,212,255,0.1)" stroke-width="2" stroke-dasharray="8,6"/>
-                            <!-- RIGHT: CYBERSECURITY -->
-                            <g class="pcc-node" data-cert="ccst-cyber" data-name="CCST Cybersecurity" data-code="100-160" data-salary="$50K - $70K">
-                                <!-- Glow effect -->
-                                <circle cx="400" cy="60" r="32" fill="rgba(0,255,136,0.1)" filter="url(#outerGlow)"/>
-                                <!-- Badge design -->
-                                <g class="cert-badge" filter="url(#strongGlow)">
-                                    <defs>
-                                        <linearGradient id="ccst-cyber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#00ff88;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#00dd77;stop-opacity:0.8" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Hexagon outer -->
-                                    <polygon points="400,32 418,42 418,62 400,72 382,62 382,42" fill="url(#ccst-cyber-grad)" stroke="#00ff88" stroke-width="1" opacity="0.9"/>
-                                    <!-- Hexagon inner -->
-                                    <polygon points="400,38 412,46 412,62 400,68 388,62 388,46" fill="#030d1a" stroke="#00ff88" stroke-width="0.5" opacity="0.8"/>
-                                    <!-- Badge text -->
-                                    <text x="400" y="58" font-family="Orbitron" font-size="9" font-weight="bold" fill="#00ff88" text-anchor="middle">CCST</text>
-                                    <text x="400" y="35" font-family="Arial" font-size="5" fill="#00ff88" text-anchor="middle" font-weight="700">ENTRY</text>
-                                </g>
-                            </g>
-                            <text x="400" y="110" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 100-160</text>
-                            <line x1="400" y1="88" x2="400" y2="132" stroke="#00d4ff" stroke-width="3" opacity="0.8"/>
-                            <g class="pcc-node" data-cert="ccna-cyber" data-name="CCNA Cybersecurity" data-code="200-201 IINS" data-salary="$65K - $95K">
-                                <!-- Glow effect -->
-                                <circle cx="400" cy="160" r="32" fill="rgba(0,212,255,0.1)" filter="url(#outerGlow)"/>
-                                <!-- Badge design - Shield -->
-                                <g class="cert-badge" filter="url(#strongGlow)">
-                                    <defs>
-                                        <linearGradient id="ccna-cyber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:1" />
-                                            <stop offset="100%" style="stop-color:#00b8d4;stop-opacity:0.8" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Shield outer -->
-                                    <path d="M 382 148 L 418 148 L 418 168 Q 400 178 382 168 Z" fill="url(#ccna-cyber-grad)" stroke="#00d4ff" stroke-width="1" opacity="0.9"/>
-                                    <!-- Shield inner -->
-                                    <path d="M 386 152 L 414 152 L 414 166 Q 400 173 386 166 Z" fill="#030d1a" stroke="#00d4ff" stroke-width="0.5" opacity="0.8"/>
-                                    <!-- Badge text -->
-                                    <text x="400" y="164" font-family="Orbitron" font-size="9" font-weight="bold" fill="#00d4ff" text-anchor="middle">CCNA</text>
-                                    <text x="400" y="150" font-family="Arial" font-size="5" fill="#00d4ff" text-anchor="middle" font-weight="700">ASSOCIATE</text>
-                                </g>
-                            </g>
-                            <text x="400" y="210" font-family="Arial" font-size="11" fill="#c8ddf0" text-anchor="middle" font-weight="500">Exam 200-201</text>
-                            <line x1="400" y1="188" x2="400" y2="232" stroke="#00d4ff" stroke-width="3" opacity="0.8"/>
-                            <g class="pcc-node" data-cert="ccnp-cyber" data-name="CCNP Cybersecurity" data-code="Coming Soon" data-salary="$95K - $135K">
-                                <!-- Glow effect (dimmed for Coming Soon) -->
-                                <circle cx="400" cy="260" r="32" fill="rgba(255,106,0,0.08)" filter="url(#outerGlow)"/>
-                                <!-- Badge design - Diamond (faded) -->
-                                <g class="cert-badge" filter="url(#strongGlow)" opacity="0.6">
-                                    <defs>
-                                        <linearGradient id="ccnp-cyber-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#ff6a00;stop-opacity:0.6" />
-                                            <stop offset="100%" style="stop-color:#dd5500;stop-opacity:0.4" />
-                                        </linearGradient>
-                                    </defs>
-                                    <!-- Diamond outer (dashed effect) -->
-                                    <polygon points="400,240 418,260 400,280 382,260" fill="url(#ccnp-cyber-grad)" stroke="#ff6a00" stroke-width="1" stroke-dasharray="3,3" opacity="0.7"/>
-                                    <!-- Diamond inner -->
-                                    <polygon points="400,248 410,260 400,272 390,260" fill="#030d1a" stroke="#ff6a00" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.6"/>
-                                    <!-- Badge text -->
-                                    <text x="400" y="265" font-family="Orbitron" font-size="8" font-weight="bold" fill="#ff6a00" text-anchor="middle" opacity="0.7">CCNP</text>
-                                    <text x="400" y="242" font-family="Arial" font-size="4.5" fill="#ff6a00" text-anchor="middle" font-weight="700" opacity="0.7">COMING</text>
-                                </g>
-                            </g>
-                            <text x="400" y="310" font-family="Arial" font-size="10" fill="#7a9ab5" text-anchor="middle" font-weight="500" font-style="italic">Coming Soon</text>
-                        </svg>
-                    </div>
-
-                    <!-- Tooltip -->
-                    <div class="pcc-tooltip" style="display:none">
-                        <div class="pcc-tooltip-title"></div>
-                        <div class="pcc-tooltip-code"></div>
-                        <div class="pcc-tooltip-salary"></div>
-                    </div>
-
-<!-- Instructor Footer -->
-                    <div class="cert-instructor" style="margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--bdr);">
+                    <!-- Instructor Footer -->
+                    <div class="cert-instructor" style="margin-top: 0; padding-top: 1rem; border-top: 1px solid var(--bdr);">
                         <div class="cert-avatar">AH</div>
                         <div class="cert-instructor-info">
                             <div class="cert-instructor-name">AHMED HUSSEIN</div>
@@ -1646,7 +1507,7 @@
                         </div>
                         <div style="color:var(--g);font-size:0.75rem;font-weight:700;text-transform:uppercase">● LIVE</div>
                     </div>
-                </div>
+                </div></div>
             </div>
         </div>
     </div>
@@ -2014,7 +1875,16 @@
 
 <script>
     function toggleFaq(element) {
-        element.parentElement.classList.toggle('open');
+        const faqItem = element.closest('.faq-item');
+        if (faqItem) {
+            faqItem.classList.toggle('open');
+            // Smooth scroll to answer if opening
+            if (faqItem.classList.contains('open')) {
+                setTimeout(() => {
+                    faqItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 300);
+            }
+        }
     }
 
     // FLOATING PARTICLES ANIMATION
@@ -2115,6 +1985,16 @@
         createParticles();
         initScrollReveal();
         animateCounters();
+
+        // Initialize FAQ Toggle
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        faqQuestions.forEach(question => {
+            question.style.cursor = 'pointer';
+            question.addEventListener('click', function(e) {
+                e.preventDefault();
+                toggleFaq(this);
+            });
+        });
 
         // Career Path Chart - Tooltips & Parallax
         (function() {
