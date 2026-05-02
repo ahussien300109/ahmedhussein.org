@@ -1875,15 +1875,22 @@
 
 <script>
     function toggleFaq(element) {
-        const faqItem = element.closest('.faq-item');
+        // Find the parent faq-item
+        let faqItem = element.parentElement;
+
+        // Traverse up if needed
+        while (faqItem && !faqItem.classList.contains('faq-item')) {
+            faqItem = faqItem.parentElement;
+        }
+
         if (faqItem) {
-            faqItem.classList.toggle('open');
-            // Smooth scroll to answer if opening
+            // Toggle the open class
             if (faqItem.classList.contains('open')) {
-                setTimeout(() => {
-                    faqItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }, 300);
+                faqItem.classList.remove('open');
+            } else {
+                faqItem.classList.add('open');
             }
+            console.log('FAQ toggled:', faqItem.classList.contains('open'));
         }
     }
 
@@ -1985,16 +1992,6 @@
         createParticles();
         initScrollReveal();
         animateCounters();
-
-        // Initialize FAQ Toggle
-        const faqQuestions = document.querySelectorAll('.faq-question');
-        faqQuestions.forEach(question => {
-            question.style.cursor = 'pointer';
-            question.addEventListener('click', function(e) {
-                e.preventDefault();
-                toggleFaq(this);
-            });
-        });
 
         // Career Path Chart - Tooltips & Parallax
         (function() {
