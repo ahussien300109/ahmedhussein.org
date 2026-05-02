@@ -790,76 +790,64 @@
     /* FAQ SECTION */
     .faq-section {
         padding: 4rem 2rem;
-        background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+        background: var(--bg);
         position: relative;
         z-index: 1;
+        border-top: 1px solid var(--bdr);
     }
 
-    .faq-container {
-        max-width: 900px;
-        margin: 0 auto;
+    .faq-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        max-width: 1100px;
+        margin: 3rem auto 0;
     }
 
-    .faq-item {
-        border: 1px solid var(--bdr);
-        border-radius: 10px;
-        margin-bottom: 1rem;
+    .faq-card {
         background: var(--card);
-        overflow: hidden;
-        transition: all 0.3s;
-    }
-
-    .faq-item:hover {
-        border-color: var(--c);
-    }
-
-    .faq-question {
+        border: 1px solid var(--bdr);
+        border-radius: 12px;
         padding: 1.5rem;
         cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        transition: all 0.2s;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .faq-question:hover {
-        background: rgba(0,212,255,0.02);
+    .faq-card:hover {
+        border-color: var(--c);
+        background: rgba(0, 212, 255, 0.02);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0, 212, 255, 0.1);
     }
 
-    .faq-question h3 {
-        margin: 0;
+    .faq-card h3 {
+        margin: 0 0 0.75rem 0;
         font-family: 'Orbitron', monospace;
-        font-size: 1rem;
+        font-size: 0.95rem;
         color: var(--tw);
-        font-weight: 600;
-        flex: 1;
-    }
-
-    .faq-toggle {
-        width: 24px;
-        height: 24px;
+        font-weight: 700;
         display: flex;
         align-items: center;
-        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .faq-card h3 i {
         color: var(--c);
-        transition: transform 0.3s;
-        flex-shrink: 0;
+        font-size: 0.85rem;
     }
 
-    .faq-item.open .faq-toggle {
-        transform: rotate(180deg);
+    .faq-card p {
+        margin: 0;
+        color: var(--tm);
+        font-size: 0.88rem;
+        line-height: 1.6;
     }
 
-    .faq-answer {
-        display: none;
-        padding: 0 1.5rem 1.5rem 1.5rem;
-        color: var(--t);
-        line-height: 1.7;
-        font-size: 0.9rem;
-    }
-
-    .faq-item.open .faq-answer {
-        display: block;
+    @media (max-width: 820px) {
+        .faq-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
     }
 
     /* PRICING SECTION */
@@ -1096,10 +1084,6 @@
 
         .features-section,
         .testimonials-section,
-        .faq-section {
-            padding: 2rem 1rem;
-        }
-
         .features-grid,
         .testimonials-grid {
             gap: 1rem;
@@ -1780,68 +1764,38 @@
     <div class="section-container">
         <div class="section-header-center">
             <h2>Frequently Asked <span class="accent">Questions</span></h2>
-            <p>Find answers to common questions about our courses</p>
+            <p>Quick answers to help you get started</p>
         </div>
 
-        <div class="faq-container">
-            <div class="faq-item open reveal">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>What are the prerequisites for CCNA course?</h3>
-                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
-                </div>
-                <div class="faq-answer">
-                    While no formal prerequisites are required, a basic understanding of computer networking concepts is recommended. The course covers everything from fundamentals to advanced topics, making it suitable for beginners with IT background. We provide review materials for those new to networking.
-                </div>
+        <div class="faq-grid reveal">
+            <div class="faq-card">
+                <h3><i class="fas fa-book"></i> What are the prerequisites?</h3>
+                <p>No formal prerequisites required. Basic IT knowledge recommended. We cover everything from fundamentals to advanced topics with review materials for beginners.</p>
             </div>
 
-            <div class="faq-item reveal">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>How long does it take to complete a course?</h3>
-                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
-                </div>
-                <div class="faq-answer">
-                    CCNA course typically takes 4-6 weeks with consistent 10-12 hours per week of study. However, you have lifetime access to course materials, allowing you to learn at your own pace. Most students complete within 8-12 weeks including hands-on labs and practice exams.
-                </div>
+            <div class="faq-card">
+                <h3><i class="fas fa-clock"></i> How long to complete?</h3>
+                <p>CCNA typically takes 4-6 weeks at 10-12 hours/week. Lifetime access lets you learn at your pace. Most students complete within 8-12 weeks with labs and exams.</p>
             </div>
 
-            <div class="faq-item reveal">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>Are the labs Cisco NetAcad aligned?</h3>
-                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
-                </div>
-                <div class="faq-answer">
-                    Yes, all our labs are designed to align with Cisco NetAcad curriculum standards and real exam scenarios. We use Packet Tracer for network simulation labs, which is the official Cisco simulation software used in certification preparation.
-                </div>
+            <div class="faq-card">
+                <h3><i class="fas fa-check"></i> Are labs NetAcad aligned?</h3>
+                <p>Yes, all labs align with Cisco NetAcad curriculum and real exam scenarios. We use official Cisco Packet Tracer simulation software for hands-on practice.</p>
             </div>
 
-            <div class="faq-item reveal">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>What's included in the Premium membership?</h3>
-                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
-                </div>
-                <div class="faq-answer">
-                    Premium membership ($29/month) includes: Full access to all courses, all hands-on labs, direct mentorship with Ahmed Hussein, certificate of completion, downloadable resources, lifetime course access, and exclusive live Q&A sessions every week.
-                </div>
+            <div class="faq-card">
+                <h3><i class="fas fa-star"></i> What's in Premium?</h3>
+                <p>Full course access, all labs, direct mentorship, certificates, downloadable resources, lifetime access, and exclusive weekly live Q&A sessions with Ahmed Hussein.</p>
             </div>
 
-            <div class="faq-item reveal">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>What is the exam pass rate guarantee?</h3>
-                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
-                </div>
-                <div class="faq-answer">
-                    Our students have achieved a 96% pass rate on Cisco certification exams. While we can't guarantee individual success, our comprehensive curriculum, hands-on labs, and dedicated mentorship significantly improve pass rates. We provide money-back guarantee if unsatisfied with the course content.
-                </div>
+            <div class="faq-card">
+                <h3><i class="fas fa-chart-line"></i> What's the pass rate?</h3>
+                <p>Our students achieve 96% pass rate on Cisco exams. We provide comprehensive curriculum, hands-on labs, and dedicated mentorship. Money-back guarantee if unsatisfied.</p>
             </div>
 
-            <div class="faq-item reveal">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <h3>Do you offer payment plans?</h3>
-                    <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
-                </div>
-                <div class="faq-answer">
-                    Yes, we offer flexible payment options. Premium membership can be paid monthly ($29/month), quarterly, or annually with discounts. We also offer interest-free payment plans through our partner payment processors for larger commitments.
-                </div>
+            <div class="faq-card">
+                <h3><i class="fas fa-credit-card"></i> Payment options?</h3>
+                <p>Flexible plans available: monthly ($29/mo), quarterly, or annual with discounts. Interest-free payment plans available through our trusted payment processors.</p>
             </div>
         </div>
     </div>
@@ -1874,26 +1828,6 @@
 </section>
 
 <script>
-    function toggleFaq(element) {
-        // Find the parent faq-item
-        let faqItem = element.parentElement;
-
-        // Traverse up if needed
-        while (faqItem && !faqItem.classList.contains('faq-item')) {
-            faqItem = faqItem.parentElement;
-        }
-
-        if (faqItem) {
-            // Toggle the open class
-            if (faqItem.classList.contains('open')) {
-                faqItem.classList.remove('open');
-            } else {
-                faqItem.classList.add('open');
-            }
-            console.log('FAQ toggled:', faqItem.classList.contains('open'));
-        }
-    }
-
     // FLOATING PARTICLES ANIMATION
     function createParticles() {
         const particleCount = 20;
