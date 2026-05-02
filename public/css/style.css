@@ -1321,9 +1321,4 @@ footer{background:var(--bg2);border-top:1px solid var(--bdr);padding:3.5rem 2.5r
 #chat-send{width:34px;height:34px;flex-shrink:0;border-radius:8px;background:var(--c);border:none;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.82rem;transition:background .2s,transform .15s;}
 #chat-send:hover{background:var(--o);transform:scale(1.1);}
 
-/* WhatsApp Live Chat Button */
-.whatsapp-btn{position:fixed;bottom:25px;right:25px;width:56px;height:56px;background:#25d366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;color:#fff;box-shadow:0 4px 12px rgba(37,211,102,.3);text-decoration:none;transition:all .3s cubic-bezier(.4,0,.2,1);z-index:10000;}
-.whatsapp-btn:hover{background:#20ba5a;transform:scale(1.1);box-shadow:0 6px 20px rgba(37,211,102,.5);}
-.whatsapp-btn:active{transform:scale(0.95);}
-@media(max-width:640px){.whatsapp-btn{bottom:15px;right:15px;width:48px;height:48px;font-size:22px;}}
 

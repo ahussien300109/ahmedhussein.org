@@ -240,15 +240,6 @@
     <!-- TOAST CONTAINER -->
     <div id="toast-box"></div>
 
-    <!-- LIVE CHAT - WHATSAPP -->
-    <a href="https://wa.me/97332198505?text=Hello%20Ahmed%20Hussein%2C%20I%20would%20like%20to%20inquire%20about%20your%20courses"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="whatsapp-btn"
-       title="Chat with us on WhatsApp">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-
     <!-- SCRIPTS -->
     <script src="{{ asset('js/animations.js') }}" defer></script>
     <script src="{{ asset('js/app.js') }}"></script>
