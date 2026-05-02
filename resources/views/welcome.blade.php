@@ -5,18 +5,147 @@
 
 @section('content')
 <style>
+    /* URGENCY PILL */
+    .urgency-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,106,0,0.1);
+        border: 1px solid rgba(255,106,0,0.22);
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-size: 0.72rem;
+        color: var(--t);
+        margin-bottom: 1.1rem;
+    }
+
+    .up-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--o);
+        animation: pls 1.5s infinite;
+        flex-shrink: 0;
+    }
+
+    @keyframes pls {
+        0%, 100% {
+            opacity: 1;
+            box-shadow: 0 0 0 0 rgba(255,106,0,0.7);
+        }
+        50% {
+            opacity: 0.7;
+            box-shadow: 0 0 0 6px rgba(255,106,0,0);
+        }
+    }
+
+    [data-theme="light"] .urgency-pill {
+        background: rgba(201,79,8,0.08);
+        border-color: rgba(201,79,8,0.2);
+        color: #0f172a;
+    }
+
+    /* FLOATING PARTICLES BACKGROUND */
+    .particle {
+        position: fixed;
+        pointer-events: none;
+        opacity: 0.5;
+        z-index: 0;
+    }
+
+    /* SCROLL REVEAL ANIMATIONS */
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* ANIMATED COUNTER */
+    .counter-num {
+        font-family: 'Orbitron', monospace;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--c);
+    }
+
+    .stat {
+        animation: statPulse 2s ease-in-out infinite;
+    }
+
+    .stat:nth-child(2) {
+        animation-delay: 0.3s;
+    }
+
+    .stat:nth-child(3) {
+        animation-delay: 0.6s;
+    }
+
+    @keyframes statPulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    @keyframes slideInLeft {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInRight {
+        from {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes slideInUp {
+        from {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-left {
+        animation: slideInLeft 0.8s ease-out;
+    }
+
+    .hero-right {
+        animation: slideInRight 0.8s ease-out 0.2s both;
+    }
+
     /* HERO SECTION */
     .hero {
-        min-height: 100vh;
+        min-height: 90vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 2rem 2rem 2rem;
+        padding: 0 2.5rem;
+        padding-top: 20px;
         z-index: 1;
         position: relative;
         overflow: hidden;
-        margin-top: -80px;
-        padding-top: 100px;
     }
 
     .hero::before {
@@ -36,10 +165,11 @@
         width: 100%;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 4rem;
+        gap: 5rem;
         align-items: center;
         position: relative;
         z-index: 1;
+        margin-top: 30px;
     }
 
     .hero-eyebrow {
@@ -60,13 +190,13 @@
         font-size: 0.7rem;
         font-weight: 700;
         color: var(--c);
-        letter-spacing: 3px;
+        letter-spacing: 4px;
         text-transform: uppercase;
     }
 
     .hero-h1 {
         font-family: 'Orbitron', monospace;
-        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        font-size: clamp(2rem, 3.5vw, 3.2rem);
         font-weight: 900;
         line-height: 1.1;
         color: var(--tw);
@@ -84,7 +214,7 @@
     }
 
     .hero-sub {
-        font-size: 1.05rem;
+        font-size: 1rem;
         color: var(--tm);
         line-height: 1.8;
         margin: 1.5rem 0 2rem 0;
@@ -144,7 +274,7 @@
 
     .hero-trust {
         display: flex;
-        gap: 2rem;
+        gap: 1rem;
         flex-wrap: wrap;
         margin-top: 2rem;
         padding-top: 2rem;
@@ -232,6 +362,33 @@
         letter-spacing: 2px;
         margin-bottom: 1.5rem;
         font-weight: 700;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .cert-title-dots {
+        display: flex;
+        gap: 8px;
+    }
+
+    .cert-title-dots .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .cert-title-dots .red {
+        background: #ff4444;
+    }
+
+    .cert-title-dots .orange {
+        background: #ffaa00;
+    }
+
+    .cert-title-dots .green {
+        background: #00cc88;
     }
 
     .cert-grid {
@@ -366,12 +523,12 @@
 
     .course-card:hover {
         border-color: var(--c);
-        transform: translateY(-8px);
+        transform: translateY(-6px);
         box-shadow: 0 12px 40px rgba(0,212,255,0.15);
     }
 
     .course-thumb {
-        height: 180px;
+        height: 170px;
         background: linear-gradient(135deg, var(--c), var(--c2));
         display: flex;
         align-items: center;
@@ -471,7 +628,7 @@
     @media (max-width: 1024px) {
         .hero-inner {
             grid-template-columns: 1fr;
-            gap: 2rem;
+            gap: 3rem;
         }
 
         .hero-stats {
@@ -505,15 +662,15 @@
     }
 
     .feature-icon {
-        width: 60px;
-        height: 60px;
+        width: 48px;
+        height: 48px;
         border-radius: 12px;
         background: rgba(0,212,255,0.1);
         border: 1px solid rgba(0,212,255,0.2);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         color: var(--c);
     }
 
@@ -568,7 +725,7 @@
     .testimonial-card {
         border: 1px solid var(--bdr);
         border-radius: 12px;
-        padding: 2rem;
+        padding: 1.8rem;
         background: var(--card);
         transition: all 0.3s;
     }
@@ -877,6 +1034,11 @@
     }
 
     @media (max-width: 768px) {
+        .hero-inner {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+
         .features-grid {
             grid-template-columns: 1fr;
         }
@@ -895,6 +1057,11 @@
     }
 
     @media (max-width: 640px) {
+        .urgency-pill {
+            position: static !important;
+            margin-bottom: 1rem;
+        }
+
         .hero {
             padding: 2rem 1rem;
             min-height: auto;
@@ -938,11 +1105,211 @@
             gap: 1rem;
         }
     }
+
+    /* ═══════════════════════════════════════
+       CAREER PATH CHART - HERO RIGHT
+       ═══════════════════════════════════════ */
+    @keyframes nodeGlow {
+        0%, 100% { filter: drop-shadow(0 0 4px currentColor); }
+        50% { filter: drop-shadow(0 0 12px currentColor); }
+    }
+
+    @keyframes lineDraw {
+        from { stroke-dashoffset: 100; }
+        to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes badgeFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-6px); }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes scanLine {
+        0%, 100% { transform: translateX(-100%); opacity: 0; }
+        50% { opacity: 0.3; }
+    }
+
+    .path-chart-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pcc-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--bdr);
+    }
+
+    .pcc-title {
+        font-family: 'Orbitron', monospace;
+        font-size: 0.8rem;
+        color: var(--c);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        font-weight: 700;
+    }
+
+    .pcc-dots {
+        display: flex;
+        gap: 6px;
+    }
+
+    .pcc-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .pcc-dot-red { background: #ff4444; }
+    .pcc-dot-orange { background: #ff9a40; }
+    .pcc-dot-green { background: #00ff88; }
+
+    .pcc-chart {
+        position: relative;
+        width: 100%;
+        height: 380px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .pcc-chart svg {
+        width: 100%;
+        max-width: 360px;
+        height: auto;
+    }
+
+    /* SVG path animation */
+    .pcc-line {
+        stroke-dasharray: 100;
+        stroke-dashoffset: 100;
+        animation: lineDraw 2s ease-out forwards;
+        stroke: var(--line-color);
+        stroke-width: 2.5;
+        fill: none;
+        stroke-linecap: round;
+        filter: drop-shadow(0 0 2px var(--line-color));
+    }
+
+    .pcc-line:nth-child(2) { animation-delay: 0.3s; }
+    .pcc-line:nth-child(4) { animation-delay: 0.6s; }
+    .pcc-line:nth-child(6) { animation-delay: 0.9s; }
+
+    /* SVG node animation */
+    .pcc-node {
+        animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    .pcc-node:nth-child(3) { animation-delay: 0.3s; }
+    .pcc-node:nth-child(5) { animation-delay: 0.6s; }
+    .pcc-node:nth-child(7) { animation-delay: 0.9s; }
+    .pcc-node:nth-child(9) { animation-delay: 1.2s; }
+    .pcc-node:nth-child(11) { animation-delay: 1.2s; }
+    .pcc-node:nth-child(13) { animation-delay: 1.5s; }
+    .pcc-node:nth-child(15) { animation-delay: 1.8s; }
+
+    .pcc-node-outer {
+        animation: nodeGlow 2.5s ease-in-out infinite;
+    }
+
+    .pcc-node:hover .pcc-node-outer {
+        filter: drop-shadow(0 0 16px currentColor);
+    }
+
+    .pcc-label {
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-anchor: middle;
+        fill: var(--t);
+        text-transform: uppercase;
+    }
+
+    .pcc-code {
+        font-size: 0.5rem;
+        fill: var(--tm);
+        text-anchor: middle;
+    }
+
+    /* Floating badge */
+    .pcc-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(0,255,136,0.15);
+        border: 1px solid rgba(0,255,136,0.3);
+        border-radius: 20px;
+        padding: 6px 12px;
+        font-size: 0.65rem;
+        color: #00ff88;
+        font-weight: 700;
+        letter-spacing: 1px;
+        animation: badgeFloat 3s ease-in-out infinite;
+    }
+
+    /* Tooltip */
+    .pcc-tooltip {
+        position: absolute;
+        background: rgba(12,22,40,0.95);
+        border: 1px solid var(--bdr);
+        border-radius: 8px;
+        padding: 0.75rem;
+        font-size: 0.7rem;
+        color: var(--t);
+        z-index: 10;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.2s;
+        max-width: 120px;
+        text-align: center;
+    }
+
+    .pcc-tooltip.active {
+        opacity: 1;
+    }
+
+    .pcc-tooltip-title {
+        font-weight: 700;
+        color: var(--tw);
+        margin-bottom: 2px;
+    }
+
+    .pcc-tooltip-code {
+        font-family: 'Orbitron', monospace;
+        font-size: 0.55rem;
+        color: var(--c);
+        margin-bottom: 2px;
+    }
+
+    .pcc-tooltip-salary {
+        font-size: 0.6rem;
+        color: var(--g);
+    }
+
+    /* Parallax effect */
+    .path-chart-card {
+        transition: transform 0.3s ease-out;
+    }
 </style>
 
 <!-- HERO SECTION -->
 <section class="hero">
     <div class="hero-inner">
+        <!-- Urgency Banner -->
+        <div class="urgency-pill" style="position: absolute; top: 20px; left: 2.5rem; z-index: 10;">
+            <span class="up-dot"></span>
+            <span>Next cohort — Only <span id="seats-count">6</span> seats left</span>
+        </div>
+
         <!-- LEFT SIDE -->
         <div>
             <div class="hero-eyebrow">
@@ -983,52 +1350,130 @@
 
             <div class="hero-stats">
                 <div class="stat">
-                    <div class="stat-num">1200+</div>
+                    <div class="counter-num">1200+</div>
                     <div class="stat-label">Students Trained</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-num">96%</div>
+                    <div class="counter-num">96%</div>
                     <div class="stat-label">Pass Rate</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-num">10+</div>
+                    <div class="counter-num">10+</div>
                     <div class="stat-label">Years Experience</div>
                 </div>
             </div>
         </div>
 
-        <!-- RIGHT SIDE - CERTIFICATIONS -->
+        <!-- RIGHT SIDE - CERT TRACKS -->
         <div class="hero-right">
             <div class="cert-showcase">
-                <div class="cert-card">
-                    <div class="cert-title">Available Certifications</div>
-                    <div class="cert-grid">
-                        <div class="cert-tile">
-                            <div class="cert-icon"><i class="fas fa-globe"></i></div>
-                            <div class="cert-name">CCNA</div>
-                            <div class="cert-code">200-301</div>
-                        </div>
-                        <div class="cert-tile">
-                            <div class="cert-icon"><i class="fas fa-shield"></i></div>
-                            <div class="cert-name">CCNP</div>
-                            <div class="cert-code">350-401</div>
-                        </div>
-                        <div class="cert-tile">
-                            <div class="cert-icon"><i class="fas fa-lock"></i></div>
-                            <div class="cert-name">Security+</div>
-                            <div class="cert-code">SY0-601</div>
-                        </div>
-                        <div class="cert-tile">
-                            <div class="cert-icon"><i class="fas fa-bolt"></i></div>
-                            <div class="cert-name">Automation</div>
-                            <div class="cert-code">SD-WAN</div>
+                <div class="cert-card path-chart-card">
+                    <!-- Header -->
+                    <div class="pcc-header">
+                        <span class="pcc-title">Career Paths</span>
+                        <div class="pcc-dots">
+                            <span class="pcc-dot pcc-dot-red"></span>
+                            <span class="pcc-dot pcc-dot-orange"></span>
+                            <span class="pcc-dot pcc-dot-green"></span>
                         </div>
                     </div>
 
-                    <div class="cert-instructor">
+                    <!-- Floating Badge -->
+                    <div class="pcc-badge">96% Pass Rate</div>
+
+                    <!-- SVG Chart -->
+                    <div class="pcc-chart">
+                        <svg viewBox="0 0 360 370" xmlns="http://www.w3.org/2000/svg" class="chart-svg">
+                            <!-- Grid background -->
+                            <defs>
+                                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(0,212,255,0.03)" stroke-width="0.5"/>
+                                </pattern>
+                            </defs>
+                            <rect width="360" height="370" fill="url(#grid)"/>
+
+                            <!-- NETWORKING TRACK (LEFT) -->
+                            <!-- Line 1: CCST -> CCNA -->
+                            <line x1="90" y1="70" x2="90" y2="130" class="pcc-line" style="--line-color: #00d4ff"/>
+
+                            <!-- CCST Networking Node -->
+                            <g class="pcc-node">
+                                <circle cx="90" cy="55" r="22" fill="rgba(0,255,136,0.35)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="90" cy="55" r="12" fill="rgba(0,255,136,0.65)" stroke="none"/>
+                                <text x="90" y="68" class="pcc-label">CCST</text>
+                                <text x="90" y="78" class="pcc-code">100-150</text>
+                            </g>
+
+                            <!-- Line 2: CCNA -> CCNP -->
+                            <line x1="90" y1="160" x2="90" y2="220" class="pcc-line" style="--line-color: #00d4ff"/>
+
+                            <!-- CCNA Node -->
+                            <g class="pcc-node">
+                                <circle cx="90" cy="145" r="22" fill="rgba(0,212,255,0.35)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="90" cy="145" r="12" fill="rgba(0,212,255,0.65)" stroke="none"/>
+                                <text x="90" y="152" class="pcc-label">CCNA</text>
+                                <text x="90" y="162" class="pcc-code">200-301</text>
+                            </g>
+
+                            <!-- Line 3: CCNP -> CCIE -->
+                            <line x1="90" y1="250" x2="90" y2="310" class="pcc-line" style="--line-color: #ff6a00"/>
+
+                            <!-- CCNP Node -->
+                            <g class="pcc-node">
+                                <circle cx="90" cy="235" r="22" fill="rgba(255,106,0,0.35)" stroke="#ff6a00" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="90" cy="235" r="12" fill="rgba(255,106,0,0.65)" stroke="none"/>
+                                <text x="90" y="242" class="pcc-label">CCNP</text>
+                                <text x="90" y="252" class="pcc-code">350-401</text>
+                            </g>
+
+                            <!-- CCIE Node -->
+                            <g class="pcc-node">
+                                <circle cx="90" cy="325" r="22" fill="rgba(255,215,0,0.35)" stroke="#ffd700" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="90" cy="325" r="12" fill="rgba(255,215,0,0.65)" stroke="none"/>
+                                <text x="90" y="331" class="pcc-label">CCIE</text>
+                                <text x="90" y="341" class="pcc-code">★ Expert</text>
+                            </g>
+
+                            <!-- CYBERSECURITY TRACK (RIGHT) -->
+                            <!-- Line 1: CCST -> CCNA -->
+                            <line x1="270" y1="70" x2="270" y2="130" class="pcc-line" style="--line-color: #00d4ff"/>
+
+                            <!-- CCST Cyber Node -->
+                            <g class="pcc-node">
+                                <circle cx="270" cy="55" r="22" fill="rgba(0,255,136,0.35)" stroke="#00ff88" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="270" cy="55" r="12" fill="rgba(0,255,136,0.65)" stroke="none"/>
+                                <text x="270" y="63" class="pcc-label" font-size="0.55rem">CCST</text>
+                                <text x="270" y="73" class="pcc-code">Cyber</text>
+                                <text x="270" y="80" class="pcc-code">100-160</text>
+                            </g>
+
+                            <!-- Line 2: CCNA -> CCNP -->
+                            <line x1="270" y1="160" x2="270" y2="220" class="pcc-line" style="--line-color: #00d4ff"/>
+
+                            <!-- CCNA Cyber Node -->
+                            <g class="pcc-node">
+                                <circle cx="270" cy="145" r="22" fill="rgba(0,212,255,0.35)" stroke="#00d4ff" stroke-width="2.5" class="pcc-node-outer"/>
+                                <circle cx="270" cy="145" r="12" fill="rgba(0,212,255,0.65)" stroke="none"/>
+                                <text x="270" y="150" class="pcc-label" font-size="0.55rem">CCNA</text>
+                                <text x="270" y="160" class="pcc-code">Cyber</text>
+                                <text x="270" y="167" class="pcc-code">200-201</text>
+                            </g>
+
+                            <!-- CCNP Cyber Node (Coming Soon) -->
+                            <g class="pcc-node" opacity="0.7">
+                                <circle cx="270" cy="235" r="22" fill="rgba(255,106,0,0.25)" stroke="rgba(255,106,0,0.8)" stroke-width="2.5" stroke-dasharray="4 4" class="pcc-node-outer"/>
+                                <circle cx="270" cy="235" r="12" fill="rgba(255,106,0,0.45)" stroke="none"/>
+                                <text x="270" y="238" class="pcc-label" font-size="0.5rem" fill="var(--t)">CCNP</text>
+                                <text x="270" y="248" class="pcc-code" fill="var(--t)">Coming</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <!-- Instructor Footer -->
+                    <div class="cert-instructor" style="margin-top: 0.5rem; padding-top: 1rem; border-top: 1px solid var(--bdr);">
                         <div class="cert-avatar">AH</div>
                         <div class="cert-instructor-info">
-                            <div class="cert-instructor-name">Ahmed Hussein</div>
+                            <div class="cert-instructor-name">AHMED HUSSEIN</div>
                             <div class="cert-instructor-role">Cisco Certified Professional</div>
                         </div>
                         <div style="color:var(--g);font-size:0.75rem;font-weight:700;text-transform:uppercase">● LIVE</div>
@@ -1050,7 +1495,7 @@
 
         <div class="courses-grid">
             @forelse(\App\Models\Course::latest()->take(3)->get() as $course)
-                <div class="course-card">
+                <div class="course-card reveal">
                     <div class="course-thumb">{{ Str::limit($course->title, 20) }}</div>
                     <div class="course-body">
                         <h3 class="course-title">{{ $course->title }}</h3>
@@ -1081,29 +1526,28 @@
 <!-- FEATURES SECTION -->
 <section class="features-section">
     <div class="features-grid">
-        <div class="feature-item">
+        <div class="feature-item reveal">
             <div class="feature-icon"><i class="fas fa-laptop"></i></div>
             <div class="feature-title">Hands-On Labs</div>
             <p class="feature-desc">20+ practical Packet Tracer labs with real-world configuration scenarios</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-item reveal">
             <div class="feature-icon"><i class="fas fa-book"></i></div>
             <div class="feature-title">Structured Curriculum</div>
             <p class="feature-desc">Comprehensive lessons aligned with official Cisco certification exams</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-item reveal">
             <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
             <div class="feature-title">Progress Tracking</div>
             <p class="feature-desc">Monitor your learning journey with detailed progress analytics</p>
         </div>
-        <div class="feature-item">
+        <div class="feature-item reveal">
             <div class="feature-icon"><i class="fas fa-award"></i></div>
             <div class="feature-title">Certifications</div>
             <p class="feature-desc">Earn recognized certificates upon course completion</p>
         </div>
     </div>
 </section>
-
 <!-- TESTIMONIALS SECTION -->
 <section class="testimonials-section">
     <div class="section-container">
@@ -1113,7 +1557,7 @@
         </div>
 
         <div class="testimonials-grid">
-            <div class="testimonial-card">
+            <div class="testimonial-card reveal">
                 <div class="testimonial-stars">
                     <i class="fas fa-star"></i>
                     <i class="fas fa-star"></i>
@@ -1180,7 +1624,7 @@
 
         <div class="pricing-grid">
             <!-- FREE TIER -->
-            <div class="pricing-card">
+            <div class="pricing-card reveal">
                 <h3 class="pricing-title">Free Access</h3>
                 <p class="pricing-desc">Start your learning journey</p>
                 <div class="pricing-amount">Free</div>
@@ -1202,7 +1646,7 @@
             </div>
 
             <!-- PREMIUM TIER -->
-            <div class="pricing-card featured">
+            <div class="pricing-card featured reveal">
                 <div class="pricing-badge">POPULAR</div>
                 <h3 class="pricing-title">Premium</h3>
                 <p class="pricing-desc">Complete learning experience</p>
@@ -1236,7 +1680,7 @@
         </div>
 
         <div class="faq-container">
-            <div class="faq-item open">
+            <div class="faq-item open reveal">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <h3>What are the prerequisites for CCNA course?</h3>
                     <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
@@ -1246,7 +1690,7 @@
                 </div>
             </div>
 
-            <div class="faq-item">
+            <div class="faq-item reveal">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <h3>How long does it take to complete a course?</h3>
                     <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
@@ -1256,7 +1700,7 @@
                 </div>
             </div>
 
-            <div class="faq-item">
+            <div class="faq-item reveal">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <h3>Are the labs Cisco NetAcad aligned?</h3>
                     <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
@@ -1266,7 +1710,7 @@
                 </div>
             </div>
 
-            <div class="faq-item">
+            <div class="faq-item reveal">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <h3>What's included in the Premium membership?</h3>
                     <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
@@ -1276,7 +1720,7 @@
                 </div>
             </div>
 
-            <div class="faq-item">
+            <div class="faq-item reveal">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <h3>What is the exam pass rate guarantee?</h3>
                     <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
@@ -1286,7 +1730,7 @@
                 </div>
             </div>
 
-            <div class="faq-item">
+            <div class="faq-item reveal">
                 <div class="faq-question" onclick="toggleFaq(this)">
                     <h3>Do you offer payment plans?</h3>
                     <div class="faq-toggle"><i class="fas fa-chevron-down"></i></div>
@@ -1301,7 +1745,7 @@
 
 <!-- FINAL CTA SECTION -->
 <section style="padding:4rem 2rem;background:linear-gradient(135deg,rgba(0,212,255,0.08),rgba(255,106,0,0.04));border-top:1px solid var(--bdr);position:relative;z-index:1;text-align:center">
-    <div style="max-width:800px;margin:0 auto">
+    <div style="max-width:800px;margin:0 auto" class="reveal">
         <h2 style="font-family:'Orbitron',monospace;font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;color:var(--tw);margin:0 0 1rem 0">
             Ready to Master Cisco Networking?
         </h2>
@@ -1329,5 +1773,183 @@
     function toggleFaq(element) {
         element.parentElement.classList.toggle('open');
     }
+
+    // FLOATING PARTICLES ANIMATION
+    function createParticles() {
+        const particleCount = 20;
+        const container = document.body;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+
+            const size = Math.random() * 3 + 1;
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            const duration = Math.random() * 20 + 20;
+            const delay = Math.random() * 5;
+
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.background = ['rgba(0, 212, 255, 0.5)', 'rgba(0, 255, 136, 0.5)', 'rgba(255, 106, 0, 0.3)'][Math.floor(Math.random() * 3)];
+            particle.style.borderRadius = '50%';
+            particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
+
+            container.appendChild(particle);
+        }
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0) translateX(0);
+            opacity: 0.5;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100vh) translateX(100px);
+            opacity: 0;
+        }
+    }
+
+    // SCROLL REVEAL ANIMATION
+    function initScrollReveal() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+    }
+
+    // ANIMATED COUNTERS
+    function animateCounters() {
+        const counters = document.querySelectorAll('.counter-num');
+
+        counters.forEach(counter => {
+            const target = parseInt(counter.innerText);
+            const increment = target / 30;
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    counter.innerText = Math.floor(current) + (counter.innerText.includes('+') ? '+' : counter.innerText.includes('%') ? '%' : '');
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.innerText = counter.dataset.original;
+                }
+            };
+
+            counter.dataset.original = counter.innerText;
+
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    updateCounter();
+                    observer.unobserve(counter);
+                }
+            }, { threshold: 0.5 });
+
+            observer.observe(counter);
+        });
+    }
+
+    // INITIALIZE ANIMATIONS ON PAGE LOAD
+    document.addEventListener('DOMContentLoaded', function() {
+        createParticles();
+        initScrollReveal();
+        animateCounters();
+
+        // Career Path Chart - Tooltips & Parallax
+        (function() {
+            // Tooltip data
+            const chartData = {
+                node0: { name: 'CCST Networking', code: '100-150', desc: 'Entry-level foundations', salary: 'Entry-level IT' },
+                node1: { name: 'CCNA Enterprise', code: '200-301', desc: 'Routing & Switching', salary: '$55K-$85K' },
+                node2: { name: 'CCNP Enterprise', code: '350-401', desc: 'Advanced networking', salary: '$90K-$130K' },
+                node3: { name: 'CCIE Enterprise', code: '★ Expert', desc: 'Master level', salary: '$140K-$200K+' },
+                node4: { name: 'CCST Cyber', code: '100-160', desc: 'Security foundations', salary: 'Entry-level Sec' },
+                node5: { name: 'CCNA Cyber', code: '200-201', desc: 'Threat analysis', salary: '$65K-$100K' },
+                node6: { name: 'CCNP Cyber', code: 'Coming', desc: 'Advanced security', salary: 'TBD' }
+            };
+
+            // Create tooltip
+            const tooltip = document.createElement('div');
+            tooltip.className = 'pcc-tooltip';
+            tooltip.innerHTML = '<div class="pcc-tooltip-title">Title</div><div class="pcc-tooltip-code">Code</div><div class="pcc-tooltip-salary">Salary</div>';
+            document.querySelector('.path-chart-card').appendChild(tooltip);
+
+            // SVG nodes hover
+            const svg = document.querySelector('.chart-svg');
+            if (!svg) return;
+
+            const nodes = svg.querySelectorAll('.pcc-node');
+            let currentNode = null;
+
+            nodes.forEach((node, idx) => {
+                node.style.cursor = 'pointer';
+                node.addEventListener('mouseenter', function(e) {
+                    const key = 'node' + idx;
+                    const data = chartData[key];
+                    if (!data) return;
+
+                    const rect = node.getBoundingClientRect();
+                    const parentRect = node.closest('.path-chart-card').getBoundingClientRect();
+
+                    tooltip.querySelector('.pcc-tooltip-title').textContent = data.name;
+                    tooltip.querySelector('.pcc-tooltip-code').textContent = data.code;
+                    tooltip.querySelector('.pcc-tooltip-salary').textContent = data.salary;
+                    tooltip.classList.add('active');
+
+                    const offsetY = rect.top - parentRect.top - 60;
+                    const offsetX = rect.left - parentRect.left - 60;
+                    tooltip.style.top = Math.max(5, offsetY) + 'px';
+                    tooltip.style.left = Math.max(5, offsetX) + 'px';
+
+                    currentNode = node;
+                });
+
+                node.addEventListener('mouseleave', function() {
+                    tooltip.classList.remove('active');
+                    currentNode = null;
+                });
+            });
+
+            // Parallax effect
+            let parallaxCard = document.querySelector('.path-chart-card');
+            if (parallaxCard) {
+                window.addEventListener('scroll', function() {
+                    const rect = parallaxCard.getBoundingClientRect();
+                    const offset = (window.innerHeight - rect.top) * 0.02;
+                    parallaxCard.style.transform = 'translateY(' + offset + 'px)';
+                });
+            }
+        })();
+
+        // Add keyframes dynamically
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                0% { transform: translateY(0) translateX(0); opacity: 0.5; }
+                50% { opacity: 1; }
+                100% { transform: translateY(-100vh) translateX(100px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    });
+
 </script>
 @endsection

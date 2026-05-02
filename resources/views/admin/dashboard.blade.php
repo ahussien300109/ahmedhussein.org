@@ -127,41 +127,126 @@
                 <div><div class="dash-hello">LESSON <span>MANAGER</span></div></div>
             </div>
 
-            @php
-                $allLessons = $recentCourses->flatMap(fn($c) => $c->lessons);
-            @endphp
-
-            @if($allLessons->count() > 0)
-                <div class="admin-table">
-                    <div class="admin-table-header">
-                        <span>Title</span>
-                        <span>Course</span>
-                        <span>Order</span>
-                        <span>Content</span>
-                        <span style="text-align:right">Actions</span>
-                    </div>
-                    @foreach($allLessons as $lesson)
-                        <div class="admin-table-row">
-                            <span><strong>{{ Str::limit($lesson->title, 25) }}</strong></span>
-                            <span>{{ Str::limit($lesson->course->title, 20) }}</span>
-                            <span>#{{ $lesson->order }}</span>
-                            <span>
-                                @if($lesson->content)<i class="fas fa-file-alt" title="Content" style="color:var(--c);margin-right:0.5rem"></i>@endif
-                                @if($lesson->video_url)<i class="fas fa-video" title="Video" style="color:var(--c);margin-right:0.5rem"></i>@endif
-                                @if($lesson->file_path)<i class="fas fa-download" title="File" style="color:var(--c)"></i>@endif
-                            </span>
-                            <span style="text-align:right">
-                                <a href="{{ route('admin.lessons.edit', [$lesson->course, $lesson]) }}" class="btn btn-sm"><i class="fas fa-edit"></i></a>
-                            </span>
+            @if($recentCourses->count() > 0)
+                <div style="display: grid; grid-template-columns: 300px 1fr; gap: 2rem; min-height: 500px;">
+                    <!-- LEFT: COURSE SELECTOR -->
+                    <div>
+                        <div style="margin-bottom: 1rem; color: var(--c); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;">Select Course</div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            @foreach($recentCourses as $course)
+                                <button class="course-selector" data-course-id="{{ $course->id }}" onclick="selectCourse({{ $course->id }})" style="padding: 1rem; text-align: left; border: 1px solid var(--bdr); border-radius: 8px; background: transparent; color: var(--tw); cursor: pointer; transition: all 0.3s ease; @if($loop->first) background: var(--c); color: var(--bg); border-color: var(--c); @endif" onmouseover="if(!this.classList.contains('active')) this.style.borderColor='var(--c)'" onmouseout="if(!this.classList.contains('active')) this.style.borderColor='var(--bdr)'">
+                                    <div style="font-weight: 600; font-size: 0.95rem;">{{ Str::limit($course->title, 25) }}</div>
+                                    <div style="font-size: 0.8rem; opacity: 0.7; margin-top: 0.25rem;">{{ $course->lessons->count() }} lesson{{ $course->lessons->count() !== 1 ? 's' : '' }}</div>
+                                </button>
+                            @endforeach
                         </div>
-                    @endforeach
+                    </div>
+
+                    <!-- RIGHT: LESSONS FOR SELECTED COURSE -->
+                    <div id="lessons-content">
+                        @foreach($recentCourses as $course)
+                            <div class="course-lessons" data-course-id="{{ $course->id }}" style="display: @if($loop->first) block @else none @endif;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                                    <div>
+                                        <div style="font-size: 1.2rem; font-weight: 600; color: var(--c);">{{ $course->title }}</div>
+                                        <div style="font-size: 0.9rem; color: var(--tm); margin-top: 0.25rem;">{{ $course->lessons->count() }} lesson{{ $course->lessons->count() !== 1 ? 's' : '' }}</div>
+                                    </div>
+                                    <a href="{{ route('admin.lessons.create', $course) }}" class="btn btn-sm" style="padding: 0.65rem 1.25rem; background: var(--c); color: var(--bg); font-size: 0.9rem; font-weight: 600; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem;"><i class="fas fa-plus"></i> ADD LESSON</a>
+                                </div>
+
+                                @if($course->lessons->count() > 0)
+                                    <div class="admin-table" style="display:grid;grid-template-columns:2.5fr 0.6fr 0.8fr 1fr 1.5fr;gap:0;border:1px solid var(--bdr);border-radius:8px;overflow:hidden">
+                                        <div style="background:var(--card);border-bottom:1px solid var(--bdr);padding:1rem;font-weight:600;color:var(--c);text-transform:uppercase;font-size:0.75rem;letter-spacing:1px">TITLE</div>
+                                        <div style="background:var(--card);border-bottom:1px solid var(--bdr);border-left:1px solid var(--bdr);padding:1rem;font-weight:600;color:var(--c);text-transform:uppercase;font-size:0.75rem;letter-spacing:1px;text-align:center">#</div>
+                                        <div style="background:var(--card);border-bottom:1px solid var(--bdr);border-left:1px solid var(--bdr);padding:1rem;font-weight:600;color:var(--c);text-transform:uppercase;font-size:0.75rem;letter-spacing:1px">CONTENT</div>
+                                        <div style="background:var(--card);border-bottom:1px solid var(--bdr);border-left:1px solid var(--bdr);padding:1rem;font-weight:600;color:var(--c);text-transform:uppercase;font-size:0.75rem;letter-spacing:1px;text-align:center">QUIZ</div>
+                                        <div style="background:var(--card);border-bottom:1px solid var(--bdr);border-left:1px solid var(--bdr);padding:1rem;font-weight:600;color:var(--c);text-transform:uppercase;font-size:0.75rem;letter-spacing:1px;text-align:right">ACTIONS</div>
+
+                                        @foreach($course->lessons->sortBy('order') as $lesson)
+                                        <div style="padding:1rem;border-bottom:1px solid var(--bdr);color:var(--tw);font-weight:600"><strong>{{ Str::limit($lesson->title, 35) }}</strong></div>
+                                        <div style="padding:1rem;border-bottom:1px solid var(--bdr);border-left:1px solid var(--bdr);color:var(--tm);text-align:center;font-size:0.9rem">#{{ $lesson->order }}</div>
+                                        <div style="padding:1rem;border-bottom:1px solid var(--bdr);border-left:1px solid var(--bdr);display:flex;gap:0.75rem;align-items:center">
+                                            @if($lesson->content)<i class="fas fa-file-alt" title="Content" style="color:var(--c);font-size:0.9rem"></i>@else<span style="color:var(--tm);opacity:0.3">—</span>@endif
+                                            @if($lesson->video_url)<i class="fas fa-video" title="Video" style="color:var(--c);font-size:0.9rem"></i>@endif
+                                            @if($lesson->file_path)<i class="fas fa-download" title="File" style="color:var(--c);font-size:0.9rem"></i>@endif
+                                        </div>
+                                        <div style="padding:1rem;border-bottom:1px solid var(--bdr);border-left:1px solid var(--bdr);display:flex;gap:0.5rem;justify-content:center;align-items:center">
+                                            @if($lesson->quiz)
+                                                <span title="Quiz exists" style="color:var(--g);font-weight:600;font-size:1.2rem">✓</span>
+                                            @else
+                                                <span title="No quiz" style="color:var(--tm);opacity:0.3">—</span>
+                                            @endif
+                                        </div>
+                                        <div style="padding:1rem;border-bottom:1px solid var(--bdr);border-left:1px solid var(--bdr);display:flex;gap:0.5rem;justify-content:flex-end;align-items:center;flex-wrap:wrap">
+                                            @if($lesson->quiz)
+                                                <a href="{{ route('admin.quiz.edit', [$course, $lesson]) }}" class="btn btn-sm" style="padding:0.4rem 0.8rem;font-size:0.85rem" title="Edit Quiz"><i class="fas fa-edit"></i></a>
+                                                <form method="POST" action="{{ route('admin.quiz.destroy', [$course, $lesson]) }}" style="display:inline" onsubmit="return confirm('Delete quiz?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm" style="padding:0.4rem 0.8rem;font-size:0.85rem;color:#ff6b6b" title="Delete Quiz"><i class="fas fa-trash"></i></button>
+                                                </form>
+                                            @else
+                                                <a href="{{ route('admin.quiz.create', [$course, $lesson]) }}" class="btn btn-sm" style="padding:0.4rem 0.8rem;font-size:0.85rem" title="Create Quiz"><i class="fas fa-plus-circle"></i> Quiz</a>
+                                            @endif
+                                            <a href="{{ route('admin.lessons.edit', [$course, $lesson]) }}" class="btn btn-sm" style="padding:0.4rem 0.8rem;font-size:0.85rem" title="Edit Lesson"><i class="fas fa-edit"></i></a>
+                                            <form method="POST" action="{{ route('admin.lessons.destroy', [$course, $lesson]) }}" style="display:inline" onsubmit="return confirm('Delete lesson?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm" style="padding:0.4rem 0.8rem;font-size:0.85rem;color:#ff6b6b" title="Delete Lesson"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <div style="padding:2rem;text-align:center;color:var(--tm);border:1px dashed var(--bdr);border-radius:8px">
+                                        <i class="fas fa-inbox" style="font-size:1.5rem;opacity:0.3;display:block;margin-bottom:0.5rem"></i>
+                                        <p>No lessons in this course yet</p>
+                                        <a href="{{ route('admin.lessons.create', $course) }}" style="color:var(--c);font-weight:600;text-decoration:none">Create first lesson</a>
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
             @else
                 <div style="padding:3rem;text-align:center;color:var(--tm)">
                     <i class="fas fa-inbox" style="font-size:2rem;opacity:0.3;display:block;margin-bottom:1rem"></i>
-                    <p>No lessons yet</p>
+                    <p>No courses yet</p>
+                    <p style="font-size:0.9rem;margin-top:1rem">
+                        <a href="#" onclick="document.querySelector('[data-panel=courses]').click()" style="color:var(--c);font-weight:600;text-decoration:none">Go to Courses</a> and create a course first
+                    </p>
                 </div>
             @endif
+
+            <script>
+                function selectCourse(courseId) {
+                    // Hide all lessons
+                    document.querySelectorAll('.course-lessons').forEach(el => el.style.display = 'none');
+                    // Show selected course lessons (be specific to course-lessons div)
+                    document.querySelector(`.course-lessons[data-course-id="${courseId}"]`).style.display = 'block';
+
+                    // Update selector buttons
+                    document.querySelectorAll('.course-selector').forEach(btn => {
+                        if (btn.dataset.courseId == courseId) {
+                            btn.style.background = 'var(--c)';
+                            btn.style.color = 'var(--bg)';
+                            btn.style.borderColor = 'var(--c)';
+                        } else {
+                            btn.style.background = 'transparent';
+                            btn.style.color = 'var(--tw)';
+                            btn.style.borderColor = 'var(--bdr)';
+                        }
+                    });
+                }
+
+                // Initialize on page load - select first course
+                document.addEventListener('DOMContentLoaded', function() {
+                    const firstBtn = document.querySelector('.course-selector');
+                    if (firstBtn) {
+                        selectCourse(firstBtn.dataset.courseId);
+                    }
+                });
+            </script>
         </div>
 
         <!-- USERS PANEL -->

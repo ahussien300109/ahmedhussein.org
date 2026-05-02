@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ asset('css/pages.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/animations.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/premium-animations.css') }}">
 
     <!-- Theme preference -->
     <script>
@@ -242,9 +243,17 @@
     <!-- TOAST CONTAINER -->
     <div id="toast-box"></div>
 
+    <!-- WHATSAPP BUTTON -->
+    <div id="custom-chat">
+        <a href="https://wa.me/97332198505?text=Hi%20I'd%20like%20to%20learn%20more%20about%20your%20courses" target="_blank" class="lc-btn" title="Chat with us on WhatsApp" style="display: flex; text-decoration: none;">
+            <div class="lc-gem"></div>
+        </a>
+    </div>
+
     <!-- SCRIPTS -->
     <script src="{{ asset('js/animations.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/premium-interactions.js') }}" defer></script>
 
     @stack('scripts')
 </body>

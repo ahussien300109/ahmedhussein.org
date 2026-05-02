@@ -305,12 +305,17 @@
                         <!-- PROGRESS -->
                         <div class="progress-section">
                             <div class="progress-label">
-                                <span class="progress-label-text">Your Progress</span>
+                                <span class="progress-label-text">Course Progress</span>
                                 <span class="progress-percent">{{ (int)$enrollment->progress }}%</span>
                             </div>
                             <div class="progress-bar-container">
                                 <div class="progress-bar-fill" style="width: {{ $enrollment->progress }}%"></div>
                             </div>
+                            @if($enrollment->quizzesTotal > 0)
+                                <div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--tm);">
+                                    <i class="fas fa-check"></i> {{ $enrollment->quizzesPassed }} / {{ $enrollment->quizzesTotal }} quizzes passed
+                                </div>
+                            @endif
                         </div>
 
                         <!-- META INFO -->
@@ -326,10 +331,15 @@
                         </div>
 
                         <!-- COMPLETION BADGE -->
-                        @if($enrollment->completed_at)
+                        @if($enrollment->progress >= 100)
                             <div class="completion-badge">
                                 <i class="fas fa-check-circle"></i>
-                                <span>Completed on {{ $enrollment->completed_at->format('M d, Y') }}</span>
+                                <span>Course Completed! All quizzes passed</span>
+                            </div>
+                        @elseif($enrollment->quizzesTotal > 0 && $enrollment->quizzesPassed > 0)
+                            <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); border-radius: 8px; color: var(--c); font-size: 0.85rem; margin-bottom: 1rem;">
+                                <i class="fas fa-star"></i>
+                                <span>Great progress! Keep learning</span>
                             </div>
                         @endif
 

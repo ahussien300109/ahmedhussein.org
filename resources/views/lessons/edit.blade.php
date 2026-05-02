@@ -287,6 +287,37 @@
                 <span class="help-text">Max file size: 10MB (Leave empty to keep current)</span>
             </div>
 
+            <!-- Quiz Management -->
+            <div style="background: rgba(0,212,255,0.05); border: 1px solid var(--c); border-radius: 12px; padding: 2rem; margin-top: 2rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div>
+                        <h3 style="color: var(--c); font-size: 1.1rem; margin: 0 0 0.5rem 0;">Quiz Management</h3>
+                        <p style="color: var(--tm); font-size: 0.9rem; margin: 0;">Create or manage MCQ quiz for this lesson</p>
+                    </div>
+                    @if($lesson->quiz)
+                        <div style="display: flex; gap: 0.5rem;">
+                            <a href="{{ route('admin.quiz.edit', [$course, $lesson]) }}" style="padding: 0.5rem 1rem; background: var(--c); color: var(--bg); border: none; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; cursor: pointer;">Edit Quiz</a>
+                            <form method="POST" action="{{ route('admin.quiz.destroy', [$course, $lesson]) }}" style="display: inline;" onsubmit="return confirm('Delete this quiz?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" style="padding: 0.5rem 1rem; background: rgba(255,68,68,0.1); color: #ff4444; border: 1px solid rgba(255,68,68,0.3); border-radius: 6px; font-weight: 600; font-size: 0.9rem; cursor: pointer;">Delete</button>
+                            </form>
+                        </div>
+                    @else
+                        <a href="{{ route('admin.quiz.create', [$course, $lesson]) }}" style="padding: 0.5rem 1.5rem; background: var(--c); color: var(--bg); border: none; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 0.9rem; cursor: pointer;">+ Create Quiz</a>
+                    @endif
+                </div>
+                @if($lesson->quiz)
+                    <p style="color: var(--tm); font-size: 0.85rem; margin: 1rem 0 0 0;">
+                        <strong>{{ $lesson->quiz->questions->count() }}</strong> questions ·
+                        <strong>{{ $lesson->quiz->passing_score }}%</strong> pass score
+                        @if($lesson->quiz->time_limit)
+                            · <strong>{{ $lesson->quiz->time_limit }}</strong> min time limit
+                        @endif
+                    </p>
+                @endif
+            </div>
+
             <div class="form-actions">
                 <a href="{{ route('courses.show', $course) }}" class="btn-cancel">Cancel</a>
                 <button type="submit" class="btn-submit">Update Lesson</button>
