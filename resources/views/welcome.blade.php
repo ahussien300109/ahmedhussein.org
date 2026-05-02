@@ -1440,7 +1440,10 @@
                 <div class="cert-card path-chart-card">
                     <!-- Header -->
                     <div class="pcc-header">
-                        <span class="pcc-title">Career Paths</span>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span style="width:8px;height:8px;border-radius:50%;background:#00d4ff;box-shadow:0 0 12px #00d4ff"></span>
+                            <span class="pcc-title">CAREER PATHS</span>
+                        </div>
                         <div class="pcc-dots">
                             <span class="pcc-dot pcc-dot-red"></span>
                             <span class="pcc-dot pcc-dot-orange"></span>
@@ -1449,11 +1452,13 @@
                     </div>
 
                     <!-- Floating Badge -->
-                    <div class="pcc-badge">96% Pass Rate</div>
+                    <div class="pcc-badge">
+                        <i class="fas fa-check-circle" style="margin-right:4px"></i>96% Pass Rate
+                    </div>
 
                     <!-- SVG Chart - Clean Professional Design -->
                     <div class="pcc-chart">
-                        <svg viewBox="0 0 500 380" xmlns="http://www.w3.org/2000/svg" class="chart-svg" preserveAspectRatio="xMidYMid meet">
+                        <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" class="chart-svg" preserveAspectRatio="xMidYMid meet">
                             <defs>
                                 <filter id="nodeGlow" x="-100%" y="-100%" width="300%" height="300%">
                                     <feGaussianBlur in="SourceGraphic" stdDeviation="2"/>
