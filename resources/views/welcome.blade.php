@@ -332,7 +332,7 @@
     .cert-showcase {
         position: relative;
         width: 100%;
-        max-width: 450px;
+        max-width: 550px;
     }
 
     .cert-card {
